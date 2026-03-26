@@ -1,0 +1,2501 @@
+<!DOCTYPE html>
+<html lang="sk">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Vizualizácia metódy bisekcie</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+      :root {
+        --bg: #f5f7fa;
+        --bg-gradient-1: #667eea;
+        --bg-gradient-2: #764ba2;
+        --text: #2c3e50;
+        --card: #ffffff;
+        /* --btn-bg: #1976d2; */
+        --btn-bg: #1976d2;
+        --btn-hover: #1565c0;
+        --border: #e0e0e0;
+        --input-bg: #ffffff;
+        --header-bg: #1976d2;
+        --table-header: #f5f5f5;
+        --table-hover: rgba(25, 118, 210, 0.08);
+        --success-bg: #e8f5e9;
+        --success-text: #1b5e20;
+        --theory-bg: #fff9e6;
+        --theory-border: #ffc107;
+        --theory-text: #8a6d00;
+        --modal-bg: #ffffff;
+        --tooltip-bg: #2c3e50;
+        --tooltip-text: #ffffff;
+        --quiz-overlay: rgba(255, 193, 7, 0.5);
+        --quiz-content-bg: #ffffff;
+      }
+
+      body.dark {
+        --bg: #1a1a1a;
+        --bg-gradient-1: #1a1a2e;
+        --bg-gradient-2: #16213e;
+        --text: #e8e8e8;
+        --card: #2a2a2a;
+        --btn-bg: #2196f3;
+        --btn-hover: #64b5f6;
+        --border: #4a4a4a;
+        --input-bg: #353535;
+        --header-bg: #1565c0;
+        --table-header: #1a1a1a;
+        --table-hover: rgba(33, 150, 243, 0.15);
+        --success-bg: #0a4d0a;
+        --success-text: #81c784;
+        --theory-bg: #2d2400;
+        --theory-border: #ffc107;
+        --theory-text: #ffe082;
+        --modal-bg: #2a2a2a;
+        --tooltip-bg: #1a1a1a;
+        --tooltip-text: #e8e8e8;
+        --quiz-overlay: rgba(255, 193, 7, 0.5);
+        --quiz-content-bg: #2a2a2a;
+      }
+
+      * {
+        box-sizing: border-box;
+        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+      }
+      
+      body {
+        margin: 0;
+        font-family: "Segoe UI", sans-serif;
+        background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%);
+        color: var(--text);
+        min-height: 100vh;
+      }
+
+      header {
+        background: var(--header-bg);
+        color: white;
+        padding: 20px;
+        font-size: 1.6em;
+        text-align: center;
+        position: relative;
+        font-weight: bold;
+      }
+
+      #themeToggle {
+        position: absolute;
+        right: 65px;
+        top: 15px;
+        background: var(--btn-bg);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        font-size: 1.3em;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
+        padding: 0;
+        margin: 0;
+        transition: all 0.3s;
+      }
+
+      #themeToggle:hover {
+        background: var(--btn-hover);
+        transform: scale(1.1);
+      }
+
+      #helpBtn {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        background: var(--btn-bg);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        font-size: 1.3em;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
+        padding: 0;
+        margin: 0;
+        transition: all 0.3s;
+      }
+
+      #helpBtn:hover {
+        background: var(--btn-hover);
+        transform: scale(1.1);
+      }
+
+      .layout {
+        display: flex;
+        height: calc(100vh - 80px);
+        gap: 20px;
+        padding: 20px;
+      }
+
+      .left,
+      .right {
+        background: var(--card);
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        max-height: calc(100vh - 120px);
+      }
+
+      .left {
+        flex: 1.1;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden; /* Забрати scroll з .left */
+      }
+      
+      .right {
+        flex: 1.7;
+        position: relative;
+        overflow-y: auto;
+      }
+
+      /* Scrollable table container */
+      .table-container {
+        flex: 1;
+        overflow-y: auto;
+        margin-bottom: 10px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+      }
+
+      /* Fixed buttons at bottom */
+      .fixed-buttons {
+        flex-shrink: 0;
+        padding-top: 10px;
+        border-top: 2px solid var(--border);
+        background: var(--card);
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Центрувати кнопки */
+      }
+
+      /* Кнопка "Прокрутити до останнього" */
+      .scroll-to-latest {
+        position: sticky;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--btn-bg);
+        color: white;
+        border: none;
+        border-radius: 25px;
+        padding: 12px 24px;
+        font-size: 0.95em;
+        font-weight: 500;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4);
+        z-index: 1000;
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0 auto;
+        width: fit-content;
+        margin-top: -60px; /* Підняти вгору щоб не займала місце в потоці */
+      }
+
+      .scroll-to-latest.visible {
+        opacity: 1 !important;
+        pointer-events: all !important;
+        display: flex !important;
+      }
+
+      .scroll-to-latest:hover {
+        background: var(--btn-hover);
+        transform: translateX(-50%) translateY(-2px);
+        box-shadow: 0 6px 16px rgba(33, 150, 243, 0.5);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+
+      th,
+      td {
+        text-align: center;
+        padding: 10px 8px;
+        border-bottom: 1px solid var(--border);
+        position: relative;
+      }
+
+      th {
+        background: var(--table-header);
+        font-size: 0.9em;
+        color: var(--text);
+      }
+
+      tr:hover {
+        background: var(--table-hover);
+        cursor: help;
+      }
+
+      .step-row {
+        transition: all 0.2s;
+      }
+
+      .step-row.success {
+        background: var(--success-bg);
+        font-weight: bold;
+        color: var(--success-text);
+      }
+
+      .tooltip {
+        display: none;
+        position: fixed;
+        background: var(--tooltip-bg);
+        color: var(--tooltip-text);
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-size: 0.85em;
+        width: 300px;
+        max-width: 90vw;
+        z-index: 10000;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        text-align: left;
+        pointer-events: none;
+        line-height: 1.5;
+      }
+
+      #back {
+        position: absolute;
+        left: 15px;
+        top: 15px;
+        background: var(--btn-bg);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        font-size: 1.3em;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
+        padding: 0;
+        margin: 0;
+        transition: all 0.3s;
+      }
+
+      #back:hover {
+        background: var(--btn-hover);
+        transform: scale(1.1);
+      }
+
+      .btn-row {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+        width: 100%;
+        max-width: 400px; /* Обмежити ширину */
+        justify-content: center;
+      }
+
+      .btn {
+        flex: 1;
+        min-width: 150px; /* Мінімальна ширина кнопки */
+        background: var(--btn-bg);
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1em;
+      }
+
+      .btn:hover {
+        background: var(--btn-hover);
+      }
+
+      .btn:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+      }
+
+      #graph {
+        height: 450px;
+      }
+
+      #graphsContainer {
+        overflow-y: visible;
+        overflow-x: hidden;
+        padding: 10px;
+        width: 100%;
+      }
+
+      #graphsContainer > div {
+        margin-bottom: 30px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        width: 100%;
+        max-width: 100%;
+        min-height: 350px;
+      }
+
+      .info-box {
+        background: var(--theory-bg);
+        padding: 10px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        font-size: 0.9em;
+        color: var(--text);
+      }
+
+      .mode-selector {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+        align-items: center;
+      }
+
+      .mode-btn {
+        flex: 1;
+        padding: 10px;
+        border: 2px solid var(--btn-bg);
+        background: transparent;
+        color: var(--btn-bg);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.4s ease-out;
+        font-weight: 500;
+      }
+
+      .mode-btn.active {
+        background: var(--btn-bg);
+        color: white;
+      }
+
+      .mode-btn:hover {
+        background: var(--btn-hover);
+        color: white;
+        border-color: var(--btn-hover);
+      }
+
+      .frequency-select {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.85em;
+        margin-top: 10px;
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
+        transition: all 0.4s ease-out;
+      }
+
+      .frequency-select.active {
+        max-height: 50px;
+        opacity: 1;
+      }
+
+      .frequency-select select {
+        padding: 6px 10px;
+        border-radius: 6px;
+        border: 1px solid var(--btn-bg);
+        background: var(--card);
+        color: var(--text);
+        cursor: pointer;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 2000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.6);
+        animation: fadeIn 0.3s;
+      }
+
+      .modal-content {
+        background: var(--modal-bg);
+        margin: 5% auto;
+        padding: 30px;
+        border-radius: 12px;
+        width: 80%;
+        max-width: 700px;
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        animation: slideDown 0.3s;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+
+      @keyframes slideDown {
+        from { transform: translateY(-50px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        border-bottom: 2px solid var(--btn-bg);
+        padding-bottom: 10px;
+      }
+
+      .modal-header h2 {
+        color: var(--btn-bg);
+        margin: 0;
+      }
+
+      .close-btn {
+        font-size: 2em;
+        cursor: pointer;
+        color: var(--text);
+        line-height: 1;
+      }
+
+      .close-btn:hover {
+        color: var(--btn-bg);
+        transform: scale(1.1);
+      }
+
+      .theory-section {
+        margin-bottom: 20px;
+      }
+
+      .theory-section h3 {
+        color: var(--btn-bg);
+        margin-bottom: 10px;
+      }
+
+      .theory-section p {
+        color: var(--text);
+      }
+
+      .formula {
+        background: var(--table-header);
+        padding: 15px;
+        border-radius: 8px;
+        font-family: 'Courier New', monospace;
+        margin: 10px 0;
+        text-align: center;
+        font-size: 1.1em;
+        color: var(--text);
+      }
+
+      /* === INLINE QUIZ INPUT STYLES === */
+      .quiz-input-cell {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+      }
+
+      .quiz-input,
+      select.quiz-input {
+        width: 80px;
+        padding: 5px 7px;
+        border: 2px solid var(--btn-bg);
+        border-radius: 6px;
+        font-size: 0.9em;
+        font-family: 'Courier New', monospace;
+        background: var(--input-bg);
+        color: var(--text);
+        text-align: center;
+        transition: border-color 0.2s, background 0.2s;
+      }
+
+      .quiz-input:focus {
+        outline: none;
+        border-color: #ff9800;
+        box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.2);
+      }
+
+      .quiz-input.correct {
+        border-color: #4caf50;
+        background: #e8f5e9;
+        color: #1b5e20;
+      }
+
+      body.dark .quiz-input.correct {
+        background: #1b3a1b;
+        color: #81c784;
+      }
+
+      .quiz-input.incorrect {
+        border-color: #f44336;
+        background: #ffebee;
+        color: #c62828;
+      }
+
+      body.dark .quiz-input.incorrect {
+        background: #3a1b1b;
+        color: #ef5350;
+      }
+
+      .quiz-input.revealed {
+        border-color: #ff9800;
+        background: #fff3e0;
+        color: #e65100;
+        font-weight: bold;
+      }
+
+      body.dark .quiz-input.revealed {
+        background: #3a2a00;
+        color: #ffb74d;
+      }
+
+      .input-hint {
+        font-size: 0.65em;
+        color: var(--text);
+        opacity: 0.55;
+        text-align: center;
+        line-height: 1.2;
+      }
+
+      /* Quiz check button in fixed-buttons area */
+      #checkQuizBtn {
+        display: none;
+        background: #ff9800;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 10px;
+        font-size: 1em;
+        font-weight: 600;
+        cursor: pointer;
+        width: 100%;
+        transition: background 0.2s;
+      }
+
+      #checkQuizBtn:hover {
+        background: #e65100;
+      }
+
+      .quiz-step-banner {
+        display: none;
+        background: linear-gradient(135deg, #ff9800, #f57c00);
+        color: white;
+        padding: 8px 14px;
+        border-radius: 8px;
+        font-size: 0.82em;
+        font-weight: 600;
+        margin-bottom: 8px;
+        text-align: center;
+      }
+
+      .quiz-step-banner.active {
+        display: block;
+      }
+
+      .quiz-progress-dots {
+        display: flex;
+        gap: 6px;
+        justify-content: center;
+        margin-top: 5px;
+      }
+
+      .quiz-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.5);
+        border: 2px solid white;
+        transition: background 0.3s;
+      }
+
+      .quiz-dot.done {
+        background: white;
+      }
+
+      .quiz-dot.current {
+        background: #ffe082;
+      }
+
+      @keyframes shake {
+        0%,100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+      }
+
+      /* === END INLINE QUIZ INPUT STYLES === */
+
+      .feedback.correct {
+        background: #c8e6c9;
+        color: #2e7d32;
+      }
+
+      .feedback.incorrect {
+        background: #ffcdd2;
+        color: #c62828;
+      }
+
+      body.dark .feedback.correct {
+        background: #1b5e20;
+        color: #a5d6a7;
+      }
+
+      body.dark .feedback.incorrect {
+        background: #b71c1c;
+        color: #ef9a9a;
+      }
+
+      .explanation-box {
+        background: var(--theory-bg);
+        border-left: 4px solid var(--theory-border);
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 4px;
+        color: var(--text);
+      }
+
+      .accuracy-indicator {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-left: 5px;
+      }
+
+      .accuracy-indicator.achieved {
+        background: #4caf50;
+      }
+
+      .accuracy-indicator.not-achieved {
+        background: #f44336;
+      }
+
+      .result-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 3000;
+        animation: fadeIn 0.3s;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .result-overlay.active {
+        display: flex;
+      }
+
+      .result-content {
+        background: var(--card);
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+        max-width: 600px;
+        width: 90%;
+        text-align: center;
+        animation: slideDown 0.4s;
+        border: 3px solid #4caf50;
+      }
+
+      .result-icon {
+        font-size: 4em;
+        margin-bottom: 20px;
+        animation: bounce 0.6s;
+      }
+
+      @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+        40% { transform: translateY(-20px); }
+        60% { transform: translateY(-10px); }
+      }
+
+      .result-title {
+        font-size: 2em;
+        font-weight: bold;
+        color: #4caf50;
+        margin-bottom: 20px;
+      }
+
+      .result-info {
+        background: var(--success-bg);
+        padding: 20px;
+        border-radius: 12px;
+        margin: 20px 0;
+        text-align: left;
+        border-left: 4px solid #4caf50;
+      }
+
+      .result-info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--border);
+        color: var(--text);
+      }
+
+      .result-info-row:last-child {
+        border-bottom: none;
+      }
+
+      .result-info-label {
+        font-weight: bold;
+        color: var(--text);
+      }
+
+      .result-info-value {
+        font-family: 'Courier New', monospace;
+        color: var(--text);
+      }
+
+      .result-buttons {
+        display: flex;
+        gap: 15px;
+        margin-top: 25px;
+      }
+
+      .result-btn {
+        flex: 1;
+        padding: 15px 25px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1em;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .result-btn.primary {
+        background: #4caf50;
+        color: white;
+      }
+
+      .result-btn.primary:hover {
+        background: #45a049;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+      }
+
+      .result-btn.secondary {
+        background: var(--btn-bg);
+        color: white;
+      }
+
+      .result-btn.secondary:hover {
+        background: var(--btn-hover);
+        transform: translateY(-2px);
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      🔹 Vizualizácia metódy bisekcie
+      <button id="helpBtn" onclick="showHelp()">❓</button>
+      <button id="themeToggle" onclick="toggleTheme()">🌙</button>
+    </header>
+
+
+    <!-- Modal pre teóriu -->
+    <div id="theoryModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>📚 Metóda bisekcie</h2>
+          <span class="close-btn" onclick="closeHelp()">&times;</span>
+        </div>
+
+        <div class="theory-section">
+          <h3>🎯 Čo je metóda bisekcie?</h3>
+          <p>Metóda bisekcie je numerická metóda na hľadanie koreňa (nulového bodu) spojitej funkcie. Je založená na <strong>vete o strednej hodnote</strong>.</p>
+        </div>
+
+        <div class="theory-section">
+          <h3>📐 Princíp fungovania</h3>
+          <p>Ak máme interval [a, b], kde <strong>f(a)</strong> a <strong>f(b)</strong> majú rôzne znamienka, potom v tomto intervale musí existovať koreň.</p>
+          
+          <div class="explanation-box">
+            <strong>💡 Kľúčová myšlienka:</strong> Ak funkcia mení znamienko, musí prejsť cez nulu!
+          </div>
+        </div>
+
+        <div class="theory-section">
+          <h3>🔄 Algoritmus</h3>
+          <ol>
+            <li><strong>Vypočítaj stred:</strong> c = (a + b) / 2</li>
+            <li><strong>Vyhodnoť:</strong> f(c)</li>
+            <li><strong>Kontrola presnosti:</strong> Ak |b - a| < tolerancia → KONIEC ✅</li>
+            <li><strong>Rozhodnutie:</strong>
+              <ul>
+                <li>Ak f(a) · f(c) < 0 → koreň v [a, c]</li>
+                <li>Inak → koreň v [c, b]</li>
+              </ul>
+            </li>
+            <li><strong>Opakuj</strong></li>
+          </ol>
+          
+          <div class="explanation-box">
+            <strong>⚠️ Dôležité:</strong> Metóda bisekcie kontroluje <strong>dĺžku intervalu |b - a|</strong>, nie hodnotu funkcie |f(c)|!<br>
+            Keď |b - a| < tolerancia, koreň je určený s presnosťou ±tolerancia/2.
+          </div>
+        </div>
+
+        <div class="theory-section">
+          <h3>📊 Vzorce</h3>
+          <div class="formula">c = (a + b) / 2</div>
+          <div class="formula">Zastaviť ak: |b - a| ≤ 2·tolerancia</div>
+          <div class="formula">f(a) · f(c) < 0 → [a, c]</div>
+          <div class="formula">f(a) · f(c) > 0 → [c, b]</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Модальне вікно результату -->
+    <div id="resultOverlay" class="result-overlay">
+      <div class="result-content">
+        <div class="result-icon">🎉</div>
+        <div class="result-title" id="resultTitle">Presnosť dosiahnutá!</div>
+        <div class="result-info" id="resultInfo">
+          <!-- Інформація буде додана динамічно -->
+        </div>
+        <div class="result-buttons">
+          <button class="result-btn secondary" onclick="closeResultOverlay()">Zavrieť</button>
+          <button class="result-btn secondary" onclick="window.location.href='history.html'" style="background:#7c3aed;">📋 História</button>
+          <button class="result-btn primary" onclick="resetFromResult()">Nový výpočet</button>
+        </div>
+      </div>
+    </div>
+
+    </div>
+
+    <!-- Mini explanation modal for wrong answers -->
+    <div id="explainOverlay" style="
+      display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55);
+      z-index:4000; align-items:center; justify-content:center; animation: fadeIn 0.2s;">
+      <div id="explainBox" style="
+        background:var(--card); border-radius:14px; padding:28px 32px; max-width:420px; width:90%;
+        box-shadow:0 8px 32px rgba(0,0,0,0.35); animation: slideDown 0.25s;
+        border-top: 4px solid #f44336;">
+        <div style="font-size:1.6em; text-align:center; margin-bottom:10px;">❌</div>
+        <div id="explainTitle" style="font-size:1.15em; font-weight:700; color:#c62828; text-align:center; margin-bottom:16px;"></div>
+        <div id="explainBody" style="font-size:0.95em; color:var(--text); line-height:1.7;
+          background:var(--theory-bg); border-left:4px solid var(--theory-border);
+          padding:12px 16px; border-radius:6px; margin-bottom:18px;"></div>
+        <div id="explainCorrect" style="font-size:0.95em; color:var(--text); line-height:1.7;
+          background:var(--success-bg); border-left:4px solid #4caf50;
+          padding:12px 16px; border-radius:6px; margin-bottom:20px;"></div>
+        <button onclick="closeExplain()" style="
+          width:100%; padding:12px; background:#4caf50; color:white; border:none;
+          border-radius:8px; font-size:1em; font-weight:600; cursor:pointer;">
+          👍 Rozumiem, pokračujem
+        </button>
+      </div>
+    </div>
+
+    <section id="solution">
+      <button id="back" onclick="goBack()">←</button>
+      
+      <div class="layout">
+        <div class="left">
+          
+          <div class="info-box" id="infoBox">
+            <strong>📊 Nastavenia:</strong><br>
+            Interval: [<span id="intervalA"></span>, <span id="intervalB"></span>]<br>
+            <span id="methodDisplay"></span>
+          </div>
+
+          <div style="font-size: 0.85em; color: var(--text); opacity: 0.7; margin-bottom: 8px; text-align: center;">
+            Vyber režim výpočtu
+          </div>
+          <div class="mode-selector">
+            <button class="mode-btn" onclick="setMode('auto')" id="autoBtn">
+              🤖 Automatický
+            </button>
+            <button class="mode-btn active" onclick="setMode('mixed')" id="mixedBtn">
+              🎯 S kvízmi
+            </button>
+          </div>
+
+
+
+          <h3>📋 Kroky výpočtu</h3>
+          <div style="font-size: 0.85em; color: var(--text); opacity: 0.7; margin-bottom: 10px;">
+            💡 Ukáž na číslo kroku pre zobrazenie detailov
+          </div>
+          
+          <!-- Scrollable table container -->
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>n</th>
+                  <th>a<sub>n</sub></th>
+                  <th>c<sub>n</sub></th>
+                  <th>b<sub>n</sub></th>
+                  <th>f(a<sub>n</sub>)·f(c<sub>n</sub>)</th>
+                  <th id="intervalHeader">|b<sub>n</sub> − a<sub>n</sub>|</th>
+                </tr>
+              </thead>
+              <tbody id="stepsBody"></tbody>
+            </table>
+          </div>
+          
+          <div id="tableHint" style="font-size: 0.8em; color: var(--text); opacity: 0.6; padding: 8px; text-align: center;">
+            💡 Klikni na číslo kroku pre zobrazenie detailov
+          </div>
+
+          <!-- Fixed buttons at bottom -->
+          <div class="fixed-buttons">
+            <!-- <div class="quiz-progress-dots" id="quizProgressDots" style="margin-bottom:6px; justify-content:center; display:none;"></div> -->
+            <div class="btn-row">
+              <button class="btn" id="nextBtn" onclick="nextStep()" title="Vypočítaj ďalší krok metódy bisekcie">➡️ Ďalší</button>
+            </div>
+            <div class="btn-row">
+              <button id="checkQuizBtn" onclick="checkInlineQuiz()">✅ Skontrolovať</button>
+            </div>
+            <div class="btn-row">
+              <button class="btn" onclick="reset()" title="Začni výpočet odznova">🔄 Reset</button>
+            </div>
+            <!-- Progress indicator -->
+            <div style="width:100%; padding: 10px 0 4px; border-top: 1px solid var(--border); margin-top: 8px;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; position: relative; padding: 0 10px;">
+                <div style="position: absolute; top: 13px; left: calc(16.66% + 10px); right: calc(16.66% + 10px); height: 2px; background: var(--border); z-index: 0;"></div>
+                <div style="position: absolute; top: 13px; left: calc(16.66% + 10px); right: calc(16.66% + 10px); height: 2px; background: var(--btn-bg); z-index: 0;"></div>
+                <div style="flex:1; text-align:center; position:relative; z-index:1;">
+                  <div style="width:24px; height:24px; border-radius:50%; background:#4caf50; color:white; display:flex; align-items:center; justify-content:center; font-weight:600; font-size:0.8em; margin:0 auto 3px; box-shadow:0 2px 5px rgba(76,175,80,0.4);">✓</div>
+                  <div style="font-size:0.68em; color:var(--text-secondary);">Funkcia</div>
+                </div>
+                <div style="flex:1; text-align:center; position:relative; z-index:1;">
+                  <div style="width:24px; height:24px; border-radius:50%; background:#4caf50; color:white; display:flex; align-items:center; justify-content:center; font-weight:600; font-size:0.8em; margin:0 auto 3px; box-shadow:0 2px 5px rgba(76,175,80,0.4);">✓</div>
+                  <div style="font-size:0.68em; color:var(--text-secondary);">Interval</div>
+                </div>
+                <div style="flex:1; text-align:center; position:relative; z-index:1;">
+                  <div style="width:24px; height:24px; border-radius:50%; background:var(--btn-bg); color:white; display:flex; align-items:center; justify-content:center; font-weight:600; font-size:0.85em; margin:0 auto 3px; box-shadow:0 2px 5px rgba(33,150,243,0.4);">3</div>
+                  <div style="font-size:0.68em; font-weight:600; color:var(--text);">Výpočet</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+
+        <div class="right">
+          <div style="font-size: 0.9em; color: var(--text); opacity: 0.7; padding: 10px 20px; text-align: center;">
+            📊 Grafické znázornenie každého kroku • Červený interval sa postupne zmenšuje
+          </div>
+          <div id="graphsContainer" style="display: flex; flex-direction: column; gap: 20px;">
+            <!-- Графіки будуть додаватись динамічно -->
+          </div>
+          <button class="scroll-to-latest" id="scrollToLatestBtn" onclick="scrollToLatestManually()">
+            ⬇️ Aktuálny krok
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      let f, a, b, tol = 0.001, a0, b0;
+      let steps = [];
+      let running = true;
+      let mode = 'mixed';
+      let waitingForQuiz = false;
+      let currentC, currentFc;
+      let stopMethod = 'precision'; // 'precision' alebo 'steps'
+      let maxSteps = 10; // Максимálna kількість кроків
+
+      // === INLINE QUIZ STATE ===
+      const INLINE_QUIZ_STEPS = 3; // Kroky 0,1,2 majú inline quiz
+      let inlineQuizActive = false;   // Čakáme na odpoveď používateľa
+      let inlineQuizChecked = false;  // Bol inline quiz tohto kroku skontrolovaný?
+      let inlineQuizField = 0;        // Aktuálne pole: 0=cₙ, 1=znak, 2=dlzka
+
+      // Spotify-style auto-scroll
+      let userScrolled = false;
+      let lastAutoScrollTime = 0;
+      let isAutoScrolling = false;
+      let savedScrollPosition = 0; // Зберігати позицію коли користувач скролить
+
+      // Для таблиці
+      let tableUserScrolled = false;
+      
+      // Для повторного відкриття вікна результату
+      let lastResultData = null;
+
+      console.log('🚀 Initial state: userScrolled =', userScrolled);
+
+      const expr = localStorage.getItem("functionExpr");
+      if (!expr) window.location.href = "menu.html";
+      const exprOriginal = localStorage.getItem("functionOriginal") || expr;
+
+      // Beautify JS expression back to readable math
+      function beautifyExpr(e) {
+        return e
+          .replace(/Math\.sin\(/g,'sin(').replace(/Math\.cos\(/g,'cos(')
+          .replace(/Math\.tan\(/g,'tan(').replace(/Math\.log\(/g,'log(')
+          .replace(/Math\.sqrt\(/g,'√(').replace(/Math\.exp\(/g,'e^(')
+          .replace(/Math\.abs\(/g,'|').replace(/\*\*/g,'^').replace(/\*/g,'·');
+      }
+
+      // Format a substituted expression: replace x with value
+      function formatSubstituted(xVal, dp) {
+        const v = xVal.toFixed(dp);
+        // use original user expression for display
+        return exprOriginal
+          .replace(/\bx\b/g, `(${v})`);
+      }
+
+      a = parseFloat(localStorage.getItem("a"));
+      b = parseFloat(localStorage.getItem("b"));
+      a0 = a;
+      b0 = b;
+      f = new Function("x", "return " + expr);
+      
+      function normalizeNumber(str) {
+        if (!str) return null;
+        return parseFloat(str.toString().replace(",", "."));
+      }
+      
+      // Завантажити метод зупинки
+      stopMethod = localStorage.getItem("stopMethod") || 'precision';
+      
+      if (stopMethod === 'precision') {
+        // Завантажити точність з localStorage
+        const savedPrecision = localStorage.getItem("precision");
+        tol = savedPrecision ? parseFloat(savedPrecision) : (normalizeNumber(localStorage.getItem("tol")) || 0.001);
+      } else if (stopMethod === 'steps') {
+        // Завантажити максимальну кількість кроків
+        const savedMaxSteps = localStorage.getItem("maxSteps");
+        maxSteps = savedMaxSteps ? parseInt(savedMaxSteps) : 10;
+      }
+
+      document.getElementById("intervalA").textContent = a0.toFixed(2);
+      document.getElementById("intervalB").textContent = b0.toFixed(2);
+      
+      // Відобразити обраний метод
+      const methodDisplay = document.getElementById("methodDisplay");
+      if (stopMethod === 'precision') {
+        methodDisplay.innerHTML = `⚙️ Presnosť: <strong>${tol}</strong>`;
+      } else if (stopMethod === 'steps') {
+        methodDisplay.innerHTML = `🔢 Počet krokov: <strong>${maxSteps}</strong>`;
+      }
+
+      // Тема
+      function loadTheme() {
+        const theme = localStorage.getItem('theme') || 'light';
+        if (theme === 'dark') {
+          document.body.classList.add('dark');
+          document.getElementById('themeToggle').textContent = '☀️';
+        }
+      }
+
+      function toggleTheme() {
+        document.body.classList.toggle('dark');
+        const isDark = document.body.classList.contains('dark');
+        document.getElementById('themeToggle').textContent = isDark ? '☀️' : '🌙';
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        updateGraph();
+      }
+
+      loadTheme();
+
+      // Spotify-style auto-scroll: відстеження користувацького скролу
+      function setupAutoScroll() {
+        const rightPanel = document.querySelector('.right');
+        const scrollBtn = document.getElementById('scrollToLatestBtn');
+        if (!rightPanel) return;
+
+        console.log('🎯 Setting up auto-scroll listeners');
+
+        // Відстежувати ТІЛЬКИ ручний скрол (колесо миші або тач)
+        rightPanel.addEventListener('wheel', function(e) {
+          // Якщо скрол вгору
+          if (e.deltaY < 0) {
+            console.log('🖱️ Mouse wheel UP - disabling auto-scroll');
+            userScrolled = true;
+            savedScrollPosition = rightPanel.scrollTop; // Зберегти позицію
+            if (scrollBtn) scrollBtn.classList.add('visible');
+          }
+        }, { passive: true });
+
+        // Для touch пристроїв
+        let touchStartY = 0;
+        rightPanel.addEventListener('touchstart', function(e) {
+          touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+
+        rightPanel.addEventListener('touchmove', function(e) {
+          const touchY = e.touches[0].clientY;
+          const deltaY = touchY - touchStartY;
+          
+          // Якщо свайп вниз (скрол вгору по контенту)
+          if (deltaY > 10) {
+            console.log('👆 Touch scroll UP - disabling auto-scroll');
+            userScrolled = true;
+            savedScrollPosition = rightPanel.scrollTop; // Зберегти позицію
+            if (scrollBtn) scrollBtn.classList.add('visible');
+          }
+        }, { passive: true });
+
+        // Відстежувати scroll подію для автоматичного відновлення автоскролу
+        rightPanel.addEventListener('scroll', function() {
+          // Ігнорувати якщо іде автоскрол
+          if (isAutoScrolling) return;
+          
+          // Перевірити чи користувач біля низу
+          const scrollHeight = rightPanel.scrollHeight;
+          const scrollTop = rightPanel.scrollTop;
+          const clientHeight = rightPanel.clientHeight;
+          const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
+          
+          // Якщо користувач прокрутив до низу (менше 50px від кінця)
+          if (distanceFromBottom < 50 && userScrolled) {
+            console.log('✅ User reached bottom - re-enabling auto-scroll');
+            userScrolled = false;
+            if (scrollBtn) {
+              scrollBtn.classList.remove('visible');
+            }
+          }
+        });
+      }
+
+      // Автоскрол для таблиці ітерацій
+      function setupTableAutoScroll() {
+        const tableContainer = document.querySelector('.table-container');
+        if (!tableContainer) return;
+
+        console.log('📊 Setting up table auto-scroll listeners');
+
+        // Відстежувати ручний скрол таблиці
+        tableContainer.addEventListener('wheel', function(e) {
+          if (e.deltaY < 0) {
+            console.log('📋 Table wheel UP - disabling table auto-scroll');
+            tableUserScrolled = true;
+          }
+        }, { passive: true });
+
+        // Для touch
+        let touchStartY = 0;
+        tableContainer.addEventListener('touchstart', function(e) {
+          touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+
+        tableContainer.addEventListener('touchmove', function(e) {
+          const touchY = e.touches[0].clientY;
+          const deltaY = touchY - touchStartY;
+          
+          if (deltaY > 10) {
+            console.log('📋 Table touch UP - disabling table auto-scroll');
+            tableUserScrolled = true;
+          }
+        }, { passive: true });
+
+        // Відстежувати коли користувач досягає низу таблиці
+        tableContainer.addEventListener('scroll', function() {
+          const scrollHeight = tableContainer.scrollHeight;
+          const scrollTop = tableContainer.scrollTop;
+          const clientHeight = tableContainer.clientHeight;
+          const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
+          
+          if (distanceFromBottom < 30 && tableUserScrolled) {
+            console.log('✅ Table bottom reached - re-enabling table auto-scroll');
+            tableUserScrolled = false;
+          }
+        });
+      }
+
+      // Ручний скрол до останнього графіка
+      function scrollToLatestManually() {
+        console.log('🔘 Button clicked - re-enabling auto-scroll');
+        userScrolled = false;
+        
+        // Сховати кнопку
+        const scrollBtn = document.getElementById('scrollToLatestBtn');
+        if (scrollBtn) {
+          scrollBtn.classList.remove('visible');
+          console.log('🔘 Button hidden');
+        }
+        
+        // Скролити до останнього
+        autoScrollToLatest();
+      }
+
+      // Автоматичний скрол до останнього графіка
+      function autoScrollToLatest() {
+        console.log('📊 autoScrollToLatest called, userScrolled:', userScrolled);
+        
+        const rightPanel = document.querySelector('.right');
+        if (!rightPanel) {
+          console.log('❌ No right panel');
+          return;
+        }
+        
+        if (userScrolled) {
+          console.log('⛔ Auto-scroll BLOCKED by userScrolled flag');
+          return;
+        }
+
+        const container = document.getElementById('graphsContainer');
+        if (!container) {
+          console.log('❌ No container');
+          return;
+        }
+
+        const graphs = container.children;
+        if (graphs.length === 0) {
+          console.log('❌ No graphs yet');
+          return;
+        }
+
+        // Скролити до останнього графіка
+        const lastGraph = graphs[graphs.length - 1];
+        
+        // Обчислити позиції
+        const targetScrollTop = lastGraph.offsetTop - 20;
+        const startScrollTop = rightPanel.scrollTop;
+        const distance = targetScrollTop - startScrollTop;
+        
+        console.log('🎯 Custom smooth scroll to graph #' + graphs.length);
+        console.log('   From:', startScrollTop, 'To:', targetScrollTop, 'Distance:', distance);
+        
+        // Якщо вже там - не скролити
+        if (Math.abs(distance) < 10) {
+          console.log('✅ Already at target position');
+          return;
+        }
+        
+        // Встановити прапорець що йде автоскрол
+        isAutoScrolling = true;
+        lastAutoScrollTime = Date.now();
+        
+        // Кастомна плавна анімація
+        const duration = 400; // 400ms
+        const startTime = performance.now();
+        
+        function easeInOutQuad(t) {
+          return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+        }
+        
+        function animateScroll(currentTime) {
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          
+          // Easing функція для плавності
+          const easeProgress = easeInOutQuad(progress);
+          
+          // Обчислити поточну позицію
+          const currentScroll = startScrollTop + (distance * easeProgress);
+          rightPanel.scrollTop = currentScroll;
+          
+          console.log('   Progress:', (progress * 100).toFixed(0) + '%', 'Scroll:', currentScroll.toFixed(0));
+          
+          // Продовжити анімацію якщо не закінчили
+          if (progress < 1) {
+            requestAnimationFrame(animateScroll);
+          } else {
+            isAutoScrolling = false;
+            console.log('✅ Custom scroll animation completed');
+          }
+        }
+        
+        // Почати анімацію
+        requestAnimationFrame(animateScroll);
+      }
+
+      // Ініціалізувати auto-scroll
+      setupAutoScroll();
+      setupTableAutoScroll();
+      
+      // Ініціалізувати таблицю (показати крок 0)
+      // У режимі S kvízmi — одразу показати поля вводу для кроку 1
+      if (mode === 'mixed') {
+        currentC = (a + b) / 2;
+        currentFc = f(currentC);
+        inlineQuizActive = true; inlineQuizField = 0;
+      }
+      updateTable();
+      updateButtons();
+
+      function positionTooltip(tooltip, event) {
+        const rect = tooltip.getBoundingClientRect();
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        
+        let x = event.clientX + 10;
+        let y = event.clientY + 10;
+        
+        if (x + rect.width > vw - 20) x = vw - rect.width - 20;
+        if (x < 20) x = 20;
+        if (y + rect.height > vh - 20) y = event.clientY - rect.height - 10;
+        
+        tooltip.style.left = x + 'px';
+        tooltip.style.top = y + 'px';
+      }
+
+      document.addEventListener('mousemove', function(e) {
+        const tooltip = document.querySelector('.tooltip[style*="display: block"]');
+        if (tooltip) positionTooltip(tooltip, e);
+      });
+
+      function setMode(newMode) {
+        if (steps.length > 0 && mode !== newMode) {
+          const confirmChange = confirm(
+            `⚠️ Zmena režimu vymaže aktuálny postup!\n\nMáte ${steps.length} ${steps.length === 1 ? 'krok' : 'krokov'}.\n\nPokračovať?`
+          );
+          if (!confirmChange) return;
+        }
+        mode = newMode;
+        document.getElementById('autoBtn').classList.toggle('active', mode === 'auto');
+        document.getElementById('mixedBtn').classList.toggle('active', mode === 'mixed');
+        reset(true);
+        // V režime S kvízmi — okamžite zobraziť polia pre krok 1
+        if (mode === 'mixed') {
+          currentC = (a + b) / 2;
+          currentFc = f(currentC);
+          inlineQuizActive = true; inlineQuizField = 0;
+          updateTable();
+          updateButtons();
+        }
+      }
+
+      function showHelp() {
+        document.getElementById('theoryModal').style.display = 'block';
+      }
+
+      function closeHelp() {
+        document.getElementById('theoryModal').style.display = 'none';
+      }
+
+      window.onclick = function(event) {
+        if (event.target == document.getElementById('theoryModal')) {
+          closeHelp();
+        }
+      }
+
+      function generateExplanation(step) {
+        const fa = f(step.a);
+        const fc = step.fc;
+        const prod = fa * fc;
+        const intervalLength = Math.abs(step.b - step.a);
+        
+        // Обчислити кількість знаків після коми
+        let decimalPlaces = 3; // За замовчуванням для методу кроків
+        if (stopMethod === 'precision') {
+          const tolStr = tol.toString();
+          if (tolStr.includes('.')) {
+            const afterDot = tolStr.split('.')[1].length;
+            decimalPlaces = afterDot + 2;
+          } else {
+            decimalPlaces = 2;
+          }
+        }
+        
+        let exp = `<strong>Krok ${step.i}:</strong><br>`;
+        exp += `c = (${step.a.toFixed(decimalPlaces)} + ${step.b.toFixed(decimalPlaces)}) / 2<br>`;
+        exp += `c = ${step.c.toFixed(decimalPlaces)}<br>`;
+        exp += `|b - a| = ${intervalLength.toFixed(decimalPlaces)}<br><br>`;
+        
+        if (stopMethod === 'precision' && intervalLength <= 2 * tol) {
+          exp += `✅ |b - a| = ${intervalLength.toFixed(decimalPlaces)} ≤ 2·${tol} = ${(2*tol).toFixed(decimalPlaces)}<br>`;
+          exp += `<strong>Presnosť dosiahnutá!</strong>`;
+        } else if (stopMethod === 'steps' && step.i === maxSteps - 1) {
+          // Правильна формула: |c_n - α| < (b₀ - a₀) / 2^(n+1)
+          const initialInterval = Math.abs(b0 - a0);
+          const error = initialInterval / Math.pow(2, step.i + 1);
+          const minRoot = step.c - error;
+          const maxRoot = step.c + error;
+          exp += `✅ Dosiahnutý maximálny počet krokov (${maxSteps})<br>`;
+          exp += `Chyba: ±${error.toFixed(decimalPlaces)}<br>`;
+          exp += `<br><em>Koreň α je v intervale:</em><br>`;
+          exp += `${minRoot.toFixed(decimalPlaces)} < α < ${maxRoot.toFixed(decimalPlaces)}<br>`;
+          exp += `<strong>Výpočet ukončený!</strong>`;
+        } else {
+          exp += `f(a) = ${fa.toFixed(decimalPlaces)} ${fa > 0 ? '➕' : '➖'}<br>`;
+          exp += `f(c) = ${fc.toFixed(decimalPlaces)} ${fc > 0 ? '➕' : '➖'}<br>`;
+          exp += `f(a)·f(c) = ${prod.toFixed(decimalPlaces)}<br><br>`;
+          
+          if (prod < 0) {
+            exp += `→ Rôzne znamienka<br>Koreň v [a, c]`;
+          } else {
+            exp += `→ Rovnaké znamienka<br>Koreň v [c, b]`;
+          }
+        }
+        
+        return exp;
+      }
+
+      function bisectionStep() {
+        if (!running) {
+          const msg = stopMethod === 'precision' 
+            ? "⚠️ Presnosť dosiahnutá. Použite Reset."
+            : "⚠️ Počet krokov dosiahnutý. Použite Reset.";
+          alert(msg);
+          return;
+        }
+
+        currentC = (a + b) / 2;
+        currentFc = f(currentC);
+        const fa = f(a);
+
+        // Перевірка зупинки залежно від методу
+        let shouldStop = false;
+        
+        if (stopMethod === 'precision') {
+          const intervalLength = Math.abs(b - a);
+          if (intervalLength <= 2 * tol) shouldStop = true;
+        } else if (stopMethod === 'steps') {
+          if (steps.length >= maxSteps - 1) shouldStop = true;
+        }
+
+        if (shouldStop) {
+          steps.push({ i: steps.length, a, b, c: currentC, fc: currentFc });
+          updateTable();
+          updateGraph();
+          running = false;
+          updateButtons();
+          setTimeout(() => {
+            showResultOverlay(currentC, currentFc, a, b, steps.length, stopMethod);
+          }, 300);
+          return;
+        }
+
+        // === INLINE QUIZ: for steps 0,1,2 in mixed mode ===
+        const nextStepNumber = steps.length; // 0-based
+        if (mode === 'mixed' && nextStepNumber < INLINE_QUIZ_STEPS) {
+          inlineQuizActive = true; inlineQuizField = 0;
+          inlineQuizChecked = false;
+          updateTable();
+          updateButtons();
+          return;
+        }
+
+        // Auto mode OR steps beyond INLINE_QUIZ_STEPS — proceed automatically
+        steps.push({ i: steps.length, a, b, c: currentC, fc: currentFc });
+        if (fa * currentFc < 0) { b = currentC; } else { a = currentC; }
+        updateTable();
+        updateGraph();
+      }
+
+      // ---- MINI EXPLANATION MODAL ----
+      let explainCallback = null;
+
+      function showExplain(title, body, correct, onClose) {
+        document.getElementById('explainTitle').innerHTML = title;
+        document.getElementById('explainBody').innerHTML = body;
+        document.getElementById('explainCorrect').innerHTML = correct;
+        explainCallback = onClose || null;
+        const el = document.getElementById('explainOverlay');
+        el.style.display = 'flex';
+      }
+
+      function closeExplain() {
+        document.getElementById('explainOverlay').style.display = 'none';
+        if (explainCallback) { explainCallback(); explainCallback = null; }
+      }
+
+      // ---- INLINE QUIZ CHECK ----
+      function getDecimalPlaces() {
+        if (stopMethod === 'precision') {
+          const tolStr = tol.toString();
+          if (tolStr.includes('.')) return tolStr.split('.')[1].length + 2;
+          return 2;
+        }
+        return 3;
+      }
+
+      function checkInlineQuiz() {
+        const decimalPlaces = getDecimalPlaces();
+        const thr = Math.pow(10, -(decimalPlaces - 1));
+        const fa = f(a);
+        const fc = currentFc;
+        const faPos = fa >= 0;
+        const fcPos = fc >= 0;
+        const correctC = currentC;
+        const correctSignStr = (faPos ? '+' : '-') + (fcPos ? '+' : '-');
+        const correctInterval = Math.abs(b - a);
+        const btn = document.getElementById('checkQuizBtn');
+
+        if (inlineQuizField === 0) {
+          // Check cₙ
+          const inputC = document.getElementById('inlineInput_c');
+          if (!inputC) return;
+          const userC = parseFloat(inputC.value.replace(',', '.'));
+          const ok = !isNaN(userC) && Math.abs(userC - correctC) < thr;
+          if (ok) {
+            inputC.classList.remove('incorrect'); inputC.classList.add('correct');
+            inputC.readOnly = true;
+            inlineQuizField = 1;
+            updateTable();
+            btn.textContent = '✅ Skontrolovať'; btn.style.background = '';
+          } else {
+            inputC.classList.add('incorrect');
+            inputC.style.animation = 'none';
+            setTimeout(() => { inputC.style.animation = 'shake 0.3s'; }, 10);
+            showExplain(
+              'Nesprávna hodnota cₙ',
+              `Stred intervalu sa vypočíta ako:<br><code>c = (a + b) / 2</code><br><br>
+               V tomto kroku:<br>
+               a = <strong>${a.toFixed(decimalPlaces)}</strong>,  b = <strong>${b.toFixed(decimalPlaces)}</strong>`,
+              `✅ Správna hodnota: <strong>c = (${a.toFixed(decimalPlaces)} + ${b.toFixed(decimalPlaces)}) / 2 = ${correctC.toFixed(decimalPlaces)}</strong>`,
+              () => {
+                const el = document.getElementById('inlineInput_c');
+                if (el) { el.value = correctC.toFixed(decimalPlaces); el.classList.add('revealed'); el.readOnly = true; }
+                inlineQuizField = 1;
+                updateTable();
+                btn.textContent = '✅ Skontrolovať'; btn.style.background = '';
+              }
+            );
+          }
+
+        } else if (inlineQuizField === 1) {
+          // Check sign
+          const inputSign = document.getElementById('inlineInput_sign');
+          if (!inputSign) return;
+          const userSign = inputSign.value;
+          const ok = userSign === correctSignStr;
+          if (ok) {
+            inputSign.classList.remove('incorrect'); inputSign.classList.add('correct');
+            inputSign.disabled = true;
+            inlineQuizField = 2;
+            updateTable();
+            btn.textContent = '✅ Skontrolovať'; btn.style.background = '';
+          } else {
+            inputSign.classList.add('incorrect');
+            const signLabel = s => s === '--' ? '−−' : s === '-+' ? '−+' : s === '+-' ? '+−' : '++';
+            showExplain(
+              'Nesprávne znamienko',
+              `Musíš zistiť znamienko <strong>f(a)</strong> a znamienko <strong>f(c)</strong>:<br><br>
+               f(a) = f(${a.toFixed(decimalPlaces)}) = <strong>${fa.toFixed(decimalPlaces)}</strong>
+               → znamienko <strong>${fa >= 0 ? '+' : '−'}</strong><br>
+               f(c) = f(${correctC.toFixed(decimalPlaces)}) = <strong>${fc.toFixed(decimalPlaces)}</strong>
+               → znamienko <strong>${fc >= 0 ? '+' : '−'}</strong>`,
+              `✅ Správna kombinácia: <strong>${signLabel(correctSignStr)}</strong>`,
+              () => {
+                const el = document.getElementById('inlineInput_sign');
+                if (el) { el.value = correctSignStr; el.classList.add('revealed'); el.disabled = true; }
+                inlineQuizField = 2;
+                updateTable();
+                btn.textContent = '✅ Skontrolovať'; btn.style.background = '';
+              }
+            );
+          }
+
+        } else if (inlineQuizField === 2) {
+          // Check |b - a|
+          const inputLen = document.getElementById('inlineInput_len');
+          if (!inputLen) return;
+          const userLen = parseFloat(inputLen.value.replace(',', '.'));
+          const ok = !isNaN(userLen) && Math.abs(userLen - correctInterval) < thr;
+          if (ok) {
+            inputLen.classList.remove('incorrect'); inputLen.classList.add('correct');
+            inputLen.readOnly = true;
+            inlineQuizField = 3;
+            btn.textContent = '✅ Správne! Pokračovať →';
+            btn.style.background = '#4caf50';
+            btn.onclick = confirmInlineQuiz;
+          } else {
+            inputLen.classList.add('incorrect');
+            inputLen.style.animation = 'none';
+            setTimeout(() => { inputLen.style.animation = 'shake 0.3s'; }, 10);
+            showExplain(
+              'Nesprávna dĺžka intervalu',
+              `Dĺžka intervalu sa vypočíta ako:<br><code>|b − a|</code><br><br>
+               V tomto kroku:<br>
+               a = <strong>${a.toFixed(decimalPlaces)}</strong>,  b = <strong>${b.toFixed(decimalPlaces)}</strong>`,
+              `✅ Správna hodnota: <strong>|b − a| = |${b.toFixed(decimalPlaces)} − ${a.toFixed(decimalPlaces)}| = ${correctInterval.toFixed(decimalPlaces)}</strong>`,
+              () => {
+                const el = document.getElementById('inlineInput_len');
+                if (el) { el.value = correctInterval.toFixed(decimalPlaces); el.classList.add('revealed'); el.readOnly = true; }
+                inlineQuizField = 3;
+                btn.textContent = '➡️ Pokračovať (zobrazená správna hodnota)';
+                btn.style.background = '#ff9800';
+                btn.onclick = confirmAndAdvance;
+              }
+            );
+          }
+        }
+      }
+
+      function confirmInlineQuiz(autoAdvance = false) {
+        const fa = f(a);
+        steps.push({ i: steps.length, a, b, c: currentC, fc: currentFc });
+        if (fa * currentFc < 0) { b = currentC; } else { a = currentC; }
+
+        inlineQuizActive = false;
+        inlineQuizChecked = false;
+        inlineQuizField = 0;
+
+        const btn = document.getElementById('checkQuizBtn');
+        btn.textContent = '✅ Skontrolovať';
+        btn.style.background = '';
+        btn.onclick = checkInlineQuiz;
+
+        updateTable();
+        updateGraph();
+        updateButtons();
+
+        // If auto-advance (after wrong answer revealed), immediately start next step
+        if (autoAdvance) bisectionStep();
+      }
+
+      function confirmAndAdvance() {
+        confirmInlineQuiz(true);
+      }
+
+      function nextStep() {
+        if (inlineQuizActive) return;
+        bisectionStep();
+      }
+
+      function reset(skipConfirm = false) {
+        if (steps.length > 0 && !skipConfirm) {
+          const confirmReset = confirm(
+            `⚠️ Vymazať aktuálny postup?\n\n` +
+            `Máte ${steps.length} ${steps.length === 1 ? 'krok' : 'krokov'}.\n\n` +
+            `Pokračovať?`
+          );
+          if (!confirmReset) return;
+        }
+        
+        steps = [];
+        a = a0;
+        b = b0;
+        running = true;
+        inlineQuizActive = false;
+        inlineQuizChecked = false;
+        // V režime S kvízmi — okamžite zobraziť polia pre krok 1
+        if (mode === 'mixed') {
+          currentC = (a + b) / 2;
+          currentFc = f(currentC);
+          inlineQuizActive = true; inlineQuizField = 0;
+        }
+        updateTable();
+        updateGraph();
+        updateButtons();
+      }
+
+      function updateButtons() {
+        const nextBtn = document.getElementById("nextBtn");
+        const checkBtn = document.getElementById("checkQuizBtn");
+        const dotsEl = document.getElementById('quizProgressDots');
+
+        if (mode === 'mixed' && inlineQuizActive) {
+          nextBtn.disabled = true;
+          nextBtn.style.opacity = "0.3";
+          checkBtn.style.display = 'block';
+          // Show progress dots
+          if (dotsEl) {
+            dotsEl.style.display = 'flex';
+            const stepNum = steps.length;
+            dotsEl.innerHTML = '';
+            for (let i = 0; i < INLINE_QUIZ_STEPS; i++) {
+              const dot = document.createElement('div');
+              dot.className = 'quiz-dot' + (i < stepNum ? ' done' : (i === stepNum ? ' current' : ''));
+              dotsEl.appendChild(dot);
+            }
+          }
+        } else {
+          nextBtn.disabled = !running;
+          nextBtn.style.opacity = running ? "1" : "0.5";
+          checkBtn.style.display = 'none';
+          if (dotsEl) dotsEl.style.display = 'none';
+        }
+      }
+
+      function updateTable() {
+        const body = document.getElementById("stepsBody");
+        body.innerHTML = "";
+        
+        // Оновити заголовок стовпця з tol
+        const intervalHeader = document.getElementById('intervalHeader');
+        if (intervalHeader && stopMethod === 'precision') {
+          intervalHeader.innerHTML = `|b<sub>n</sub> − a<sub>n</sub>| ≤ 2·${tol}`;
+        }
+        
+        // Обчислити кількість знаків після коми
+        let decimalPlaces = 3; // За замовчуванням для методу кроків
+        if (stopMethod === 'precision') {
+          // Знайти кількість знаків у tol + 2
+          const tolStr = tol.toString();
+          if (tolStr.includes('.')) {
+            const afterDot = tolStr.split('.')[1].length;
+            decimalPlaces = afterDot + 2;
+          } else {
+            decimalPlaces = 2;
+          }
+        }
+        
+        // Кроки 0, 1, 2, ... — всі з масиву steps
+        for (let idx = 0; idx < steps.length; idx++) {
+          const s = steps[idx];
+          const stepNumber = idx; // 0-based
+          const isLast = idx === steps.length - 1;
+          
+          // Перевірка залежно від методу
+          let isAcc = false;
+          if (stopMethod === 'precision') {
+            const intervalLength = Math.abs(s.b - s.a);
+            isAcc = intervalLength <= 2 * tol;
+          } else if (stopMethod === 'steps') {
+            isAcc = stepNumber === maxSteps - 1; // 0-based: last step is maxSteps-1
+          }
+          
+          const styleClass = isLast && isAcc ? 'success' : '';
+          const indicator = isAcc ? '<span class="accuracy-indicator achieved"></span>' : '<span class="accuracy-indicator not-achieved"></span>';
+          
+          // Обчислити довжину інтервалу
+          const intervalLength = Math.abs(s.b - s.a);
+          
+          // Обчислити знаки f(aₙ) і f(cₙ)
+          const fa = f(s.a);
+          const fc = s.fc;
+          const signProduct = `${fa > 0 ? '+' : '−'}${fc > 0 ? '+' : '−'}`;
+          
+          const exp = generateExplanation(s);
+          
+          // Додати onclick на останній рядок якщо обчислення завершено
+          const onclickAttr = (isLast && isAcc) ? ` onclick="reopenResultOverlay()" style="cursor: pointer;"` : '';
+          
+          body.innerHTML += `<tr class="step-row ${styleClass}"${onclickAttr}>
+            <td onmouseenter="showTooltip(event, \`${exp.replace(/`/g, '\\`')}\`)">${stepNumber}</td>
+            <td>${s.a.toFixed(decimalPlaces)}</td>
+            <td>${s.c.toFixed(decimalPlaces)}</td>
+            <td>${s.b.toFixed(decimalPlaces)}</td>
+            <td style="font-weight: bold; color: ${fa * fc < 0 ? 'var(--success)' : 'var(--danger)'};">${signProduct}</td>
+            <td>${intervalLength.toFixed(decimalPlaces)} ${indicator}</td>
+          </tr>`;
+        }
+
+        // === INLINE QUIZ ROW: show fields one by one based on inlineQuizField ===
+        if (mode === 'mixed' && inlineQuizActive) {
+          const quizStepNum = steps.length; // 0-based
+          const fa_q = f(a);
+          const faPos_q = fa_q >= 0;
+          const fcPos_q = currentFc >= 0;
+          const correctSignStr_q = (faPos_q ? '+' : '-') + (fcPos_q ? '+' : '-');
+          const correctC_q = currentC;
+          const correctLen_q = Math.abs(b - a);
+
+          // cₙ cell — always active (field 0), locked when field >= 1
+          const cCell = inlineQuizField >= 1
+            ? `<td><div class="quiz-input-cell">
+                <input class="quiz-input correct" id="inlineInput_c" type="text"
+                  value="${correctC_q.toFixed(decimalPlaces)}" readonly>
+                <div class="input-hint">c = (a+b)/2</div></div></td>`
+            : `<td><div class="quiz-input-cell">
+                <input class="quiz-input" id="inlineInput_c" type="text" placeholder="?" autocomplete="off"
+                  onkeydown="if(event.key==='Enter') checkInlineQuiz()">
+                <div class="input-hint">c = (a+b)/2</div></div></td>`;
+
+          // f(${a.toFixed(decimalPlaces)})=<strong>${f(a).toFixed(decimalPlaces)}</strong><br>
+          // f(${correctC_q.toFixed(decimalPlaces)})=<strong>${currentFc.toFixed(decimalPlaces)}</strong>
+
+          // f(x) = ${exprOriginal}
+
+          // f(${a.toFixed(decimalPlaces)}) = ${formatSubstituted(a, decimalPlaces)} = <strong>${f(a).toFixed(decimalPlaces)}</strong><br>
+          // f(${correctC_q.toFixed(decimalPlaces)}) = ${formatSubstituted(correctC_q, decimalPlaces)} = <strong>${currentFc.toFixed(decimalPlaces)}</strong>
+
+          // sign cell — hidden until field >= 1
+          const signCell = inlineQuizField === 0
+            ? `<td><div class="quiz-input-cell" style="opacity:0.25;pointer-events:none;">
+                <select class="quiz-input" disabled style="width:70px;">
+                  <option>?</option></select>
+                <div class="input-hint">f(a)·f(c)</div></div></td>`
+            : inlineQuizField === 1
+            ? `<td><div class="quiz-input-cell">
+                <select class="quiz-input" id="inlineInput_sign" style="width:70px; padding:5px 4px; cursor:pointer;">
+                  <option value="" disabled selected>?</option>
+                  <option value="--">−−</option>
+                  <option value="-+">−+</option>
+                  <option value="+-">+−</option>
+                  <option value="++">++</option>
+                </select>
+                <div class="input-hint" style="line-height:1.6; font-size:0.65em;">
+                  f(x) = ${exprOriginal}
+                </div></div></td>`
+            : `<td><div class="quiz-input-cell">
+                <select class="quiz-input correct" id="inlineInput_sign" disabled style="width:70px; padding:5px 4px;">
+                  <option value="${correctSignStr_q}" selected>${correctSignStr_q.replace(/\-/g,'−').replace(/\+/g,'+')}</option>
+                </select>
+                <div class="input-hint">f(a)·f(c)</div></div></td>`;
+
+          // len cell — hidden until field >= 2
+          const lenCell = inlineQuizField < 2
+            ? `<td><div class="quiz-input-cell" style="opacity:0.25;pointer-events:none;">
+                <input class="quiz-input" type="text" placeholder="?" disabled>
+                <div class="input-hint">|b - a|</div></div></td>`
+            : `<td><div class="quiz-input-cell">
+                <input class="quiz-input" id="inlineInput_len" type="text" placeholder="?" autocomplete="off"
+                  ${inlineQuizField >= 3 ? 'readonly' : ''}
+                  onkeydown="if(event.key==='Enter') checkInlineQuiz()">
+                <div class="input-hint">|b - a|</div></div></td>`;
+
+          body.innerHTML += `<tr class="step-row" id="inlineQuizRow" style="background: var(--theory-bg);">
+            <td style="font-weight:bold; color: var(--btn-bg);">${quizStepNum}</td>
+            <td>${a.toFixed(decimalPlaces)}</td>
+            ${cCell}
+            <td>${b.toFixed(decimalPlaces)}</td>
+            ${signCell}
+            ${lenCell}
+          </tr>`;
+
+          // Focus the active field
+          setTimeout(() => {
+            if (inlineQuizField === 0) { const el = document.getElementById('inlineInput_c'); if(el) el.focus(); }
+            else if (inlineQuizField === 1) { const el = document.getElementById('inlineInput_sign'); if(el) el.focus(); }
+            else if (inlineQuizField === 2) { const el = document.getElementById('inlineInput_len'); if(el) el.focus(); }
+          }, 50);
+        }
+        
+        // Автоскрол до останнього рядка (якщо користувач не скролив вгору)
+        if (!tableUserScrolled && body.children.length > 0) {
+          const tableContainer = document.querySelector('.table-container');
+          if (tableContainer) {
+            setTimeout(() => {
+              const lastRow = body.lastElementChild;
+              if (lastRow) {
+                // Обчислити позицію останнього рядка
+                const targetScrollTop = lastRow.offsetTop - tableContainer.clientHeight + lastRow.clientHeight + 10;
+                const startScrollTop = tableContainer.scrollTop;
+                const distance = Math.max(0, targetScrollTop - startScrollTop);
+                
+                if (distance > 10) {
+                  // Плавна анімація
+                  const duration = 300;
+                  const startTime = performance.now();
+                  
+                  function animateTableScroll(currentTime) {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const easeProgress = progress < 0.5 ? 2 * progress * progress : -1 + (4 - 2 * progress) * progress;
+                    
+                    tableContainer.scrollTop = startScrollTop + (distance * easeProgress);
+                    
+                    if (progress < 1) {
+                      requestAnimationFrame(animateTableScroll);
+                    } else {
+                      console.log('📋 Table auto-scrolled to row', body.children.length - 1);
+                    }
+                  }
+                  
+                  requestAnimationFrame(animateTableScroll);
+                }
+              }
+            }, 100);
+          }
+        }
+        
+        // Оновити підказку
+        const tableHint = document.getElementById('tableHint');
+        if (tableHint) {
+          // If inline quiz is active — show instructions
+          if (mode === 'mixed' && inlineQuizActive) {
+            tableHint.innerHTML = '✏️ Vypočítaj a vyplň hodnoty pre zvýraznený riadok, potom klikni <strong>Skontrolovať</strong>';
+            tableHint.style.color = '#f57c00';
+            tableHint.style.fontWeight = '500';
+          } else {
+            tableHint.style.color = '';
+            tableHint.style.fontWeight = '';
+          const hasCompletedStep = steps.some((s, idx) => {
+            const isLast = idx === steps.length - 1;
+            if (stopMethod === 'precision') {
+              const intervalLength = Math.abs(s.b - s.a);
+              return isLast && intervalLength <= 2 * tol;
+            } else if (stopMethod === 'steps') {
+              return isLast && s.i === maxSteps - 1;
+            }
+            return false;
+          });
+          if (hasCompletedStep) {
+            tableHint.innerHTML = '👆 Klikni na zelený riadok pre zobrazenie výsledku';
+          } else {
+            tableHint.innerHTML = '• 🔴 Červený krúžok = pokračuj • 🟢 Zelený krúžok = hotovo';
+          }
+          }
+        }
+      }
+
+      let currentTooltip = null;
+      function showTooltip(event, html) {
+        if (currentTooltip) currentTooltip.remove();
+        
+        const tt = document.createElement('div');
+        tt.className = 'tooltip';
+        tt.innerHTML = html;
+        tt.style.display = 'block';
+        document.body.appendChild(tt);
+        currentTooltip = tt;
+        
+        positionTooltip(tt, event);
+        
+        event.target.closest('tr').addEventListener('mouseleave', function() {
+          if (currentTooltip) {
+            currentTooltip.remove();
+            currentTooltip = null;
+          }
+        }, { once: true });
+      }
+
+      function updateGraph() {
+        if (!f) return;
+
+        const isDark = document.body.classList.contains('dark');
+        const bgColor = isDark ? '#2d2d2d' : '#ffffff';
+        const textColor = isDark ? '#e0e0e0' : '#222';
+        const gridColor = isDark ? '#404040' : '#e0e0e0';
+
+        const container = document.getElementById('graphsContainer');
+        const rightPanel = container.parentElement;
+        
+        // Обчислити кількість знаків після коми для заголовків і значень
+        let decimalPlaces = 3; // За замовчуванням для методу кроків
+        if (stopMethod === 'precision') {
+          const tolStr = tol.toString();
+          if (tolStr.includes('.')) {
+            const afterDot = tolStr.split('.')[1].length;
+            decimalPlaces = afterDot + 2;
+          } else {
+            decimalPlaces = 2;
+          }
+        }
+        
+        // ЗБЕРЕГТИ позицію скролу 
+        const savedScrollTop = rightPanel ? rightPanel.scrollTop : 0;
+        console.log('💾 Saved scroll position:', savedScrollTop, 'userScrolled:', userScrolled);
+        
+        // Перевірити скільки графіків вже є
+        const currentGraphCount = container.children.length;
+        const targetGraphCount = steps.length + 1; // +1 для Krok 0
+        
+        console.log('📊 Current graphs:', currentGraphCount, 'Target graphs:', targetGraphCount);
+        
+        // Якщо графіків менше ніж треба - додати тільки новий
+        // Якщо графіків більше - очистити і перемалювати все
+        const shouldAppendOnly = currentGraphCount === targetGraphCount - 1;
+        
+        if (!shouldAppendOnly) {
+          console.log('🔄 Full redraw - clearing container');
+          container.innerHTML = '';
+        } else {
+          console.log('➕ Append only - keeping existing graphs');
+        }
+
+        // Глобальний діапазон для кроку 0
+        const pad = 0.5;
+        const globalSpan = (b0 - a0) * (1 + pad);
+        const globalCen = (a0 + b0) / 2;
+        const globalXMin = globalCen - globalSpan / 2;
+        const globalXMax = globalCen + globalSpan / 2;
+
+        // Генеруємо точки функції для глобального діапазону
+        const xVGlobal = [], yVGlobal = [];
+        const stGlobal = (globalXMax - globalXMin) / 300;
+        for (let x = globalXMin; x <= globalXMax; x += stGlobal) {
+          xVGlobal.push(x);
+          yVGlobal.push(f(x));
+        }
+
+        // Обмежити діапазон Y для кращого відображення
+        const validYVals = yVGlobal.filter(y => isFinite(y));
+        let yMin = Math.min(...validYVals);
+        let yMax = Math.max(...validYVals);
+        const yRange = yMax - yMin;
+        const maxYRange = 50;
+        
+        let yAxisRange = null;
+        if (yRange > maxYRange) {
+          // Центрувати навколо нуля
+          yAxisRange = [-maxYRange / 2, maxYRange / 2];
+        }
+
+        // КРОК 0: Початковий інтервал [a₀, b₀]
+        let div0 = document.getElementById('graph-0');
+        if (!div0 || !shouldAppendOnly) {
+          // Створити тільки якщо немає або повне перемалювання
+          div0 = document.createElement('div');
+          div0.id = 'graph-0';
+          div0.style.height = '500px';
+          div0.style.width = '100%';
+          div0.style.border = '2px solid ' + gridColor;
+          div0.style.borderRadius = '8px';
+          div0.style.marginBottom = '30px';
+          container.appendChild(div0);
+          console.log('➕ Created graph-0');
+        } else {
+          console.log('✅ Reusing existing graph-0');
+        }
+
+        const fa0 = f(a0);
+        const fb0 = f(b0);
+
+        const traces0 = [
+          {
+            x: xVGlobal,
+            y: yVGlobal,
+            mode: "lines",
+            name: "f(x)",
+            line: { color: "#2196f3", width: 2 },
+          },
+          {
+            x: [a0, b0],
+            y: [0, 0],
+            mode: "lines+markers",
+            name: "interval",
+            line: { color: "red", width: 5 },
+            marker: { size: 10, color: "red" }
+          },
+          {
+            x: [a0],
+            y: [0],
+            mode: "markers+text",
+            text: [`a₀`],
+            textposition: "top",
+            name: `a₀`,
+            marker: { size: 12, color: fa0 > 0 ? '#4caf50' : '#f44336', symbol: 'square' }
+          },
+          {
+            x: [b0],
+            y: [0],
+            mode: "markers+text",
+            text: [`b₀`],
+            textposition: "top",
+            name: `b₀`,
+            marker: { size: 12, color: fb0 > 0 ? '#4caf50' : '#f44336', symbol: 'square' }
+          }
+        ];
+
+        Plotly.react(div0, traces0, {
+          margin: { t: 60, b: 40, l: 50, r: 20 },
+          title: `<b>Krok 0:</b> Počiatočný interval [a₀=${a0.toFixed(decimalPlaces)}, b₀=${b0.toFixed(decimalPlaces)}]`,
+          xaxis: { title: "x", range: [globalXMin, globalXMax], color: textColor, gridcolor: gridColor, zeroline: true, zerolinecolor: textColor },
+          yaxis: { title: "f(x)", color: textColor, gridcolor: gridColor, zeroline: true, zerolinecolor: textColor, range: yAxisRange },
+          paper_bgcolor: bgColor,
+          plot_bgcolor: bgColor,
+          font: { color: textColor },
+          showlegend: true,
+          autosize: true,
+          legend: {
+            font: { size: 14 },
+            itemsizing: 'constant',
+            itemwidth: 40
+          }
+        }, {
+          responsive: true,
+          displayModeBar: true,
+          displaylogo: false
+        });
+
+        // КРОКИ 1, 2, 3, ... З ЗУМОМ
+        for (let i = 0; i < steps.length; i++) {
+          const step = steps[i];
+          
+          let divN = document.getElementById(`graph-${i+1}`);
+          const isNewGraph = !divN;
+          
+          if (!divN || !shouldAppendOnly) {
+            divN = document.createElement('div');
+            divN.id = `graph-${i+1}`;
+            divN.style.height = '450px';
+            divN.style.width = '100%';
+            divN.style.border = '2px solid ' + gridColor;
+            divN.style.borderRadius = '8px';
+            divN.style.marginBottom = '30px';
+            container.appendChild(divN);
+            console.log(`➕ Created graph-${i+1}`);
+          } else {
+            console.log(`✅ Reusing existing graph-${i+1}`);
+          }
+
+          const currentA = step.a;
+          const currentB = step.b;
+          const currentC = step.c;
+          const fc = step.fc;
+
+          const fa = f(currentA);
+          const fb = f(currentB);
+
+          // ЗУМОВАНИЙ діапазон для цього кроку
+          // Центруємо по ПОПЕРЕДНЬОМУ інтервалу для кращої візуалізації звуження
+          let prevA, prevB;
+          if (i === 0) {
+            // Для першого кроку використовуємо початковий інтервал
+            prevA = a0;
+            prevB = b0;
+          } else {
+            // Для наступних кроків використовуємо попередній інтервал
+            const prevStep = steps[i - 1];
+            prevA = prevStep.a;
+            prevB = prevStep.b;
+          }
+          
+          const zoomPad = 0.3;
+          const prevIntervalWidth = prevB - prevA;
+          const zoomSpan = prevIntervalWidth * (1 + zoomPad);
+          const zoomCen = (prevA + prevB) / 2; // Центруємо по попередньому інтервалу
+          const zoomXMin = zoomCen - zoomSpan / 2;
+          const zoomXMax = zoomCen + zoomSpan / 2;
+
+          // Генеруємо точки функції для зумованого діапазону
+          const xVZoom = [], yVZoom = [];
+          const stZoom = (zoomXMax - zoomXMin) / 300;
+          for (let x = zoomXMin; x <= zoomXMax; x += stZoom) {
+            xVZoom.push(x);
+            yVZoom.push(f(x));
+          }
+
+          // Обмежити діапазон Y для зумованих графіків
+          const validYZoom = yVZoom.filter(y => isFinite(y));
+          let yMinZoom = Math.min(...validYZoom);
+          let yMaxZoom = Math.max(...validYZoom);
+          const yRangeZoom = yMaxZoom - yMinZoom;
+          
+          let yAxisRangeZoom = null;
+          if (yRangeZoom > maxYRange) {
+            yAxisRangeZoom = [-maxYRange / 2, maxYRange / 2];
+          }
+
+          const tracesN = [
+            {
+              x: xVZoom,
+              y: yVZoom,
+              mode: "lines",
+              name: "f(x)",
+              line: { color: "#2196f3", width: 2 },
+            },
+            {
+              x: [currentA, currentB],
+              y: [0, 0],
+              mode: "lines+markers",
+              name: "interval",
+              line: { color: "red", width: 5 },
+              marker: { size: 10, color: "red" }
+            },
+            {
+              x: [currentA],
+              y: [0],
+              mode: "markers+text",
+              text: [`a${i+1}`],
+              textposition: "top",
+              name: `a${i+1}`,
+              marker: { size: 12, color: fa > 0 ? '#4caf50' : '#f44336', symbol: 'square' }
+            },
+            {
+              x: [currentB],
+              y: [0],
+              mode: "markers+text",
+              text: [`b${i+1}`],
+              textposition: "top",
+              name: `b${i+1}`,
+              marker: { size: 12, color: fb > 0 ? '#4caf50' : '#f44336', symbol: 'square' }
+            },
+            {
+              x: [currentC],
+              y: [0],
+              mode: "markers+text",
+              text: [`c${i+1}`],
+              textposition: "top",
+              name: `c${i+1}`,
+              marker: { 
+                size: 10, 
+                color: 'orange',
+                symbol: 'diamond',
+                line: { color: fc > 0 ? '#4caf50' : '#f44336', width: 2 }
+              }
+            }
+          ];
+          
+          // Додати візуалізацію інтервалу точності ±tol навколо c (тільки для методу precision)
+          if (stopMethod === 'precision') {
+            // Ліва межа: c - tol — showlegend з порожньою назвою (лише іконка)
+            tracesN.push({
+              x: [currentC - tol, currentC - tol],
+              y: [yMinZoom, yMaxZoom],
+              mode: 'lines',
+              line: { color: 'rgba(76, 175, 80, 0.7)', width: 2, dash: 'dash' },
+              name: ' ',
+              showlegend: true, //false || true
+              hoverinfo: 'skip'
+            });
+            
+            // Права межа: c + tol — showlegend s názvom
+            tracesN.push({
+              x: [currentC + tol, currentC + tol],
+              y: [yMinZoom, yMaxZoom],
+              mode: 'lines',
+              line: { color: 'rgba(76, 175, 80, 0.7)', width: 2, dash: 'dash' },
+              name: `oblasť presnosti ±${tol}`,
+              showlegend: true,
+              hoverinfo: 'skip'
+            });
+
+            // Hint in legend when tolerance zone is too small to see visually
+            const visibleWidth = zoomXMax - zoomXMin;
+            if (tol * 2 < visibleWidth * 0.01) {
+              tracesN.push({
+                x: [null], y: [null],
+                mode: 'markers',
+                marker: { color: 'transparent', size: 1 },
+                showlegend: true,
+                name: `💡 Oblasť presnosti je<br>veľmi malá — priblíž<br>sa na bod c`,
+                hoverinfo: 'none'
+              });
+            }
+          }
+
+          const isLast = i === steps.length - 1;
+          let isAcc = false;
+          if (stopMethod === 'precision') {
+            const intervalLength = Math.abs(step.b - step.a);
+            isAcc = intervalLength <= 2 * tol;
+          } else if (stopMethod === 'steps') {
+            isAcc = step.i === maxSteps - 1;
+            
+            // Додати візуалізацію похибки на останньому кроці
+            if (isLast && isAcc) {
+              const initialInterval = Math.abs(b0 - a0);
+              const error = initialInterval / Math.pow(2, step.i + 1);
+              
+              // Ліва межа: c - error
+              tracesN.push({
+                x: [currentC - error, currentC - error],
+                y: [yMinZoom, yMaxZoom],
+                mode: 'lines',
+                line: { color: 'rgba(76, 175, 80, 0.7)', width: 2, dash: 'dash' },
+                name: `oblasť<br>chyby ±${error.toFixed(decimalPlaces)}`,
+                legendgroup: 'error',
+                showlegend: true,
+                hoverinfo: 'name'
+              });
+              
+              // Права межа: c + error
+              tracesN.push({
+                x: [currentC + error, currentC + error],
+                y: [yMinZoom, yMaxZoom],
+                mode: 'lines',
+                line: { color: 'rgba(76, 175, 80, 0.7)', width: 2, dash: 'dash' },
+                name: `oblasť<br>chyby ±${error.toFixed(decimalPlaces)}`,
+                legendgroup: 'error',
+                showlegend: false,
+                hoverinfo: 'name'
+              });
+            }
+          }
+          const titleColor = isLast && isAcc ? '#4caf50' : textColor;
+
+          Plotly.react(divN, tracesN, {
+            margin: { t: 60, b: 40, l: 50, r: 20 },
+            title: {
+              text: `<b>Krok ${i+1}:</b> c${i+1}=${currentC.toFixed(decimalPlaces)}, f(c${i+1})=${fc.toFixed(decimalPlaces)}`,
+              font: { color: titleColor }
+            },
+            xaxis: { title: "x", range: [zoomXMin, zoomXMax], color: textColor, gridcolor: gridColor, zeroline: true, zerolinecolor: textColor },
+            yaxis: { title: "f(x)", color: textColor, gridcolor: gridColor, zeroline: true, zerolinecolor: textColor, range: yAxisRangeZoom },
+            paper_bgcolor: bgColor,
+            plot_bgcolor: bgColor,
+            font: { color: textColor },
+            showlegend: true,
+            autosize: true,
+            legend: {
+              font: { size: 14 },
+              itemsizing: 'constant',
+              itemwidth: 40
+            }
+          }, {
+            responsive: true,
+            displayModeBar: true,
+            displaylogo: false
+          });
+        }
+        
+        // Spotify-style auto-scroll: прокручувати тільки якщо користувач не скролив
+        if (rightPanel) {
+          setTimeout(() => {
+            console.log('Attempting auto-scroll. userScrolled:', userScrolled, 'steps:', steps.length);
+            
+            // ВАЖЛИВО: Показати/сховати кнопку залежно від userScrolled
+            const scrollBtn = document.getElementById('scrollToLatestBtn');
+            console.log('🔍 Button element:', scrollBtn);
+            console.log('🔍 Button classes before:', scrollBtn ? scrollBtn.className : 'NO BUTTON');
+            
+            if (scrollBtn) {
+              if (userScrolled) {
+                scrollBtn.classList.add('visible');
+                console.log('🔘 Added visible class');
+              } else {
+                scrollBtn.classList.remove('visible');
+                console.log('🔘 Removed visible class (auto-scroll enabled)');
+              }
+              console.log('🔍 Button classes after:', scrollBtn.className);
+              console.log('🔍 Button computed style:', window.getComputedStyle(scrollBtn).opacity);
+            }
+            
+            if (!userScrolled) {
+              // Автоматично скролити до останнього графіка
+              autoScrollToLatest();
+            } else {
+              // ВІДНОВИТИ збережену позицію (instant, без анімації)
+              rightPanel.scrollTop = savedScrollTop;
+              console.log('🔒 Restored scroll position to:', savedScrollTop);
+            }
+          }, 150);
+        }
+      }
+
+      function goBack() {
+        window.location.href = "interval.html";
+      }
+
+      // Функції для модального вікна результату
+      // ---- HISTORY: save completed calculation ----
+      function saveToHistory() {
+        try {
+          const record = {
+            id: Date.now().toString(),
+            date: new Date().toLocaleString('sk-SK', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' }),
+            functionOriginal: exprOriginal,
+            functionExpr: expr,
+            a0: a0,
+            b0: b0,
+            stopMethod: stopMethod,
+            tol: stopMethod === 'precision' ? tol : null,
+            maxSteps: stopMethod === 'steps' ? maxSteps : null,
+            result: steps.length ? steps[steps.length-1].c : null,
+            iterations: steps.length,
+            steps: steps.map(s => ({ i: s.i, a: s.a, b: s.b, c: s.c, fc: s.fc }))
+          };
+          const existing = JSON.parse(localStorage.getItem('bisectionHistory') || '[]');
+          existing.unshift(record); // newest first
+          // Keep max 50 records
+          if (existing.length > 50) existing.splice(50);
+          localStorage.setItem('bisectionHistory', JSON.stringify(existing));
+        } catch(e) {
+          console.warn('Could not save to history:', e);
+        }
+      }
+
+      function showResultOverlay(root, fValue, aVal, bVal, iterations, method) {
+        const overlay = document.getElementById('resultOverlay');
+        const titleEl = document.getElementById('resultTitle');
+        const infoEl = document.getElementById('resultInfo');
+        
+        // Зберегти дані для повторного відкриття
+        lastResultData = { root, fValue, aVal, bVal, iterations, method };
+
+        // Save to history
+        saveToHistory();
+        
+        // Обчислити кількість знаків після коми (presnosť + 2)
+        let decimalPlaces = 6; // За замовчуванням
+        if (method === 'precision') {
+          const tolStr = tol.toString();
+          if (tolStr.includes('.')) {
+            const afterDot = tolStr.split('.')[1].length;
+            decimalPlaces = afterDot + 2;
+          } else {
+            decimalPlaces = 2;
+          }
+        }
+        
+        // Встановити заголовок залежно від методу
+        if (method === 'precision') {
+          const intervalLength = Math.abs(bVal - aVal);
+          titleEl.textContent = '✅ Presnosť dosiahnutá!';
+          
+          infoEl.innerHTML = `
+            <div class="result-info-row">
+              <span class="result-info-label">Aproximácia koreňa:</span>
+              <span class="result-info-value">${root.toFixed(decimalPlaces)}</span>
+            </div>
+            <div class="result-info-row">
+              <span class="result-info-label">f(c):</span>
+              <span class="result-info-value">${fValue.toFixed(decimalPlaces)}</span>
+            </div>
+            <div class="result-info-row">
+              <span class="result-info-label">Interval:</span>
+              <span class="result-info-value">[${aVal.toFixed(decimalPlaces)}, ${bVal.toFixed(decimalPlaces)}]</span>
+            </div>
+            <div class="result-info-row">
+              <span class="result-info-label">|b - a|:</span>
+              <span class="result-info-value">${intervalLength.toFixed(decimalPlaces)} ≤ 2·${tol} = ${(2*tol).toFixed(decimalPlaces)}</span>
+            </div>
+            <div class="result-info-row">
+              <span class="result-info-label">Iterácií:</span>
+              <span class="result-info-value">${iterations}</span>
+            </div>
+          `;
+        } else if (method === 'steps') {
+          const intervalLength = Math.abs(bVal - aVal);
+          // Правильна формула абсолютної похибки: |c_n - α| < (b₀ - a₀) / 2^(n+1)
+          const initialInterval = Math.abs(b0 - a0);
+          const error = initialInterval / Math.pow(2, iterations + 1);
+          titleEl.textContent = '✅ Počet krokov dosiahnutý!';
+          
+          infoEl.innerHTML = `
+            <div class="result-info-row">
+              <span class="result-info-label">Aproximácia koreňa:</span>
+              <span class="result-info-value">${root.toFixed(3)}</span>
+            </div>
+            <div class="result-info-row">
+              <span class="result-info-label">f(c):</span>
+              <span class="result-info-value">${fValue.toFixed(3)}</span>
+            </div>
+            <div class="result-info-row">
+              <span class="result-info-label">Interval:</span>
+              <span class="result-info-value">[${aVal.toFixed(3)}, ${bVal.toFixed(3)}]</span>
+            </div>
+            <div class="result-info-row">
+              <span class="result-info-label">|b - a|:</span>
+              <span class="result-info-value">${intervalLength.toFixed(3)}</span>
+            </div>
+            <div class="result-info-row">
+              <span class="result-info-label">Chyba:</span>
+              <span class="result-info-value">±${error.toFixed(3)}</span>
+            </div>
+            <div class="result-info-row">
+              <span class="result-info-label">Iterácií:</span>
+              <span class="result-info-value">${iterations}</span>
+            </div>
+          `;
+        }
+        
+        overlay.classList.add('active');
+      }
+
+      function closeResultOverlay() {
+        const overlay = document.getElementById('resultOverlay');
+        overlay.classList.remove('active');
+      }
+      
+      function reopenResultOverlay() {
+        if (lastResultData) {
+          showResultOverlay(
+            lastResultData.root,
+            lastResultData.fValue,
+            lastResultData.aVal,
+            lastResultData.bVal,
+            lastResultData.iterations,
+            lastResultData.method
+          );
+        }
+      }
+
+      function resetFromResult() {
+        closeResultOverlay();
+        window.location.href = "menu.html"; // Перейти до меню
+      }
+
+      updateGraph();
+      updateButtons();
+    </script>
+  </body>
+</html>
