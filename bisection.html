@@ -1821,7 +1821,9 @@
                   <option value="++">++</option>
                 </select>
                 <div class="input-hint" style="line-height:1.6; font-size:0.65em;">
-                  f(x) = ${exprOriginal}
+                  f(${a.toFixed(decimalPlaces)}) = ${formatSubstituted(a, decimalPlaces)} = <strong>${f(a).toFixed(decimalPlaces)}</strong><br>
+                   f(${correctC_q.toFixed(decimalPlaces)}) = ${formatSubstituted(correctC_q, decimalPlaces)} = <strong>${currentFc.toFixed(decimalPlaces)}</strong>
+
                 </div></div></td>`
             : `<td><div class="quiz-input-cell">
                 <select class="quiz-input correct" id="inlineInput_sign" disabled style="width:70px; padding:5px 4px;">
