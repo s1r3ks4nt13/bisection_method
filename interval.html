@@ -356,7 +356,7 @@
     <h2>📊 Výber intervalu [a, b]</h2>
     
     <div class="function-display">
-      <strong>📐 Funkcia:</strong> <span id="funcDisplay"></span>
+      <strong>📐 Rovnica:</strong> <span id="funcDisplay"></span> <strong>= 0</strong>
     </div>
 
     <!-- НОВИЙ БЛОК: Вибір методу -->
@@ -420,7 +420,7 @@
           <input type="number" id="bInput" step="0.1" value="2" style="width: 150px; padding: 12px; border: 2px solid var(--border-color); border-radius: 8px; font-size: 1.1em; background: var(--input-bg); color: var(--text-primary);" title="Zadaj pravú hranicu intervalu">
         </div>
 
-        <button onclick="checkInterval()" style="padding: 14px 32px; background: var(--btn-primary); color: white; border: none; border-radius: 8px; font-size: 1em; cursor: pointer; font-weight: 500; white-space: nowrap;" title="Skontroluj či interval obsahuje koreň">Skontrolovať ✓</button>
+        <button id="checkBtn" onclick="checkInterval()" style="padding: 14px 32px; background: var(--btn-primary); color: white; border: none; border-radius: 8px; font-size: 1em; cursor: pointer; font-weight: 500; white-space: nowrap;" title="Skontroluj či interval obsahuje koreň">Skontrolovať ✓</button>
       </div>
 
       <div class="error-box" id="errorBox"></div>
@@ -545,6 +545,16 @@
       
       // Показуємо секцію вибору інтервалу
       document.getElementById('intervalSelectionSection').style.display = 'block';
+      // Reset tlacidla kontroly - mohlo byt deaktivovane z predchadzajuceho pokusu
+      const checkBtnReset = document.getElementById('checkBtn');
+      if (checkBtnReset) {
+        checkBtnReset.disabled = false;
+        checkBtnReset.style.opacity = '';
+        checkBtnReset.style.cursor = '';
+        checkBtnReset.title = 'Skontroluj či interval obsahuje koreň';
+      }
+      // Reset success/error boxes
+      hideAllMessages();
       
       // Оновлюємо відображення обраного методу
       updateMethodDisplay();
@@ -692,6 +702,14 @@
 
       // Ukázať tlačidlo
       document.getElementById('continueBtn').style.display = 'inline-block';
+      // Deaktivovat tlacidlo kontroly - interval je uz spravny
+      const checkBtn = document.getElementById('checkBtn');
+      if (checkBtn) {
+        checkBtn.disabled = true;
+        checkBtn.style.opacity = '0.45';
+        checkBtn.style.cursor = 'not-allowed';
+        checkBtn.title = 'Interval je už správny ✓';
+      }
       
       // Uložiť interval
       localStorage.setItem('a', a);

@@ -365,6 +365,7 @@
 
       .mode-btn {
         flex: 1;
+        width: 100%;
         padding: 10px;
         border: 2px solid var(--btn-bg);
         background: transparent;
@@ -384,6 +385,39 @@
         background: var(--btn-hover);
         color: white;
         border-color: var(--btn-hover);
+      }
+      .mode-btn-wrap {
+        position: relative;
+        flex: 1;
+      }
+      .mode-tooltip {
+        display: none;
+        position: absolute;
+        bottom: calc(100% + 10px);
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--tooltip-bg);
+        color: var(--tooltip-text);
+        padding: 10px 14px;
+        border-radius: 8px;
+        font-size: 0.82em;
+        line-height: 1.5;
+        white-space: nowrap;
+        z-index: 100;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        pointer-events: none;
+      }
+      .mode-tooltip::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 6px solid transparent;
+        border-top-color: var(--tooltip-bg);
+      }
+      .mode-btn-wrap:hover .mode-tooltip {
+        display: block;
       }
 
       .frequency-select {
@@ -910,6 +944,7 @@
           
           <div class="info-box" id="infoBox">
             <strong>📊 Nastavenia:</strong><br>
+            Rovnica: <span id="equationDisplay"></span> = 0<br>
             Interval: [<span id="intervalA"></span>, <span id="intervalB"></span>]<br>
             <span id="methodDisplay"></span>
           </div>
@@ -918,12 +953,24 @@
             Vyber režim výpočtu
           </div>
           <div class="mode-selector">
-            <button class="mode-btn" onclick="setMode('auto')" id="autoBtn">
-              🤖 Automatický
-            </button>
-            <button class="mode-btn active" onclick="setMode('mixed')" id="mixedBtn">
-              🎯 S kvízmi
-            </button>
+            <div class="mode-btn-wrap">
+              <button class="mode-btn" onclick="setMode('auto')" id="autoBtn">
+                🤖 Automatický
+              </button>
+              <div class="mode-tooltip">
+                Hodnoty v tabuľke získaš automaticky<br>
+                postupným stlačaním tlačidla „Ďalší“.
+              </div>
+            </div>
+            <div class="mode-btn-wrap">
+              <button class="mode-btn active" onclick="setMode('mixed')" id="mixedBtn">
+                🎯 S kvízmi
+              </button>
+              <div class="mode-tooltip">
+                Hodnoty v tabuľke získaš automaticky<br>
+                až po niekoľkých kontrolných výpočtoch.
+              </div>
+            </div>
           </div>
 
 
@@ -1081,6 +1128,7 @@
 
       document.getElementById("intervalA").textContent = a0.toFixed(2);
       document.getElementById("intervalB").textContent = b0.toFixed(2);
+      document.getElementById("equationDisplay").textContent = exprOriginal;
       
       // Відобразити обраний метод
       const methodDisplay = document.getElementById("methodDisplay");
