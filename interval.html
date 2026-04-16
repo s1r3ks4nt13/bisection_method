@@ -920,39 +920,78 @@
       const gridColor = isDark ? '#404040' : '#e0e0e0';
       const bgColor = isDark ? '#2d2d2d' : '#ffffff';
 
-      // Динамічний діапазон X залежно від функції
+      // Dynamicky rozsah X
       let xMin = -5, xMax = 5;
-      
-      // Для log(x) - почати з -0.5 щоб показати вісь
-      if (expr.includes('Math.log')) {
-        xMin = -0.5;
-        xMax = 10;
-      }
-      
-      // Для e^x - обмежити діапазон
-      if (expr.includes('Math.exp')) {
-        xMin = -5;
-        xMax = 5;
-      }
-      
-      // Для sqrt(x) - почати з -0.5 щоб показати вісь
-      if (expr.includes('Math.sqrt')) {
-        xMin = -0.5;
-        xMax = 5;
+      if (expr.includes('Math.log')) { xMin = -0.5; xMax = 10; }
+      if (expr.includes('Math.exp')) { xMin = -5; xMax = 5; }
+      if (expr.includes('Math.sqrt')) { xMin = -0.5; xMax = 5; }
+
+      // Ak funkcia nema koren v [-5,5] a nie je periodicka, rozsir okno
+      const isTrig = expr.includes('Math.sin') || expr.includes('Math.cos') || expr.includes('Math.tan');
+      if (!isTrig) {
+        const hasRootInDefault = (() => {
+          let py = null;
+          for (let x = xMin; x <= xMax; x += (xMax-xMin)/200) {
+            const y = f(x);
+            if (!isFinite(y)) { py = null; continue; }
+            if (py !== null && py * y < 0) return true;
+            py = y;
+          }
+          return false;
+        })();
+        if (!hasRootInDefault) {
+          // Hladat koren v sirokom rozsahu
+          (function() {
+            for (const [lo, hi] of [[-500, 500], [-2000, 2000]]) {
+              const sStep = (hi - lo) / 2000;
+              let px = lo, py = null;
+              for (let x = lo; x <= hi; x += sStep) {
+                const y = f(x);
+                if (!isFinite(y)) { px = x; py = null; continue; }
+                if (py !== null && py * y < 0) {
+                  const rootApprox = (px + x) / 2;
+                  const margin = Math.max(Math.abs(rootApprox) * 0.5, 5);
+                  xMin = rootApprox - margin;
+                  xMax = rootApprox + margin;
+                  return;
+                }
+                px = x; py = y;
+              }
+            }
+          })();
+        }
       }
 
       const xVals = [];
       const yVals = [];
 
-      for (let x = xMin; x <= xMax; x += (xMax - xMin) / 300) {
-        const y = f(x);
+      // Dvojpriebehova metoda: prvy prebeh zbiera surove Y, druhy detekuje skoky
+      const step300 = (xMax - xMin) / 300;
+      const rawXs = [], rawYs = [];
+      for (let x = xMin; x <= xMax; x += step300) {
+        rawXs.push(x);
+        rawYs.push(f(x));
+      }
+      const finiteRaw = rawYs.filter(y => isFinite(y));
+      const yRangeRaw = finiteRaw.length > 1 ? Math.max(...finiteRaw) - Math.min(...finiteRaw) : 10;
+      // Prah skoku: ak rozdiel medzi susednymi bodmi presiahne toto, vlozime null (prerusenie)
+      const jumpThreshold = Math.max(yRangeRaw * 0.15, 2);
+      let prevY = null;
+      for (let i = 0; i < rawXs.length; i++) {
+        const x = rawXs[i], y = rawYs[i];
         if (isFinite(y)) {
+          if (prevY !== null && Math.abs(y - prevY) > jumpThreshold) {
+            // Vlozit null pred velky skok - prerus ciaru
+            xVals.push(x - step300 / 2);
+            yVals.push(null);
+          }
           xVals.push(x);
           yVals.push(y);
-        } else if ((expr.includes('Math.log') || expr.includes('Math.sqrt')) && x <= 0) {
-          // Додати точки з null для від'ємних X щоб показати вісь
+          prevY = y;
+        } else {
           xVals.push(x);
           yVals.push(null);
+          prevY = null;
         }
       }
 
@@ -997,14 +1036,12 @@
         return;
       }
       
-      let yMin_calc = Math.min(...validYVals);
-      let yMax_calc = Math.max(...validYVals);
+      const yMin_calc = Math.min(...validYVals);
+      const yMax_calc = Math.max(...validYVals);
       const yRange = yMax_calc - yMin_calc;
-      const maxRange = 50; // Стандартний максимальний діапазон для Y
-      
+      const maxRange = 50;
       let yAxisRange = undefined;
       if (yRange > maxRange) {
-        // Центрувати навколо нуля
         yAxisRange = [-maxRange / 2, maxRange / 2];
       }
 
