@@ -2,7 +2,7 @@
 <html lang="sk">
 <head>
   <meta charset="UTF-8">
-  <title>Výber intervalu — Metóda bisekcie</title>
+  <title>Výber intervalu |Vizualizácia metódy bisekcie|</title>
   <style>
     :root {
       --bg-gradient-1: #667eea;
@@ -14,6 +14,7 @@
       --input-bg: #ffffff;
       --btn-primary: #1976d2;
       --btn-hover: #1565c0;
+      --btn-bg: #2196f3;
       --hint-bg: #e3f2fd;
       --hint-border: #2196f3;
       --hint-text: #1565c0;
@@ -35,6 +36,7 @@
       --input-bg: #353535;
       --btn-primary: #2196f3;
       --btn-hover: #64b5f6;
+      --btn-bg: #2196f3;
       --hint-bg: #1e3a5f;
       --hint-border: #2196f3;
       --hint-text: #90caf9;
@@ -207,7 +209,7 @@
       border: none;
       font-size: 1.5em;
       cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
       z-index: 1000;
       display: flex;
       align-items: center;
@@ -221,6 +223,115 @@
       width: 50px;
       height: 50px;
     }
+
+    /* === MODAL STYLES (matched to bisection.html) === */
+    .help-modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      animation: fadeInModal 0.3s;
+    }
+    @keyframes fadeInModal {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+    @keyframes slideDownModal {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .help-modal-content {
+      background: var(--card-bg);
+      margin: 5% auto;
+      padding: 30px;
+      border-radius: 12px;
+      width: 80%;
+      max-width: 700px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      animation: slideDownModal 0.3s;
+      color: var(--text-primary);
+    }
+    .help-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--btn-primary);
+      padding-bottom: 10px;
+    }
+    .help-modal-header h2 {
+      color: var(--btn-primary);
+      margin: 0;
+    }
+    .help-close-btn {
+      /* font-size: 2em;
+      cursor: pointer;
+      color: var(--text-primary);
+      line-height: 1;
+      background: none;
+      border: none;
+      padding: 0;
+      margin: 0;
+      width: auto;
+      height: auto;
+      border-radius: 0;
+      box-shadow: none;
+      position: static;
+      display: inline; */
+      font-size: 2em;
+      cursor: pointer;
+      color: var(--text);
+      line-height: 1;
+    }
+    .help-close-btn:hover { 
+      color: var(--btn-bg);
+      transform: scale(1.1);
+    }
+    .help-section { margin-bottom: 20px; }
+    .help-section h3 { color: var(--btn-primary); margin-bottom: 10px; }
+    .help-section p { color: var(--text-primary); line-height: 1.6; }
+    .help-formula {
+      background: var(--hint-bg);
+      padding: 15px;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      margin: 10px 0;
+      text-align: center;
+      font-size: 1.1em;
+      color: var(--text-primary);
+      border: 1px solid var(--hint-border);
+    }
+    .help-box {
+      background: var(--hint-bg);
+      border-left: 4px solid var(--hint-border);
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 4px;
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+    .help-box.warning {
+      background: #fff8e1;
+      border-left-color: #ffc107;
+    }
+    body.dark .help-box.warning {
+      background: #2d2400;
+      border-left-color: #ffc107;
+    }
+    .help-understand-btn {
+      padding: 12px 30px;
+      margin-top: 10px;
+      background: var(--btn-primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+    .help-understand-btn:hover { background: var(--btn-hover); }
 
     #backBtn {
       left: 20px;
@@ -331,24 +442,51 @@
   <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Zmeniť tému">🌙</button>
 
   <!-- Help Modal -->
-  <div id="helpModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:2000;">
-    <div style="background:var(--card-bg); max-width:900px; margin:50px auto; padding:40px; border-radius:16px; max-height:90vh; overflow-y:auto; color:var(--text-primary);">
-      <h2>📚 Ako vybrať správny interval?</h2>
-      <button onclick="closeHelp()" style="float:right; background:none; border:none; font-size:2em; cursor:pointer; color:var(--text-primary);">&times;</button>
-      <div style="clear:both;"></div>
-      
-      <h3 style="color:var(--btn-primary); margin-top:20px;">🎯 Podmienka: f(a) · f(b) &lt; 0</h3>
-      <p style="font-size:1.1em; line-height:1.6;">Funkcia musí meniť znamienko!</p>
-      <p style="line-height:1.6;">To znamená, že v intervale <strong>[a, b]</strong> musí byť aspoň <em>jeden bod</em>, kde funkcia má <strong>nulovú hodnotu</strong> (pretína os <strong>X</strong>). Ak <strong>f(a)</strong> a <strong>f(b)</strong> majú <em>opačné znamienka</em> (jedno je <strong>kladné</strong>, druhé <strong>záporné</strong>), potom funkcia určite prechádza cez nulu v tomto intervale.</p>
-      
-      <h3 style="color:var(--btn-primary); margin-top:25px;">🎓 Systém podpôr:</h3>
-      <ul style="line-height:2;">
-        <li><strong>Pokus 1:</strong> Skús sám - Zadaj hodnoty a a b bez pomoci</li>
-        <li><strong>Pokus 2:</strong> Graf dvoch funkcií - Uvidíš graf rozdelený na dve časti, aby si lepšie pochopil, kde funkcia mení znamienko</li>
-        <li><strong>Pokus 3:</strong> Kompletný graf funkcie</li>
-      </ul>
-      
-      <button onclick="closeHelp()" style="padding:12px 30px; margin-top:20px; background:var(--btn-primary); color:white; border:none; border-radius:8px; font-size:1.1em; cursor:pointer;">Rozumiem ✓</button>
+  <div id="helpModal" class="help-modal">
+    <div class="help-modal-content">
+      <div class="help-modal-header">
+        <h2>📚 Ako vybrať správny interval?</h2>
+        <!-- <button class="help-close-btn" onclick="closeHelp()">&times;</button> -->
+        <span class="help-close-btn" onclick="closeHelp()">&times;</span>
+        <!-- <span class="close-btn" onclick="closeHelp()">&times;</span> -->
+      </div>
+
+      <div class="help-section">
+        <h3>🎯 Podmienka: f(a) · f(b) &lt; 0</h3>
+        <p>Funkcia musí meniť znamienko na intervale <strong>[a, b]</strong>!</p>
+        <p>To znamená, že v intervale musí byť aspoň <em>jeden bod</em>, kde funkcia má <strong>nulovú hodnotu</strong> (pretína os X). Ak <strong>f(a)</strong> a <strong>f(b)</strong> majú <em>opačné znamienka</em>, funkcia určite prechádza cez nulu v tomto intervale.</p>
+        <div class="help-formula">f(a) · f(b) &lt; 0</div>
+        <div class="help-box">
+          💡 <strong>Bolzanova veta:</strong> Ak je funkcia spojitá na [a, b] a f(a) · f(b) &lt; 0, potom existuje aspoň jeden koreň c ∈ (a, b) taký, že f(c) = 0.
+        </div>
+      </div>
+
+      <div class="help-section">
+        <h3>🔍 Ako nájsť správny interval?</h3>
+        <p>Hľadaj dve hodnoty <strong>a</strong> a <strong>b</strong> také, že funkcia zmení znamienko:</p>
+        <div class="help-formula">f(a) &lt; 0  a  f(b) &gt; 0</div>
+        <div class="help-formula">alebo: f(a) &gt; 0  a  f(b) &lt; 0</div>
+        <div class="help-box warning">
+          ⚠️ <strong>Pozor:</strong> Ak f(a) · f(b) &gt; 0 (rovnaké znamienka), interval je neplatný — metóda bisekcie sa nedá použiť! Buď interval neobsahuje koreň, alebo obsahuje párny počet koreňov.
+        </div>
+      </div>
+
+      <div class="help-section">
+        <h3>🎓 Systém podpôr:</h3>
+        <ul style="line-height: 2; color: var(--text-primary);">
+          <li><strong>Pokus 1:</strong> Skús sám — zadaj hodnoty a a b bez pomoci</li>
+          <li><strong>Pokus 2:</strong> Graf dvoch funkcií — graf rozdelený na dve časti ukáže, kde funkcia mení znamienko</li>
+          <li><strong>Pokus 3:</strong> Kompletný graf funkcie — vidíš presné miesta, kde funkcia pretína os X</li>
+        </ul>
+      </div>
+
+      <div class="help-section">
+        <h3>📊 Vzorce na overenie</h3>
+        <div class="help-formula">Platný interval: f(a) · f(b) &lt; 0 ✅</div>
+        <div class="help-formula">Neplatný interval: f(a) · f(b) ≥ 0 ❌</div>
+      </div>
+
+      <button class="help-understand-btn" onclick="closeHelp()">Rozumiem ✓</button>
     </div>
   </div>
 

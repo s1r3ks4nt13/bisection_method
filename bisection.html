@@ -2,7 +2,7 @@
 <html lang="sk">
   <head>
     <meta charset="UTF-8" />
-    <title>Vizualizácia metódy bisekcie</title>
+    <title>Výpočet |Vizualizácia metódy bisekcie|</title>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <style>
       :root {
@@ -11,7 +11,6 @@
         --bg-gradient-2: #764ba2;
         --text: #2c3e50;
         --card: #ffffff;
-        /* --btn-bg: #1976d2; */
         --btn-bg: #1976d2;
         --btn-hover: #1565c0;
         --border: #e0e0e0;
@@ -89,7 +88,7 @@
         border-radius: 50%;
         width: 40px;
         height: 40px;
-        font-size: 1.3em;
+        font-size: 1.2em;
         cursor: pointer;
         display: flex;
         align-items: center;
@@ -115,7 +114,7 @@
         border-radius: 50%;
         width: 40px;
         height: 40px;
-        font-size: 1.3em;
+        font-size: 1.1em;
         cursor: pointer;
         display: flex;
         align-items: center;
@@ -301,15 +300,15 @@
       .btn-row {
         display: flex;
         gap: 10px;
-        margin-top: 15px;
+        margin-top: 10px;
         width: 100%;
-        max-width: 400px; /* Обмежити ширину */
+        max-width: 400px;
         justify-content: center;
       }
 
       .btn {
         flex: 1;
-        min-width: 150px; /* Мінімальна ширина кнопки */
+        min-width: 120px;
         background: var(--btn-bg);
         color: white;
         border: none;
@@ -317,6 +316,17 @@
         border-radius: 8px;
         cursor: pointer;
         font-size: 1em;
+      }
+
+      .btn-reset {
+        background: transparent !important;
+        color: var(--btn-bg) !important;
+        border: 2px solid var(--btn-bg) !important;
+      }
+
+      .btn-reset:hover {
+        background: var(--btn-bg) !important;
+        color: white !important;
       }
 
       .btn:hover {
@@ -835,10 +845,11 @@
 
   <body>
     <header>
-      🔹 Vizualizácia metódy bisekcie
-      <button id="helpBtn" onclick="showHelp()">❓</button>
-      <button id="themeToggle" onclick="toggleTheme()">🌙</button>
+      Vizualizácia metódy bisekcie
+      <button id="helpBtn" onclick="showHelp()" title="Nápoveda">❓</button>
+      <button id="themeToggle" onclick="toggleTheme()" title="Zmeniť tému">🌙</button>
     </header>
+
 
 
     <!-- Modal pre teóriu -->
@@ -888,8 +899,28 @@
           <h3>📊 Vzorce</h3>
           <div class="formula">c = (a + b) / 2</div>
           <div class="formula">Zastaviť ak: |b - a| ≤ 2·tolerancia</div>
-          <div class="formula">f(a) · f(c) < 0 → [a, c]</div>
-          <div class="formula">f(a) · f(c) > 0 → [c, b]</div>
+          <div class="formula">f(a) · f(c) &lt; 0 → nový interval [a, c]</div>
+          <div class="formula">f(a) · f(c) > 0 → nový interval [c, b]</div>
+        </div>
+
+        <div class="theory-section">
+          <h3>📏 Odhad chyby</h3>
+          <p>Po <strong>n</strong> iteráciách je chyba aproximácie koreňa ohraničená vzorcom:</p>
+          <div class="formula">|cₙ − α| &lt; (b₀ − a₀) / 2ⁿ⁺¹</div>
+          <p>kde <strong>α</strong> je skutočný koreň, <strong>b₀ − a₀</strong> je dĺžka počiatočného intervalu.</p>
+          <div class="explanation-box">
+            💡 <strong>Príklad:</strong> Interval [0, 1], po 10 krokoch: chyba &lt; 1 / 2¹¹ ≈ 0.00049
+          </div>
+        </div>
+
+        <div class="theory-section">
+          <h3>⚡ Rýchlosť konvergencie</h3>
+          <p>Metóda bisekcie má <strong>lineárnu konvergenciu</strong> — každý krok zmenší interval presne na polovicu:</p>
+          <div class="formula">|bₙ − aₙ| = (b₀ − a₀) / 2ⁿ</div>
+          <div class="explanation-box">
+            ⚠️ <strong>Počet krokov</strong> potrebných na dosiahnutie presnosti ε:<br>
+            n ≥ log₂((b₀ − a₀) / ε) − 1
+          </div>
         </div>
       </div>
     </div>
@@ -937,7 +968,7 @@
     </div>
 
     <section id="solution">
-      <button id="back" onclick="goBack()">←</button>
+      <button id="back" onclick="goBack()" title="Späť na zadanie intervalu">←</button>
       
       <div class="layout">
         <div class="left">
@@ -1004,15 +1035,12 @@
 
           <!-- Fixed buttons at bottom -->
           <div class="fixed-buttons">
-            <!-- <div class="quiz-progress-dots" id="quizProgressDots" style="margin-bottom:6px; justify-content:center; display:none;"></div> -->
+            <div class="btn-row">
+              <button id="checkQuizBtn" onclick="checkInlineQuiz()" title="Skontroluj správnosť zadaných hodnôt">✅ Skontrolovať</button>
+            </div>
             <div class="btn-row">
               <button class="btn" id="nextBtn" onclick="nextStep()" title="Vypočítaj ďalší krok metódy bisekcie">➡️ Ďalší</button>
-            </div>
-            <div class="btn-row">
-              <button id="checkQuizBtn" onclick="checkInlineQuiz()">✅ Skontrolovať</button>
-            </div>
-            <div class="btn-row">
-              <button class="btn" onclick="reset()" title="Začni výpočet odznova">🔄 Reset</button>
+              <button class="btn btn-reset" onclick="reset()" title="Začni výpočet odznova">🔄 Reset</button>
             </div>
             <!-- Progress indicator -->
             <div style="width:100%; padding: 10px 0 4px; border-top: 1px solid var(--border); margin-top: 8px;">
@@ -1998,7 +2026,8 @@
         if (tableHint) {
           // If inline quiz is active — show instructions
           if (mode === 'mixed' && inlineQuizActive) {
-            tableHint.innerHTML = '✏️ Vypočítaj a vyplň hodnoty pre zvýraznený riadok, potom klikni <strong>Skontrolovať</strong>';
+            tableHint.innerHTML = '✏️ Vypĺňaj polia zľava doprava - každé potvrď tlačidlom Skontrolovať, polia sa odomykajú postupne'; 
+            //✏️ Vypočítaj a vyplň hodnoty pre zvýraznený riadok, potom klikni <strong>Skontrolovať</strong>
             tableHint.style.color = '#f57c00';
             tableHint.style.fontWeight = '500';
           } else {
