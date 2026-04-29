@@ -32,7 +32,7 @@
 
       body.dark {
         --bg: #1a1a1a;
-        --bg-gradient-1: #1a1a2e;
+        --bg-gradient-1: #1f1f64 ;
         --bg-gradient-2: #16213e;
         --text: #e8e8e8;
         --card: #2a2a2a;
@@ -45,7 +45,7 @@
         --table-hover: rgba(33, 150, 243, 0.15);
         --success-bg: #0a4d0a;
         --success-text: #81c784;
-        --theory-bg: #2d2400;
+        --theory-bg: #584c26;
         --theory-border: #ffc107;
         --theory-text: #ffe082;
         --modal-bg: #2a2a2a;
@@ -78,17 +78,14 @@
         font-weight: bold;
       }
 
-      #themeToggle {
+      .icon-btn {
         position: absolute;
-        right: 65px;
-        top: 15px;
         background: var(--btn-bg);
         color: white;
         border: none;
         border-radius: 50%;
         width: 40px;
         height: 40px;
-        font-size: 1.2em;
         cursor: pointer;
         display: flex;
         align-items: center;
@@ -98,36 +95,21 @@
         margin: 0;
         transition: all 0.3s;
       }
-
-      #themeToggle:hover {
+      .icon-btn:hover {
         background: var(--btn-hover);
         transform: scale(1.1);
+      }
+
+      #themeToggle {
+        right: 65px;
+        top: 15px;
+        font-size: 1.2em;
       }
 
       #helpBtn {
-        position: absolute;
         right: 15px;
         top: 15px;
-        background: var(--btn-bg);
-        color: white;
-        border: none;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
         font-size: 1.1em;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
-        padding: 0;
-        margin: 0;
-        transition: all 0.3s;
-      }
-
-      #helpBtn:hover {
-        background: var(--btn-hover);
-        transform: scale(1.1);
       }
 
       .layout {
@@ -137,8 +119,7 @@
         padding: 20px;
       }
 
-      .left,
-      .right {
+      .left, .right {
         background: var(--card);
         border-radius: 12px;
         padding: 20px;
@@ -151,7 +132,7 @@
         position: relative;
         display: flex;
         flex-direction: column;
-        overflow: hidden; /* Забрати scroll з .left */
+        overflow: hidden;
       }
       
       .right {
@@ -160,7 +141,6 @@
         overflow-y: auto;
       }
 
-      /* Scrollable table container */
       .table-container {
         flex: 1;
         overflow-y: auto;
@@ -169,7 +149,6 @@
         border-radius: 8px;
       }
 
-      /* Fixed buttons at bottom */
       .fixed-buttons {
         flex-shrink: 0;
         padding-top: 10px;
@@ -177,10 +156,9 @@
         background: var(--card);
         display: flex;
         flex-direction: column;
-        align-items: center; /* Центрувати кнопки */
+        align-items: center;
       }
 
-      /* Кнопка "Прокрутити до останнього" */
       .scroll-to-latest {
         position: sticky;
         bottom: 30px;
@@ -204,7 +182,7 @@
         gap: 8px;
         margin: 0 auto;
         width: fit-content;
-        margin-top: -60px; /* Підняти вгору щоб не займала місце в потоці */
+        margin-top: -60px;
       }
 
       .scroll-to-latest.visible {
@@ -225,8 +203,7 @@
         margin-top: 10px;
       }
 
-      th,
-      td {
+      th, td {
         text-align: center;
         padding: 10px 8px;
         border-bottom: 1px solid var(--border);
@@ -238,7 +215,6 @@
         font-size: 0.9em;
         color: var(--text);
       }
-
       tr:hover {
         background: var(--table-hover);
         cursor: help;
@@ -291,7 +267,6 @@
         margin: 0;
         transition: all 0.3s;
       }
-
       #back:hover {
         background: var(--btn-hover);
         transform: scale(1.1);
@@ -396,10 +371,12 @@
         color: white;
         border-color: var(--btn-hover);
       }
+
       .mode-btn-wrap {
         position: relative;
         flex: 1;
       }
+
       .mode-tooltip {
         display: none;
         position: absolute;
@@ -417,6 +394,7 @@
         box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         pointer-events: none;
       }
+
       .mode-tooltip::after {
         content: '';
         position: absolute;
@@ -426,6 +404,7 @@
         border: 6px solid transparent;
         border-top-color: var(--tooltip-bg);
       }
+
       .mode-btn-wrap:hover .mode-tooltip {
         display: block;
       }
@@ -511,7 +490,6 @@
         color: var(--text);
         line-height: 1;
       }
-
       .close-btn:hover {
         color: var(--btn-bg);
         transform: scale(1.1);
@@ -541,7 +519,6 @@
         color: var(--text);
       }
 
-      /* === INLINE QUIZ INPUT STYLES === */
       .quiz-input-cell {
         display: flex;
         flex-direction: column;
@@ -549,8 +526,7 @@
         gap: 3px;
       }
 
-      .quiz-input,
-      select.quiz-input {
+      .quiz-input, select.quiz-input {
         width: 80px;
         padding: 5px 7px;
         border: 2px solid var(--btn-bg);
@@ -611,7 +587,6 @@
         line-height: 1.2;
       }
 
-      /* Quiz check button in fixed-buttons area */
       #checkQuizBtn {
         display: none;
         background: #ff9800;
@@ -625,7 +600,6 @@
         width: 100%;
         transition: background 0.2s;
       }
-
       #checkQuizBtn:hover {
         background: #e65100;
       }
@@ -675,8 +649,6 @@
         25% { transform: translateX(-5px); }
         75% { transform: translateX(5px); }
       }
-
-      /* === END INLINE QUIZ INPUT STYLES === */
 
       .feedback.correct {
         background: #c8e6c9;
@@ -835,10 +807,177 @@
         background: var(--btn-bg);
         color: white;
       }
-
       .result-btn.secondary:hover {
         background: var(--btn-hover);
         transform: translateY(-2px);
+      }
+
+      .stepper-wrapper {
+        width: 100%;
+        padding: 10px 0 4px;
+        border-top: 1px solid var(--border);
+        margin-top: 8px;
+      }
+
+      .stepper {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        position: relative;
+        padding: 0 10px;
+      }
+
+      .stepper-line {
+        position: absolute;
+        top: 13px;
+        left: calc(16.66% + 10px);
+        right: calc(16.66% + 10px);
+        height: 2px;
+        background: var(--btn-bg);
+        z-index: 0;
+      }
+
+      .stepper-step {
+        flex: 1;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+      }
+
+      .step-circle {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        margin: 0 auto 3px;
+      }
+
+      .step-circle.done {
+        background: #4caf50;
+        color: white;
+        font-size: 0.8em;
+        box-shadow: 0 2px 5px rgba(76,175,80,0.4);
+      }
+
+      .step-circle.active {
+        background: var(--btn-bg);
+        color: white;
+        font-size: 0.85em;
+        box-shadow: 0 2px 5px rgba(33,150,243,0.4);
+      }
+
+      .step-label {
+        font-size: 0.68em;
+        color: var(--text);
+      }
+
+      .step-label.active {
+        font-weight: 600;
+      }
+
+      .explain-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.55);
+        z-index: 4000;
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn 0.2s;
+      }
+
+      .explain-overlay.active {
+        display: flex;
+      }
+
+      .explain-box {
+        background: var(--card);
+        border-radius: 14px;
+        padding: 28px 32px;
+        max-width: 420px;
+        width: 90%;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+        animation: slideDown 0.25s;
+        border-top: 4px solid #f44336;
+      }
+
+      .explain-icon {
+        font-size: 1.6em;
+        text-align: center;
+        margin-bottom: 10px;
+      }
+
+      .explain-title {
+        font-size: 1.15em;
+        font-weight: 700;
+        color: #c62828;
+        text-align: center;
+        margin-bottom: 16px;
+      }
+
+      .explain-body {
+        font-size: 0.95em;
+        color: var(--text);
+        line-height: 1.7;
+        background: var(--theory-bg);
+        border-left: 4px solid var(--theory-border);
+        padding: 12px 16px;
+        border-radius: 6px;
+        margin-bottom: 18px;
+      }
+
+      .explain-correct {
+        font-size: 0.95em;
+        color: var(--text);
+        line-height: 1.7;
+        background: var(--success-bg);
+        border-left: 4px solid #4caf50;
+        padding: 12px 16px;
+        border-radius: 6px;
+        margin-bottom: 20px;
+      }
+
+      .explain-confirm-btn {
+        width: 100%;
+        padding: 12px;
+        background: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1em;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .mode-label {
+        font-size: 0.85em;
+        color: var(--text);
+        opacity: 0.7;
+        margin-bottom: 8px;
+        text-align: center;
+      }
+
+      .table-hint-text {
+        font-size: 0.8em;
+        color: var(--text);
+        opacity: 0.6;
+        padding: 8px;
+        text-align: center;
+      }
+
+      .graphs-label {
+        font-size: 0.9em;
+        color: var(--text);
+        opacity: 0.7;
+        padding: 10px 20px;
+        text-align: center;
+      }
+
+      .hidden {
+        display: none;
       }
     </style>
   </head>
@@ -846,13 +985,10 @@
   <body>
     <header>
       Vizualizácia metódy bisekcie
-      <button id="helpBtn" onclick="showHelp()" title="Nápoveda">❓</button>
-      <button id="themeToggle" onclick="toggleTheme()" title="Zmeniť tému">🌙</button>
+      <button id="helpBtn" class="icon-btn" onclick="showHelp()" title="Nápoveda">❓</button>
+      <button id="themeToggle" class="icon-btn" onclick="toggleTheme()" title="Zmeniť tému">🌙</button>
     </header>
 
-
-
-    <!-- Modal pre teóriu -->
     <div id="theoryModal" class="modal">
       <div class="modal-content">
         <div class="modal-header">
@@ -876,22 +1012,24 @@
 
         <div class="theory-section">
           <h3>🔄 Algoritmus</h3>
+
           <ol>
             <li><strong>Vypočítaj stred:</strong> c = (a + b) / 2</li>
             <li><strong>Vyhodnoť:</strong> f(c)</li>
-            <li><strong>Kontrola presnosti:</strong> Ak |b - a| < tolerancia → KONIEC ✅</li>
+            <li><strong>Kontrola presnosti:</strong> Ak |b - a| ≤ 2·tolerancia → KONIEC ✅</li>
             <li><strong>Rozhodnutie:</strong>
               <ul>
                 <li>Ak f(a) · f(c) < 0 → koreň v [a, c]</li>
                 <li>Inak → koreň v [c, b]</li>
               </ul>
             </li>
+            
             <li><strong>Opakuj</strong></li>
           </ol>
           
           <div class="explanation-box">
             <strong>⚠️ Dôležité:</strong> Metóda bisekcie kontroluje <strong>dĺžku intervalu |b - a|</strong>, nie hodnotu funkcie |f(c)|!<br>
-            Keď |b - a| < tolerancia, koreň je určený s presnosťou ±tolerancia/2.
+            Keď |b - a| ≤ 2·tolerancia, koreň je určený s presnosťou ±tolerancia.
           </div>
         </div>
 
@@ -908,31 +1046,22 @@
           <p>Po <strong>n</strong> iteráciách je chyba aproximácie koreňa ohraničená vzorcom:</p>
           <div class="formula">|cₙ − α| &lt; (b₀ − a₀) / 2ⁿ⁺¹</div>
           <p>kde <strong>α</strong> je skutočný koreň, <strong>b₀ − a₀</strong> je dĺžka počiatočného intervalu.</p>
-          <div class="explanation-box">
-            💡 <strong>Príklad:</strong> Interval [0, 1], po 10 krokoch: chyba &lt; 1 / 2¹¹ ≈ 0.00049
-          </div>
         </div>
 
         <div class="theory-section">
           <h3>⚡ Rýchlosť konvergencie</h3>
-          <p>Metóda bisekcie má <strong>lineárnu konvergenciu</strong> — každý krok zmenší interval presne na polovicu:</p>
+          <p>Metóda bisekcie má <strong>lineárnu konvergenciu</strong> - každý krok zmenší interval presne na polovicu:</p>
           <div class="formula">|bₙ − aₙ| = (b₀ − a₀) / 2ⁿ</div>
-          <div class="explanation-box">
-            ⚠️ <strong>Počet krokov</strong> potrebných na dosiahnutie presnosti ε:<br>
-            n ≥ log₂((b₀ − a₀) / ε) − 1
-          </div>
         </div>
       </div>
     </div>
 
-    <!-- Модальне вікно результату -->
     <div id="resultOverlay" class="result-overlay">
       <div class="result-content">
         <div class="result-icon">🎉</div>
         <div class="result-title" id="resultTitle">Presnosť dosiahnutá!</div>
-        <div class="result-info" id="resultInfo">
-          <!-- Інформація буде додана динамічно -->
-        </div>
+        <div class="result-info" id="resultInfo"></div>
+
         <div class="result-buttons">
           <button class="result-btn secondary" onclick="closeResultOverlay()">Zavrieť</button>
           <button class="result-btn secondary" onclick="window.location.href='history.html'" style="background:#7c3aed;">📋 História</button>
@@ -941,27 +1070,14 @@
       </div>
     </div>
 
-    </div>
-
-    <!-- Mini explanation modal for wrong answers -->
-    <div id="explainOverlay" style="
-      display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55);
-      z-index:4000; align-items:center; justify-content:center; animation: fadeIn 0.2s;">
-      <div id="explainBox" style="
-        background:var(--card); border-radius:14px; padding:28px 32px; max-width:420px; width:90%;
-        box-shadow:0 8px 32px rgba(0,0,0,0.35); animation: slideDown 0.25s;
-        border-top: 4px solid #f44336;">
-        <div style="font-size:1.6em; text-align:center; margin-bottom:10px;">❌</div>
-        <div id="explainTitle" style="font-size:1.15em; font-weight:700; color:#c62828; text-align:center; margin-bottom:16px;"></div>
-        <div id="explainBody" style="font-size:0.95em; color:var(--text); line-height:1.7;
-          background:var(--theory-bg); border-left:4px solid var(--theory-border);
-          padding:12px 16px; border-radius:6px; margin-bottom:18px;"></div>
-        <div id="explainCorrect" style="font-size:0.95em; color:var(--text); line-height:1.7;
-          background:var(--success-bg); border-left:4px solid #4caf50;
-          padding:12px 16px; border-radius:6px; margin-bottom:20px;"></div>
-        <button onclick="closeExplain()" style="
-          width:100%; padding:12px; background:#4caf50; color:white; border:none;
-          border-radius:8px; font-size:1em; font-weight:600; cursor:pointer;">
+    <div id="explainOverlay" class="explain-overlay">
+      <div id="explainBox" class="explain-box">
+        <div class="explain-icon">❌</div>
+        <div id="explainTitle" class="explain-title"></div>
+        <div id="explainBody" class="explain-body"></div>
+        <div id="explainCorrect" class="explain-correct"></div>
+        
+        <button onclick="closeExplain()" class="explain-confirm-btn">
           👍 Rozumiem, pokračujem
         </button>
       </div>
@@ -972,7 +1088,6 @@
       
       <div class="layout">
         <div class="left">
-          
           <div class="info-box" id="infoBox">
             <strong>📊 Nastavenia:</strong><br>
             Rovnica: <span id="equationDisplay"></span> = 0<br>
@@ -980,9 +1095,7 @@
             <span id="methodDisplay"></span>
           </div>
 
-          <div style="font-size: 0.85em; color: var(--text); opacity: 0.7; margin-bottom: 8px; text-align: center;">
-            Vyber režim výpočtu
-          </div>
+          <div class="mode-label">Vyber režim výpočtu</div>
           <div class="mode-selector">
             <div class="mode-btn-wrap">
               <button class="mode-btn" onclick="setMode('auto')" id="autoBtn">
@@ -993,6 +1106,7 @@
                 postupným stlačaním tlačidla „Ďalší“.
               </div>
             </div>
+
             <div class="mode-btn-wrap">
               <button class="mode-btn active" onclick="setMode('mixed')" id="mixedBtn">
                 🎯 S kvízmi
@@ -1004,75 +1118,70 @@
             </div>
           </div>
 
-
-
           <h3>📋 Kroky výpočtu</h3>
           <div style="font-size: 0.85em; color: var(--text); opacity: 0.7; margin-bottom: 10px;">
             💡 Ukáž na číslo kroku pre zobrazenie detailov
           </div>
-          
-          <!-- Scrollable table container -->
+
           <div class="table-container">
             <table>
               <thead>
                 <tr>
                   <th onmouseenter="showTooltip(event, 'Číslo iterácie (kroku)')" onmouseleave="hideTooltip()" style="cursor:help">n</th>
-                  <th onmouseenter="showTooltip(event, 'Ľavá hranica intervalu — aₙ')" onmouseleave="hideTooltip()" style="cursor:help">a<sub>n</sub></th>
+                  <th onmouseenter="showTooltip(event, 'Ľavá hranica intervalu - aₙ')" onmouseleave="hideTooltip()" style="cursor:help">a<sub>n</sub></th>
                   <th onmouseenter="showTooltip(event, 'Stredný bod intervalu:<br>cₙ = (aₙ + bₙ) / 2')" onmouseleave="hideTooltip()" style="cursor:help">c<sub>n</sub></th>
-                  <th onmouseenter="showTooltip(event, 'Pravá hranica intervalu — bₙ')" onmouseleave="hideTooltip()" style="cursor:help">b<sub>n</sub></th>
+                  <th onmouseenter="showTooltip(event, 'Pravá hranica intervalu - bₙ')" onmouseleave="hideTooltip()" style="cursor:help">b<sub>n</sub></th>
                   <th onmouseenter="showTooltip(event, 'Súčin funkčných hodnôt:<br>f(aₙ)·f(cₙ) &lt; 0 → koreň v [aₙ, cₙ]<br>f(aₙ)·f(cₙ) &gt; 0 → koreň v [cₙ, bₙ]')" onmouseleave="hideTooltip()" style="cursor:help">f(a<sub>n</sub>)·f(c<sub>n</sub>)</th>
-                  <th id="intervalHeader" onmouseenter="showTooltip(event, 'Dĺžka aktuálneho intervalu — kritérium zastavenia pre metódu presnosti')" onmouseleave="hideTooltip()" style="cursor:help">|b<sub>n</sub> − a<sub>n</sub>|</th>
-                  <th id="errorHeader" onmouseenter="showTooltip(event, 'Odhad chyby aproximácie koreňa:<br>|cₙ − α| &lt; (b₀ − a₀) / 2ⁿ⁺¹')" onmouseleave="hideTooltip()" style="cursor:help; display:none">|b<sub>n</sub>−a<sub>n</sub>| / 2</th>
+                  <th id="intervalHeader" onmouseenter="showTooltip(event, 'Dĺžka aktuálneho intervalu')" onmouseleave="hideTooltip()" style="cursor:help">|b<sub>n</sub> &minus; a<sub>n</sub>|</th>
                 </tr>
               </thead>
               <tbody id="stepsBody"></tbody>
             </table>
           </div>
           
-          <div id="tableHint" style="font-size: 0.8em; color: var(--text); opacity: 0.6; padding: 8px; text-align: center;">
+          <div id="tableHint" class="table-hint-text">
             💡 Klikni na číslo kroku pre zobrazenie detailov
           </div>
 
-          <!-- Fixed buttons at bottom -->
           <div class="fixed-buttons">
             <div class="btn-row">
-              <button id="checkQuizBtn" onclick="checkInlineQuiz()" title="Skontroluj správnosť zadaných hodnôt">✅ Skontrolovať</button>
+              <button id="checkQuizBtn" onclick="checkInlineQuiz()">✅ Skontrolovať</button>
             </div>
+
             <div class="btn-row">
               <button class="btn" id="nextBtn" onclick="nextStep()" title="Vypočítaj ďalší krok metódy bisekcie">➡️ Ďalší</button>
               <button class="btn btn-reset" onclick="reset()" title="Začni výpočet odznova">🔄 Reset</button>
             </div>
-            <!-- Progress indicator -->
-            <div style="width:100%; padding: 10px 0 4px; border-top: 1px solid var(--border); margin-top: 8px;">
-              <div style="display: flex; justify-content: space-between; align-items: flex-start; position: relative; padding: 0 10px;">
-                <div style="position: absolute; top: 13px; left: calc(16.66% + 10px); right: calc(16.66% + 10px); height: 2px; background: var(--border); z-index: 0;"></div>
-                <div style="position: absolute; top: 13px; left: calc(16.66% + 10px); right: calc(16.66% + 10px); height: 2px; background: var(--btn-bg); z-index: 0;"></div>
-                <div style="flex:1; text-align:center; position:relative; z-index:1;">
-                  <div style="width:24px; height:24px; border-radius:50%; background:#4caf50; color:white; display:flex; align-items:center; justify-content:center; font-weight:600; font-size:0.8em; margin:0 auto 3px; box-shadow:0 2px 5px rgba(76,175,80,0.4);">✓</div>
-                  <div style="font-size:0.68em; color:var(--text-secondary);">Funkcia</div>
+
+            <div class="stepper-wrapper">
+              <div class="stepper">
+                <div class="stepper-line"></div>
+
+                <div class="stepper-step">
+                  <div class="step-circle done">✓</div>
+                  <div class="step-label">Zadanie funkcie</div>
                 </div>
-                <div style="flex:1; text-align:center; position:relative; z-index:1;">
-                  <div style="width:24px; height:24px; border-radius:50%; background:#4caf50; color:white; display:flex; align-items:center; justify-content:center; font-weight:600; font-size:0.8em; margin:0 auto 3px; box-shadow:0 2px 5px rgba(76,175,80,0.4);">✓</div>
-                  <div style="font-size:0.68em; color:var(--text-secondary);">Interval</div>
+
+                <div class="stepper-step">
+                  <div class="step-circle done">✓</div>
+                  <div class="step-label">Interval</div>
                 </div>
-                <div style="flex:1; text-align:center; position:relative; z-index:1;">
-                  <div style="width:24px; height:24px; border-radius:50%; background:var(--btn-bg); color:white; display:flex; align-items:center; justify-content:center; font-weight:600; font-size:0.85em; margin:0 auto 3px; box-shadow:0 2px 5px rgba(33,150,243,0.4);">3</div>
-                  <div style="font-size:0.68em; font-weight:600; color:var(--text);">Výpočet</div>
+
+                <div class="stepper-step">
+                  <div class="step-circle active">3</div>
+                  <div class="step-label active">Výpočet</div>
                 </div>
               </div>
             </div>
           </div>
-
-
         </div>
 
         <div class="right">
-          <div style="font-size: 0.9em; color: var(--text); opacity: 0.7; padding: 10px 20px; text-align: center;">
+          <div class="graphs-label">
             📊 Grafické znázornenie každého kroku • Červený interval sa postupne zmenšuje
           </div>
-          <div id="graphsContainer" style="display: flex; flex-direction: column; gap: 20px;">
-            <!-- Графіки будуть додаватись динамічно -->
-          </div>
+          <div id="graphsContainer" style="display: flex; flex-direction: column; gap: 20px;"></div>
+          
           <button class="scroll-to-latest" id="scrollToLatestBtn" onclick="scrollToLatestManually()">
             ⬇️ Aktuálny krok
           </button>
@@ -1087,34 +1196,35 @@
       let mode = 'mixed';
       let waitingForQuiz = false;
       let currentC, currentFc;
-      let stopMethod = 'precision'; // 'precision' alebo 'steps'
-      let maxSteps = 10; // Максимálna kількість кроків
+      let stopMethod = 'precision'; // 'precision' || 'steps'
+      let maxSteps = 10;
 
-      // === INLINE QUIZ STATE ===
-      const INLINE_QUIZ_STEPS = 3; // Kroky 0,1,2 majú inline quiz
-      let inlineQuizActive = false;   // Čakáme na odpoveď používateľa
-      let inlineQuizChecked = false;  // Bol inline quiz tohto kroku skontrolovaný?
-      let inlineQuizField = 0;        // Aktuálne pole: 0=cₙ, 1=znak, 2=dlzka
+      const INLINE_QUIZ_STEPS = 3;
+      let inlineQuizActive = false;
+      let inlineQuizChecked = false;
+      let inlineQuizField = 0;
 
-      // Spotify-style auto-scroll
       let userScrolled = false;
       let lastAutoScrollTime = 0;
       let isAutoScrolling = false;
-      let savedScrollPosition = 0; // Зберігати позицію коли користувач скролить
+      let savedScrollPosition = 0;
 
-      // Для таблиці
       let tableUserScrolled = false;
-      
-      // Для повторного відкриття вікна результату
-      let lastResultData = null;
 
-      console.log('🚀 Initial state: userScrolled =', userScrolled);
+      let lastResultData = null;
+      let savedToHistory = false;
 
       const expr = localStorage.getItem("functionExpr");
       if (!expr) window.location.href = "menu.html";
       const exprOriginal = localStorage.getItem("functionOriginal") || expr;
 
-      // Beautify JS expression back to readable math
+      function isSafeExpr(expression) {
+        return /^[\dx\s\+\-\*\/\^\(\)\.\,_a-zA-Z]+$/.test(expression) &&
+          !/\b(?:fetch|alert|eval|Function|localStorage|document|window|import|require)\b/.test(expression);
+      }
+
+      if (!isSafeExpr(expr)) window.location.href = "menu.html";
+
       function beautifyExpr(e) {
         return e
           .replace(/Math\.sin\(/g,'sin(').replace(/Math\.cos\(/g,'cos(')
@@ -1123,10 +1233,9 @@
           .replace(/Math\.abs\(/g,'|').replace(/\*\*/g,'^').replace(/\*/g,'·');
       }
 
-      // Format a substituted expression: replace x with value
       function formatSubstituted(xVal, dp) {
         const v = xVal.toFixed(dp);
-        // use original user expression for display
+
         return exprOriginal
           .replace(/\bx\b/g, `(${v})`);
       }
@@ -1142,15 +1251,12 @@
         return parseFloat(str.toString().replace(",", "."));
       }
       
-      // Завантажити метод зупинки
       stopMethod = localStorage.getItem("stopMethod") || 'precision';
       
       if (stopMethod === 'precision') {
-        // Завантажити точність з localStorage
         const savedPrecision = localStorage.getItem("precision");
         tol = savedPrecision ? parseFloat(savedPrecision) : (normalizeNumber(localStorage.getItem("tol")) || 0.001);
       } else if (stopMethod === 'steps') {
-        // Завантажити максимальну кількість кроків
         const savedMaxSteps = localStorage.getItem("maxSteps");
         maxSteps = savedMaxSteps ? parseInt(savedMaxSteps) : 10;
       }
@@ -1159,53 +1265,53 @@
       document.getElementById("intervalB").textContent = b0.toFixed(2);
       document.getElementById("equationDisplay").textContent = exprOriginal;
       
-      // Відобразити обраний метод
       const methodDisplay = document.getElementById("methodDisplay");
       if (stopMethod === 'precision') {
-        methodDisplay.innerHTML = `⚙️ Presnosť: <strong>${tol}</strong>`;
+        methodDisplay.innerHTML = `📏 Presnosť: <strong>${tol}</strong>`;
       } else if (stopMethod === 'steps') {
         methodDisplay.innerHTML = `🔢 Počet krokov: <strong>${maxSteps}</strong>`;
       }
 
-      // Тема
       function loadTheme() {
-        const theme = localStorage.getItem('theme') || 'light';
-        if (theme === 'dark') {
-          document.body.classList.add('dark');
-          document.getElementById('themeToggle').textContent = '☀️';
-        }
+        try {
+          const theme = localStorage.getItem('theme') || 'light';
+
+          if (theme === 'dark') {
+            document.body.classList.add('dark');
+            document.getElementById('themeToggle').textContent = '☀️';
+          }
+        } catch(e) {}
       }
 
       function toggleTheme() {
         document.body.classList.toggle('dark');
         const isDark = document.body.classList.contains('dark');
         document.getElementById('themeToggle').textContent = isDark ? '☀️' : '🌙';
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+
+        try {
+          localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        } catch(e) {}
+
         updateGraph();
       }
 
       loadTheme();
 
-      // Spotify-style auto-scroll: відстеження користувацького скролу
       function setupAutoScroll() {
         const rightPanel = document.querySelector('.right');
         const scrollBtn = document.getElementById('scrollToLatestBtn');
+
         if (!rightPanel) return;
 
-        console.log('🎯 Setting up auto-scroll listeners');
-
-        // Відстежувати ТІЛЬКИ ручний скрол (колесо миші або тач)
         rightPanel.addEventListener('wheel', function(e) {
-          // Якщо скрол вгору
           if (e.deltaY < 0) {
-            console.log('🖱️ Mouse wheel UP - disabling auto-scroll');
             userScrolled = true;
-            savedScrollPosition = rightPanel.scrollTop; // Зберегти позицію
+            savedScrollPosition = rightPanel.scrollTop;
+
             if (scrollBtn) scrollBtn.classList.add('visible');
           }
         }, { passive: true });
 
-        // Для touch пристроїв
         let touchStartY = 0;
         rightPanel.addEventListener('touchstart', function(e) {
           touchStartY = e.touches[0].clientY;
@@ -1214,31 +1320,26 @@
         rightPanel.addEventListener('touchmove', function(e) {
           const touchY = e.touches[0].clientY;
           const deltaY = touchY - touchStartY;
-          
-          // Якщо свайп вниз (скрол вгору по контенту)
+
           if (deltaY > 10) {
-            console.log('👆 Touch scroll UP - disabling auto-scroll');
             userScrolled = true;
-            savedScrollPosition = rightPanel.scrollTop; // Зберегти позицію
+            savedScrollPosition = rightPanel.scrollTop;
+
             if (scrollBtn) scrollBtn.classList.add('visible');
           }
         }, { passive: true });
 
-        // Відстежувати scroll подію для автоматичного відновлення автоскролу
         rightPanel.addEventListener('scroll', function() {
-          // Ігнорувати якщо іде автоскрол
           if (isAutoScrolling) return;
           
-          // Перевірити чи користувач біля низу
           const scrollHeight = rightPanel.scrollHeight;
           const scrollTop = rightPanel.scrollTop;
           const clientHeight = rightPanel.clientHeight;
           const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
-          
-          // Якщо користувач прокрутив до низу (менше 50px від кінця)
+
           if (distanceFromBottom < 50 && userScrolled) {
-            console.log('✅ User reached bottom - re-enabling auto-scroll');
             userScrolled = false;
+
             if (scrollBtn) {
               scrollBtn.classList.remove('visible');
             }
@@ -1246,22 +1347,16 @@
         });
       }
 
-      // Автоскрол для таблиці ітерацій
       function setupTableAutoScroll() {
         const tableContainer = document.querySelector('.table-container');
         if (!tableContainer) return;
 
-        console.log('📊 Setting up table auto-scroll listeners');
-
-        // Відстежувати ручний скрол таблиці
         tableContainer.addEventListener('wheel', function(e) {
           if (e.deltaY < 0) {
-            console.log('📋 Table wheel UP - disabling table auto-scroll');
             tableUserScrolled = true;
           }
         }, { passive: true });
 
-        // Для touch
         let touchStartY = 0;
         tableContainer.addEventListener('touchstart', function(e) {
           touchStartY = e.touches[0].clientY;
@@ -1272,12 +1367,10 @@
           const deltaY = touchY - touchStartY;
           
           if (deltaY > 10) {
-            console.log('📋 Table touch UP - disabling table auto-scroll');
             tableUserScrolled = true;
           }
         }, { passive: true });
 
-        // Відстежувати коли користувач досягає низу таблиці
         tableContainer.addEventListener('scroll', function() {
           const scrollHeight = tableContainer.scrollHeight;
           const scrollTop = tableContainer.scrollTop;
@@ -1285,78 +1378,56 @@
           const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
           
           if (distanceFromBottom < 30 && tableUserScrolled) {
-            console.log('✅ Table bottom reached - re-enabling table auto-scroll');
             tableUserScrolled = false;
           }
         });
       }
 
-      // Ручний скрол до останнього графіка
       function scrollToLatestManually() {
-        console.log('🔘 Button clicked - re-enabling auto-scroll');
         userScrolled = false;
-        
-        // Сховати кнопку
+
         const scrollBtn = document.getElementById('scrollToLatestBtn');
         if (scrollBtn) {
           scrollBtn.classList.remove('visible');
-          console.log('🔘 Button hidden');
         }
-        
-        // Скролити до останнього
+
         autoScrollToLatest();
       }
 
-      // Автоматичний скрол до останнього графіка
       function autoScrollToLatest() {
-        console.log('📊 autoScrollToLatest called, userScrolled:', userScrolled);
-        
         const rightPanel = document.querySelector('.right');
         if (!rightPanel) {
-          console.log('❌ No right panel');
           return;
         }
         
         if (userScrolled) {
-          console.log('⛔ Auto-scroll BLOCKED by userScrolled flag');
           return;
         }
 
         const container = document.getElementById('graphsContainer');
         if (!container) {
-          console.log('❌ No container');
           return;
         }
 
         const graphs = container.children;
         if (graphs.length === 0) {
-          console.log('❌ No graphs yet');
           return;
         }
 
-        // Скролити до останнього графіка
         const lastGraph = graphs[graphs.length - 1];
-        
-        // Обчислити позиції
+
         const targetScrollTop = lastGraph.offsetTop - 20;
         const startScrollTop = rightPanel.scrollTop;
         const distance = targetScrollTop - startScrollTop;
         
-        console.log('🎯 Custom smooth scroll to graph #' + graphs.length);
-        console.log('   From:', startScrollTop, 'To:', targetScrollTop, 'Distance:', distance);
-        
-        // Якщо вже там - не скролити
         if (Math.abs(distance) < 10) {
-          console.log('✅ Already at target position');
           return;
         }
-        
-        // Встановити прапорець що йде автоскрол
+
         isAutoScrolling = true;
         lastAutoScrollTime = Date.now();
-        
-        // Кастомна плавна анімація
-        const duration = 400; // 400ms
+
+        const duration = 400;
         const startTime = performance.now();
         
         function easeInOutQuad(t) {
@@ -1366,35 +1437,25 @@
         function animateScroll(currentTime) {
           const elapsed = currentTime - startTime;
           const progress = Math.min(elapsed / duration, 1);
-          
-          // Easing функція для плавності
+
           const easeProgress = easeInOutQuad(progress);
-          
-          // Обчислити поточну позицію
+
           const currentScroll = startScrollTop + (distance * easeProgress);
           rightPanel.scrollTop = currentScroll;
-          
-          console.log('   Progress:', (progress * 100).toFixed(0) + '%', 'Scroll:', currentScroll.toFixed(0));
-          
-          // Продовжити анімацію якщо не закінчили
+
           if (progress < 1) {
             requestAnimationFrame(animateScroll);
           } else {
             isAutoScrolling = false;
-            console.log('✅ Custom scroll animation completed');
           }
         }
-        
-        // Почати анімацію
+
         requestAnimationFrame(animateScroll);
       }
 
-      // Ініціалізувати auto-scroll
       setupAutoScroll();
       setupTableAutoScroll();
       
-      // Ініціалізувати таблицю (показати крок 0)
-      // У режимі S kvízmi — одразу показати поля вводу для кроку 1
       if (mode === 'mixed') {
         currentC = (a + b) / 2;
         currentFc = f(currentC);
@@ -1430,13 +1491,16 @@
           const msg = sameMode
             ? `⚠️ Reštart režimu vymaže aktuálny postup!\n\nMáte ${steps.length} ${steps.length === 1 ? 'krok' : 'krokov'}.\n\nPokračovať?`
             : `⚠️ Zmena režimu vymaže aktuálny postup!\n\nMáte ${steps.length} ${steps.length === 1 ? 'krok' : 'krokov'}.\n\nPokračovať?`;
+
           if (!confirm(msg)) return;
         }
+
         mode = newMode;
         document.getElementById('autoBtn').classList.toggle('active', mode === 'auto');
         document.getElementById('mixedBtn').classList.toggle('active', mode === 'mixed');
+
         reset(true);
-        // V režime S kvízmi — okamžite zobraziť polia pre krok 1
+
         if (mode === 'mixed') {
           currentC = (a + b) / 2;
           currentFc = f(currentC);
@@ -1454,22 +1518,22 @@
         document.getElementById('theoryModal').style.display = 'none';
       }
 
-      window.onclick = function(event) {
+      window.addEventListener('click', function(event) {
         if (event.target == document.getElementById('theoryModal')) {
           closeHelp();
         }
-      }
+      });
 
       function generateExplanation(step, stepNumber) {
         const fa = f(step.a);
         const fc = step.fc;
         const prod = fa * fc;
         const intervalLength = Math.abs(step.b - step.a);
-        
-        // Обчислити кількість знаків після коми
-        let decimalPlaces = 3; // За замовчуванням для методу кроків
+
+        let decimalPlaces = 3;
         if (stopMethod === 'precision') {
           const tolStr = tol.toString();
+
           if (tolStr.includes('.')) {
             const afterDot = tolStr.split('.')[1].length;
             decimalPlaces = afterDot + 2;
@@ -1479,44 +1543,39 @@
         }
         
         let exp = `<strong>Krok ${step.i}:</strong><br>`;
-        exp += `c = (${step.a.toFixed(decimalPlaces)} + ${step.b.toFixed(decimalPlaces)}) / 2<br>`;
-        exp += `c = ${step.c.toFixed(decimalPlaces)}<br>`;
+        exp += `c = (${step.a.toFixed(decimalPlaces)} + ${step.b.toFixed(decimalPlaces)}) / 2 = ${step.c.toFixed(decimalPlaces)}<br>`;
         exp += `|b - a| = ${intervalLength.toFixed(decimalPlaces)}<br><br>`;
         
         if (stopMethod === 'precision' && intervalLength <= 2 * tol) {
-          exp += `✅ |b - a| = ${intervalLength.toFixed(decimalPlaces)} ≤ 2·${tol} = ${(2*tol).toFixed(decimalPlaces)}<br>`;
+          exp += `✅ |b - a| = ${intervalLength.toFixed(decimalPlaces)} ≤ 2·${tol}<br>`;
           exp += `<strong>Presnosť dosiahnutá!</strong>`;
         } else if (stopMethod === 'steps' && step.i === maxSteps) {
-          // Правильна формула: |c_n - α| < (b₀ - a₀) / 2^(n+1)
           const initialInterval = Math.abs(b0 - a0);
           const error = initialInterval / Math.pow(2, step.i + 1);
+
           const minRoot = step.c - error;
           const maxRoot = step.c + error;
-          exp += `✅ Dosiahnutý maximálny počet krokov (${maxSteps})<br>`;
-          exp += `Chyba: (b₀-a₀)/2ⁿ⁺¹ = ±${smartFixed(error, decimalPlaces)}<br>`;
-          exp += `<br><em>Koreň α je v intervale:</em><br>`;
-          exp += `${smartFixed(minRoot, decimalPlaces)} < α < ${smartFixed(maxRoot, decimalPlaces)}<br>`;
+
+          exp += `✅ Dosiahnutý zadaný počet krokov (${maxSteps})<br>`;
+          exp += `Chyba: (b₀−a₀)/2ⁿ⁺¹ = ±${smartFixed(error, decimalPlaces)}<br>`;
+          exp += `<em>${smartFixed(minRoot, decimalPlaces)} < α < ${smartFixed(maxRoot, decimalPlaces)}</em><br>`;
           exp += `<strong>Výpočet ukončený!</strong>`;
-        } else if (stopMethod === 'steps' && step.i > 0) {
-          exp += `f(a) = ${fa.toFixed(decimalPlaces)} ${fa > 0 ? '➕' : '➖'}<br>`;
-          exp += `f(c) = ${fc.toFixed(decimalPlaces)} ${fc > 0 ? '➕' : '➖'}<br>`;
-          exp += `f(a)·f(c) = ${prod.toFixed(decimalPlaces)}<br><br>`;
-          if (prod < 0) {
-            exp += `→ Rôzne znamienka<br>Koreň v [a, c]<br><br>`;
-          } else {
-            exp += `→ Rovnaké znamienka<br>Koreň v [c, b]<br><br>`;
-          }
-          const error = Math.abs(b0 - a0) / Math.pow(2, stepNumber + 1);
-          exp += `Chyba: (b₀-a₀)/2ⁿ⁺¹ = ±${smartFixed(error, decimalPlaces)}`;
         } else {
           exp += `f(a) = ${fa.toFixed(decimalPlaces)} ${fa > 0 ? '➕' : '➖'}<br>`;
           exp += `f(c) = ${fc.toFixed(decimalPlaces)} ${fc > 0 ? '➕' : '➖'}<br>`;
-          exp += `f(a)·f(c) = ${prod.toFixed(decimalPlaces)}<br><br>`;
-          
+          exp += `f(a)·f(c) = ${prod.toFixed(decimalPlaces)}<br>`;
+
           if (prod < 0) {
-            exp += `→ Rôzne znamienka<br>Koreň v [a, c]`;
+            exp += `→ Rôzne znamienka → Koreň v [a, c]<br>`;
           } else {
-            exp += `→ Rovnaké znamienka<br>Koreň v [c, b]`;
+            exp += `→ Rovnaké znamienka → Koreň v [c, b]<br>`;
+          }
+          
+          if (stopMethod === 'steps') {
+            const error = Math.abs(b0 - a0) / Math.pow(2, stepNumber + 1);
+            exp += `<br>Chyba: (b₀−a₀)/2ⁿ⁺¹ = ±${smartFixed(error, decimalPlaces)}`;
+          } else {
+            exp += `<br>|b − a| = ${intervalLength.toFixed(decimalPlaces)}, nie je ≤ 2·${tol}`;
           }
         }
         
@@ -1529,6 +1588,7 @@
             ? "⚠️ Presnosť dosiahnutá. Použite Reset."
             : "⚠️ Počet krokov dosiahnutý. Použite Reset.";
           alert(msg);
+
           return;
         }
 
@@ -1536,7 +1596,6 @@
         currentFc = f(currentC);
         const fa = f(a);
 
-        // Перевірка зупинки залежно від методу
         let shouldStop = false;
         
         if (stopMethod === 'precision') {
@@ -1555,27 +1614,27 @@
           setTimeout(() => {
             showResultOverlay(currentC, currentFc, a, b, steps.length, stopMethod);
           }, 300);
+
           return;
         }
 
-        // === INLINE QUIZ: for steps 0,1,2 in mixed mode ===
-        const nextStepNumber = steps.length; // 0-based
+        const nextStepNumber = steps.length;
         if (mode === 'mixed' && nextStepNumber < INLINE_QUIZ_STEPS) {
           inlineQuizActive = true; inlineQuizField = 0;
           inlineQuizChecked = false;
           updateTable();
           updateButtons();
+
           return;
         }
 
-        // Auto mode OR steps beyond INLINE_QUIZ_STEPS — proceed automatically
         steps.push({ i: steps.length + 1, a, b, c: currentC, fc: currentFc });
         if (fa * currentFc < 0) { b = currentC; } else { a = currentC; }
+
         updateTable();
         updateGraph();
       }
 
-      // ---- MINI EXPLANATION MODAL ----
       let explainCallback = null;
 
       function showExplain(title, body, correct, onClose) {
@@ -1583,22 +1642,22 @@
         document.getElementById('explainBody').innerHTML = body;
         document.getElementById('explainCorrect').innerHTML = correct;
         explainCallback = onClose || null;
-        const el = document.getElementById('explainOverlay');
-        el.style.display = 'flex';
+        document.getElementById('explainOverlay').classList.add('active');
       }
 
       function closeExplain() {
-        document.getElementById('explainOverlay').style.display = 'none';
+        document.getElementById('explainOverlay').classList.remove('active');
         if (explainCallback) { explainCallback(); explainCallback = null; }
       }
 
-      // ---- INLINE QUIZ CHECK ----
       function getDecimalPlaces() {
         if (stopMethod === 'precision') {
           const tolStr = tol.toString();
           if (tolStr.includes('.')) return tolStr.split('.')[1].length + 2;
+
           return 2;
         }
+
         return 3;
       }
 
@@ -1615,20 +1674,23 @@
         const btn = document.getElementById('checkQuizBtn');
 
         if (inlineQuizField === 0) {
-          // Check cₙ
           const inputC = document.getElementById('inlineInput_c');
           if (!inputC) return;
+
           const userC = parseFloat(inputC.value.replace(',', '.'));
+
           const ok = !isNaN(userC) && Math.abs(userC - correctC) < thr;
           if (ok) {
             inputC.classList.remove('incorrect'); inputC.classList.add('correct');
             inputC.readOnly = true;
             inlineQuizField = 1;
+
             updateTable();
             btn.textContent = '✅ Skontrolovať'; btn.style.background = '';
           } else {
             inputC.classList.add('incorrect');
             inputC.style.animation = 'none';
+
             setTimeout(() => { inputC.style.animation = 'shake 0.3s'; }, 10);
             showExplain(
               'Nesprávna hodnota cₙ',
@@ -1638,8 +1700,13 @@
               `✅ Správna hodnota: <strong>c = (${a.toFixed(decimalPlaces)} + ${b.toFixed(decimalPlaces)}) / 2 = ${correctC.toFixed(decimalPlaces)}</strong>`,
               () => {
                 const el = document.getElementById('inlineInput_c');
-                if (el) { el.value = correctC.toFixed(decimalPlaces); el.classList.add('revealed'); el.readOnly = true; }
+                if (el) { 
+                  el.value = correctC.toFixed(decimalPlaces); 
+                  el.classList.add('revealed'); 
+                  el.readOnly = true; 
+                }
                 inlineQuizField = 1;
+
                 updateTable();
                 btn.textContent = '✅ Skontrolovať'; btn.style.background = '';
               }
@@ -1647,20 +1714,24 @@
           }
 
         } else if (inlineQuizField === 1) {
-          // Check sign
           const inputSign = document.getElementById('inlineInput_sign');
           if (!inputSign) return;
+
           const userSign = inputSign.value;
+
           const ok = userSign === correctSignStr;
           if (ok) {
             inputSign.classList.remove('incorrect'); inputSign.classList.add('correct');
             inputSign.disabled = true;
             inlineQuizField = 2;
+
             updateTable();
             btn.textContent = '✅ Skontrolovať'; btn.style.background = '';
           } else {
             inputSign.classList.add('incorrect');
+
             const signLabel = s => s === '--' ? '−−' : s === '-+' ? '−+' : s === '+-' ? '+−' : '++';
+
             showExplain(
               'Nesprávne znamienko',
               `Musíš zistiť znamienko <strong>f(a)</strong> a znamienko <strong>f(c)</strong>:<br><br>
@@ -1671,8 +1742,13 @@
               `✅ Správna kombinácia: <strong>${signLabel(correctSignStr)}</strong>`,
               () => {
                 const el = document.getElementById('inlineInput_sign');
-                if (el) { el.value = correctSignStr; el.classList.add('revealed'); el.disabled = true; }
+                if (el) { 
+                  el.value = correctSignStr; 
+                  el.classList.add('revealed'); 
+                  el.disabled = true; 
+                }
                 inlineQuizField = 2;
+
                 updateTable();
                 btn.textContent = '✅ Skontrolovať'; btn.style.background = '';
               }
@@ -1680,40 +1756,48 @@
           }
 
         } else if (inlineQuizField === 2) {
-          // Check |b - a|
           const inputLen = document.getElementById('inlineInput_len');
           if (!inputLen) return;
-          const userLen = parseFloat(inputLen.value.replace(',', '.'));
-          const ok = !isNaN(userLen) && Math.abs(userLen - correctInterval) < thr;
+
+          const userVal = parseFloat(inputLen.value.replace(',', '.'));
+          
+          const ok = !isNaN(userVal) && Math.abs(userVal - correctInterval) < thr;
           if (ok) {
             inputLen.classList.remove('incorrect'); inputLen.classList.add('correct');
             inputLen.readOnly = true;
             inlineQuizField = 3;
+
             btn.textContent = '✅ Správne! Pokračovať →';
             btn.style.background = '#4caf50';
+
             btn.onclick = confirmInlineQuiz;
           } else {
             inputLen.classList.add('incorrect');
             inputLen.style.animation = 'none';
+
             setTimeout(() => { inputLen.style.animation = 'shake 0.3s'; }, 10);
             showExplain(
               'Nesprávna dĺžka intervalu',
               `Dĺžka intervalu sa vypočíta ako:<br><code>|b − a|</code><br><br>
                V tomto kroku:<br>
-               a = <strong>${a.toFixed(decimalPlaces)}</strong>,  b = <strong>${b.toFixed(decimalPlaces)}</strong>`,
-              `✅ Správna hodnota: <strong>|b − a| = |${b.toFixed(decimalPlaces)} − ${a.toFixed(decimalPlaces)}| = ${correctInterval.toFixed(decimalPlaces)}</strong>`,
+               a = <strong>${a.toFixed(decimalPlaces)}</strong>, b = <strong>${b.toFixed(decimalPlaces)}</strong>`,
+              `✅ Správna hodnota: <strong>|b − a| = ${correctInterval.toFixed(decimalPlaces)}</strong>`,
               () => {
                 const el = document.getElementById('inlineInput_len');
-                if (el) { el.value = correctInterval.toFixed(decimalPlaces); el.classList.add('revealed'); el.readOnly = true; }
+                if (el) { 
+                  el.value = correctInterval.toFixed(decimalPlaces); 
+                  el.classList.add('revealed'); 
+                  el.readOnly = true; 
+                }
                 inlineQuizField = 3;
+
                 btn.textContent = '➡️ Pokračovať (zobrazená správna hodnota)';
                 btn.style.background = '#ff9800';
                 btn.onclick = confirmAndAdvance;
               }
             );
           }
-        }
-      }
+      }}
 
       function confirmInlineQuiz(autoAdvance = false) {
         const fa = f(a);
@@ -1733,7 +1817,6 @@
         updateGraph();
         updateButtons();
 
-        // If auto-advance (after wrong answer revealed), immediately start next step
         if (autoAdvance) bisectionStep();
       }
 
@@ -1753,21 +1836,36 @@
             `Máte ${steps.length} ${steps.length === 1 ? 'krok' : 'krokov'}.\n\n` +
             `Pokračovať?`
           );
+
           if (!confirmReset) return;
         }
         
         steps = [];
         a = a0;
         b = b0;
+
         running = true;
         inlineQuizActive = false;
         inlineQuizChecked = false;
-        // V režime S kvízmi — okamžite zobraziť polia pre krok 1
+        lastResultData = null;
+        savedToHistory = false;
+
+        const c0init = (a0 + b0) / 2;
+        const fc0init = f(c0init);
+        const fa0init = f(a0);
+        if (fa0init * fc0init < 0) { 
+          b = c0init; 
+        } else { 
+          a = c0init; 
+        }
+
         if (mode === 'mixed') {
           currentC = (a + b) / 2;
           currentFc = f(currentC);
-          inlineQuizActive = true; inlineQuizField = 0;
+          inlineQuizActive = true; 
+          inlineQuizField = 0;
         }
+
         updateTable();
         updateGraph();
         updateButtons();
@@ -1782,14 +1880,16 @@
           nextBtn.disabled = true;
           nextBtn.style.opacity = "0.3";
           checkBtn.style.display = 'block';
-          // Show progress dots
+
           if (dotsEl) {
             dotsEl.style.display = 'flex';
             const stepNum = steps.length;
             dotsEl.innerHTML = '';
+
             for (let i = 0; i < INLINE_QUIZ_STEPS; i++) {
               const dot = document.createElement('div');
               dot.className = 'quiz-dot' + (i < stepNum ? ' done' : (i === stepNum ? ' current' : ''));
+
               dotsEl.appendChild(dot);
             }
           }
@@ -1797,6 +1897,7 @@
           nextBtn.disabled = !running;
           nextBtn.style.opacity = running ? "1" : "0.5";
           checkBtn.style.display = 'none';
+
           if (dotsEl) dotsEl.style.display = 'none';
         }
       }
@@ -1804,24 +1905,18 @@
       function updateTable() {
         const body = document.getElementById("stepsBody");
         body.innerHTML = "";
-        
-        // Оновити заголовок стовпця з tol
+
         const intervalHeader = document.getElementById('intervalHeader');
         if (intervalHeader) {
-          intervalHeader.style.display = stopMethod === 'steps' ? 'none' : '';
-          if (stopMethod === 'precision') {
-            intervalHeader.innerHTML = `|b<sub>n</sub> − a<sub>n</sub>| ≤ 2·${tol}`;
-          }
+          intervalHeader.style.display = '';
+          intervalHeader.innerHTML = `|b<sub>n</sub> − a<sub>n</sub>|`;
         }
+
         const errorHeader = document.getElementById('errorHeader');
-        if (errorHeader) {
-          errorHeader.style.display = stopMethod === 'steps' ? '' : 'none';
-        }
+        if (errorHeader) errorHeader.style.display = 'none';
         
-        // Обчислити кількість знаків після коми
-        let decimalPlaces = 3; // За замовчуванням для методу кроків
+        let decimalPlaces = 3;
         if (stopMethod === 'precision') {
-          // Знайти кількість знаків у tol + 2
           const tolStr = tol.toString();
           if (tolStr.includes('.')) {
             const afterDot = tolStr.split('.')[1].length;
@@ -1830,41 +1925,50 @@
             decimalPlaces = 2;
           }
         }
-        
-        // Кроки 0, 1, 2, ... — всі з масиву steps
-        // Row 0: always show initial interval from a0/b0 (not from steps array)
+
         {
           const c0 = (a0 + b0) / 2;
           const fa0 = f(a0), fc0 = f(c0);
           const sign0 = `${fa0 > 0 ? '+' : '−'}${fc0 > 0 ? '+' : '−'}`;
           const len0 = Math.abs(b0 - a0);
           const isAcc0 = stopMethod === 'precision' ? len0 <= 2 * tol : false;
+
           const ind0 = stopMethod === 'precision'
             ? (isAcc0 ? '<span class="accuracy-indicator achieved"></span>' : '<span class="accuracy-indicator not-achieved"></span>')
             : '';
-          const exp0 = generateExplanation({ i: 0, a: a0, b: b0, c: c0, fc: fc0 });
+          const prod0 = fa0 * fc0;
+          const signColor0 = prod0 < 0 ? 'var(--success)' : 'var(--danger)';
+
+          const exp0 = `
+            <b>Krok 0:</b><br>
+            c = (${a0.toFixed(decimalPlaces)} + ${b0.toFixed(decimalPlaces)}) / 2 = ${c0.toFixed(decimalPlaces)}<br>
+            |b - a| = ${len0.toFixed(decimalPlaces)}<br><br>
+            f(a) = ${fa0.toFixed(decimalPlaces)} ${fa0 > 0 ? '➕' : '➖'}<br>
+            f(c) = ${fc0.toFixed(decimalPlaces)} ${fc0 > 0 ? '➕' : '➖'}<br>
+            f(a)·f(c) = ${prod0.toFixed(decimalPlaces)}<br>${prod0 < 0 ? '→ Rôzne znamienka → Koreň v [a, c]' : '→ Rovnaké znamienka → Koreň v [c, b]'}
+          `;
+          
           body.innerHTML += `<tr class="step-row">
             <td onmouseenter="showTooltip(event, \`${exp0.replace(/\`/g, '\\\`')}\`)">0</td>
             <td>${a0.toFixed(decimalPlaces)}</td>
-            <td style="color:var(--text);opacity:0.35">—</td>
+            <td>${c0.toFixed(decimalPlaces)}</td>
             <td>${b0.toFixed(decimalPlaces)}</td>
-            <td style="color:var(--text);opacity:0.35">—</td>
-            ${stopMethod === 'precision' ? `<td style="color:var(--text);opacity:0.35">—</td>` : ''}
-            ${stopMethod === 'steps' ? `<td style="color:var(--text);opacity:0.35">—</td>` : ''}
+            <td style="font-weight:bold; color:${signColor0}">${sign0}</td>
+            <td>${len0.toFixed(decimalPlaces)} ${ind0}</td>
           </tr>`;
         }
+
         for (let idx = 0; idx < steps.length; idx++) {
           const s = steps[idx];
-          const stepNumber = idx + 1; // steps[0] is step 1
+          const stepNumber = idx + 1;
           const isLast = idx === steps.length - 1;
           
-          // Перевірка залежно від методу
           let isAcc = false;
           if (stopMethod === 'precision') {
             const intervalLength = Math.abs(s.b - s.a);
             isAcc = intervalLength <= 2 * tol;
           } else if (stopMethod === 'steps') {
-            isAcc = stepNumber === maxSteps; // 1-based: last step is maxSteps
+            isAcc = stepNumber === maxSteps;
           }
           
           const styleClass = isLast && isAcc ? 'success' : '';
@@ -1872,20 +1976,15 @@
             ? (isAcc ? '<span class="accuracy-indicator achieved"></span>' : '<span class="accuracy-indicator not-achieved"></span>')
             : '';
           
-          // Обчислити довжину інтервалу
           const intervalLength = Math.abs(s.b - s.a);
           
-          // Обчислити знаки f(aₙ) і f(cₙ)
           const fa = f(s.a);
           const fc = s.fc;
           const signProduct = `${fa > 0 ? '+' : '−'}${fc > 0 ? '+' : '−'}`;
-          
           const exp = generateExplanation(s, stepNumber);
           
-          // Додати onclick на останній рядок якщо обчислення завершено
           const onclickAttr = (isLast && isAcc) ? ` onclick="reopenResultOverlay()" style="cursor: pointer;"` : '';
-          
-          // Похибка для режиму кроків: (b0-a0) / 2^(n+1)
+
           const errorVal = stopMethod === 'steps'
             ? Math.abs(b0 - a0) / Math.pow(2, stepNumber + 1)
             : null;
@@ -1896,46 +1995,35 @@
             <td>${s.c.toFixed(decimalPlaces)}</td>
             <td>${s.b.toFixed(decimalPlaces)}</td>
             <td style="font-weight: bold; color: ${fa * fc < 0 ? 'var(--success)' : 'var(--danger)'};">${signProduct}</td>
-            ${stopMethod === 'precision' ? `<td>${intervalLength.toFixed(decimalPlaces)} ${indicator}</td>` : ''}
-            ${stopMethod === 'steps' ? `<td>±${smartFixed(errorVal)}</td>` : ''}
+            <td>${intervalLength.toFixed(decimalPlaces)} ${indicator}</td>
           </tr>`;
         }
 
-        // === INLINE QUIZ ROW: show fields one by one based on inlineQuizField ===
         if (mode === 'mixed' && inlineQuizActive) {
-          const quizStepNum = steps.length + 1; // next step number
+          const quizStepNum = steps.length + 1;
           const fa_q = f(a);
           const faPos_q = fa_q >= 0;
           const fcPos_q = currentFc >= 0;
+
           const correctSignStr_q = (faPos_q ? '+' : '-') + (fcPos_q ? '+' : '-');
           const correctC_q = currentC;
           const correctLen_q = Math.abs(b - a);
 
-          // cₙ cell — always active (field 0), locked when field >= 1
           const cCell = inlineQuizField >= 1
             ? `<td><div class="quiz-input-cell">
                 <input class="quiz-input correct" id="inlineInput_c" type="text"
                   value="${correctC_q.toFixed(decimalPlaces)}" readonly>
-                <div class="input-hint">c = (a+b)/2</div></div></td>`
+                </div></td>`
             : `<td><div class="quiz-input-cell">
                 <input class="quiz-input" id="inlineInput_c" type="text" placeholder="?" autocomplete="off"
                   onkeydown="if(event.key==='Enter') checkInlineQuiz()">
-                <div class="input-hint">c = (a+b)/2</div></div></td>`;
+                </div></td>`;
 
-          // f(${a.toFixed(decimalPlaces)})=<strong>${f(a).toFixed(decimalPlaces)}</strong><br>
-          // f(${correctC_q.toFixed(decimalPlaces)})=<strong>${currentFc.toFixed(decimalPlaces)}</strong>
-
-          // f(x) = ${exprOriginal}
-
-          // f(${a.toFixed(decimalPlaces)}) = ${formatSubstituted(a, decimalPlaces)} = <strong>${f(a).toFixed(decimalPlaces)}</strong><br>
-          // f(${correctC_q.toFixed(decimalPlaces)}) = ${formatSubstituted(correctC_q, decimalPlaces)} = <strong>${currentFc.toFixed(decimalPlaces)}</strong>
-
-          // sign cell — hidden until field >= 1
           const signCell = inlineQuizField === 0
             ? `<td><div class="quiz-input-cell" style="opacity:0.25;pointer-events:none;">
                 <select class="quiz-input" disabled style="width:70px;">
                   <option>?</option></select>
-                <div class="input-hint">f(a)·f(c)</div></div></td>`
+                </div></td>`
             : inlineQuizField === 1
             ? `<td><div class="quiz-input-cell">
                 <select class="quiz-input" id="inlineInput_sign" style="width:70px; padding:5px 4px; cursor:pointer;">
@@ -1945,25 +2033,33 @@
                   <option value="+-">+−</option>
                   <option value="++">++</option>
                 </select>
-                <div class="input-hint" style="line-height:1.6; font-size:0.65em;">
-                  f(x) = ${exprOriginal}
-                </div></div></td>`
+                </div></td>`
             : `<td><div class="quiz-input-cell">
                 <select class="quiz-input correct" id="inlineInput_sign" disabled style="width:70px; padding:5px 4px;">
                   <option value="${correctSignStr_q}" selected>${correctSignStr_q.replace(/\-/g,'−').replace(/\+/g,'+')}</option>
                 </select>
-                <div class="input-hint">f(a)·f(c)</div></div></td>`;
+                </div></td>`;
 
-          // len cell — hidden until field >= 2
           const lenCell = inlineQuizField < 2
             ? `<td><div class="quiz-input-cell" style="opacity:0.25;pointer-events:none;">
                 <input class="quiz-input" type="text" placeholder="?" disabled>
-                <div class="input-hint">|b - a|</div></div></td>`
+                </div></td>`
             : `<td><div class="quiz-input-cell">
                 <input class="quiz-input" id="inlineInput_len" type="text" placeholder="?" autocomplete="off"
                   ${inlineQuizField >= 3 ? 'readonly' : ''}
                   onkeydown="if(event.key==='Enter') checkInlineQuiz()">
-                <div class="input-hint">|b - a|</div></div></td>`;
+                </div></td>`;
+
+          const correctError_q = Math.abs(b0 - a0) / Math.pow(2, quizStepNum + 1);
+          const errorCell = inlineQuizField < 2
+            ? `<td><div class="quiz-input-cell" style="opacity:0.25;pointer-events:none;">
+                <input class="quiz-input" type="text" placeholder="?" disabled>
+                </div></td>`
+            : `<td><div class="quiz-input-cell">
+                <input class="quiz-input" id="inlineInput_len" type="text" placeholder="?" autocomplete="off"
+                  ${inlineQuizField >= 3 ? 'readonly' : ''}
+                  onkeydown="if(event.key==='Enter') checkInlineQuiz()">
+                </div></td>`;
 
           body.innerHTML += `<tr class="step-row" id="inlineQuizRow" style="background: var(--theory-bg);">
             <td style="font-weight:bold; color: var(--btn-bg);">${quizStepNum}</td>
@@ -1971,32 +2067,28 @@
             ${cCell}
             <td>${b.toFixed(decimalPlaces)}</td>
             ${signCell}
-            ${stopMethod === 'precision' ? lenCell : ''}
-            ${stopMethod === 'steps' ? `<td style="color:var(--text);opacity:0.35">—</td>` : ''}
+            ${lenCell}
           </tr>`;
 
-          // Focus the active field
           setTimeout(() => {
             if (inlineQuizField === 0) { const el = document.getElementById('inlineInput_c'); if(el) el.focus(); }
             else if (inlineQuizField === 1) { const el = document.getElementById('inlineInput_sign'); if(el) el.focus(); }
             else if (inlineQuizField === 2) { const el = document.getElementById('inlineInput_len'); if(el) el.focus(); }
           }, 50);
         }
-        
-        // Автоскрол до останнього рядка (якщо користувач не скролив вгору)
+
         if (!tableUserScrolled && body.children.length > 0) {
           const tableContainer = document.querySelector('.table-container');
+
           if (tableContainer) {
             setTimeout(() => {
               const lastRow = body.lastElementChild;
               if (lastRow) {
-                // Обчислити позицію останнього рядка
                 const targetScrollTop = lastRow.offsetTop - tableContainer.clientHeight + lastRow.clientHeight + 10;
                 const startScrollTop = tableContainer.scrollTop;
                 const distance = Math.max(0, targetScrollTop - startScrollTop);
                 
                 if (distance > 10) {
-                  // Плавна анімація
                   const duration = 300;
                   const startTime = performance.now();
                   
@@ -2009,8 +2101,6 @@
                     
                     if (progress < 1) {
                       requestAnimationFrame(animateTableScroll);
-                    } else {
-                      console.log('📋 Table auto-scrolled to row', body.children.length - 1);
                     }
                   }
                   
@@ -2020,36 +2110,37 @@
             }, 100);
           }
         }
-        
-        // Оновити підказку
+
         const tableHint = document.getElementById('tableHint');
         if (tableHint) {
-          // If inline quiz is active — show instructions
+
           if (mode === 'mixed' && inlineQuizActive) {
             tableHint.innerHTML = '✏️ Vypĺňaj polia zľava doprava - každé potvrď tlačidlom Skontrolovať, polia sa odomykajú postupne'; 
-            //✏️ Vypočítaj a vyplň hodnoty pre zvýraznený riadok, potom klikni <strong>Skontrolovať</strong>
             tableHint.style.color = '#f57c00';
             tableHint.style.fontWeight = '500';
           } else {
             tableHint.style.color = '';
             tableHint.style.fontWeight = '';
-          const hasCompletedStep = steps.some((s, idx) => {
-            const isLast = idx === steps.length - 1;
-            if (stopMethod === 'precision') {
-              const intervalLength = Math.abs(s.b - s.a);
-              return isLast && intervalLength <= 2 * tol;
-            } else if (stopMethod === 'steps') {
-              return isLast && s.i === maxSteps;
+
+            const hasCompletedStep = steps.some((s, idx) => {
+              const isLast = idx === steps.length - 1;
+              if (stopMethod === 'precision') {
+                const intervalLength = Math.abs(s.b - s.a);
+                return isLast && intervalLength <= 2 * tol;
+              } else if (stopMethod === 'steps') {
+                return isLast && s.i === maxSteps;
+              }
+
+              return false;
+            });
+
+            if (hasCompletedStep) {
+              tableHint.innerHTML = '👆 Klikni na zelený riadok pre zobrazenie výsledku';
+            } else if (stopMethod === 'precision') {
+              tableHint.innerHTML = '• <span style="cursor:help; position:relative;" onmouseenter="showTooltip(event, \'Pokračuj, presnosť ešte nie je dosiahnutá.\')" onmouseleave="hideTooltip()">🔴 Červený krúžok = pokračuj</span> • <span style="cursor:help;" onmouseenter="showTooltip(event, \'Hotovo, presnosť je dosiahnutá.\')" onmouseleave="hideTooltip()">🟢 Zelený krúžok = hotovo</span>';
+            } else {
+              tableHint.innerHTML = '';
             }
-            return false;
-          });
-          if (hasCompletedStep) {
-            tableHint.innerHTML = '👆 Klikni na zelený riadok pre zobrazenie výsledku';
-          } else if (stopMethod === 'precision') {
-            tableHint.innerHTML = '• <span style="cursor:help; position:relative;" onmouseenter="showTooltip(event, \'Pokračuj, presnosť ešte nie je dosiahnutá.\')" onmouseleave="hideTooltip()">🔴 Červený krúžok = pokračuj</span> • <span style="cursor:help;" onmouseenter="showTooltip(event, \'Hotovo, presnosť je dosiahnutá.\')" onmouseleave="hideTooltip()">🟢 Zelený krúžok = hotovo</span>';
-          } else {
-            tableHint.innerHTML = '';
-          }
           }
         }
       }
@@ -2062,6 +2153,7 @@
         tt.className = 'tooltip';
         tt.innerHTML = html;
         tt.style.display = 'block';
+
         document.body.appendChild(tt);
         currentTooltip = tt;
         
@@ -2092,9 +2184,8 @@
 
         const container = document.getElementById('graphsContainer');
         const rightPanel = container.parentElement;
-        
-        // Обчислити кількість знаків після коми для заголовків і значень
-        let decimalPlaces = 3; // За замовчуванням для методу кроків
+
+        let decimalPlaces = 3;
         if (stopMethod === 'precision') {
           const tolStr = tol.toString();
           if (tolStr.includes('.')) {
@@ -2104,36 +2195,23 @@
             decimalPlaces = 2;
           }
         }
-        
-        // ЗБЕРЕГТИ позицію скролу 
+
         const savedScrollTop = rightPanel ? rightPanel.scrollTop : 0;
-        console.log('💾 Saved scroll position:', savedScrollTop, 'userScrolled:', userScrolled);
-        
-        // Перевірити скільки графіків вже є
         const currentGraphCount = container.children.length;
-        const targetGraphCount = steps.length + 1; // +1 для Krok 0
-        
-        console.log('📊 Current graphs:', currentGraphCount, 'Target graphs:', targetGraphCount);
-        
-        // Якщо графіків менше ніж треба - додати тільки новий
-        // Якщо графіків більше - очистити і перемалювати все
+        const targetGraphCount = steps.length + 1;
         const shouldAppendOnly = currentGraphCount === targetGraphCount - 1;
         
         if (!shouldAppendOnly) {
-          console.log('🔄 Full redraw - clearing container');
           container.innerHTML = '';
-        } else {
-          console.log('➕ Append only - keeping existing graphs');
         }
 
-        // Глобальний діапазон для кроку 0
         const pad = 0.5;
+
         const globalSpan = (b0 - a0) * (1 + pad);
         const globalCen = (a0 + b0) / 2;
         const globalXMin = globalCen - globalSpan / 2;
         const globalXMax = globalCen + globalSpan / 2;
 
-        // Генеруємо точки функції для глобального діапазону
         const xVGlobal = [], yVGlobal = [];
         const stGlobal = (globalXMax - globalXMin) / 300;
         for (let x = globalXMin; x <= globalXMax; x += stGlobal) {
@@ -2141,23 +2219,21 @@
           yVGlobal.push(f(x));
         }
 
-        // Обмежити діапазон Y для кращого відображення
         const validYVals = yVGlobal.filter(y => isFinite(y));
+
         let yMin = Math.min(...validYVals);
         let yMax = Math.max(...validYVals);
+
         const yRange = yMax - yMin;
         const maxYRange = 50;
         
         let yAxisRange = null;
         if (yRange > maxYRange) {
-          // Центрувати навколо нуля
           yAxisRange = [-maxYRange / 2, maxYRange / 2];
         }
 
-        // КРОК 0: Початковий інтервал [a₀, b₀]
         let div0 = document.getElementById('graph-0');
         if (!div0 || !shouldAppendOnly) {
-          // Створити тільки якщо немає або повне перемалювання
           div0 = document.createElement('div');
           div0.id = 'graph-0';
           div0.style.height = '500px';
@@ -2166,9 +2242,6 @@
           div0.style.borderRadius = '8px';
           div0.style.marginBottom = '30px';
           container.appendChild(div0);
-          console.log('➕ Created graph-0');
-        } else {
-          console.log('✅ Reusing existing graph-0');
         }
 
         const fa0 = f(a0);
@@ -2213,8 +2286,10 @@
         Plotly.react(div0, traces0, {
           margin: { t: 60, b: 40, l: 50, r: 20 },
           title: `<b>Krok 0:</b> Počiatočný interval [a₀=${a0.toFixed(decimalPlaces)}, b₀=${b0.toFixed(decimalPlaces)}]`,
+          
           xaxis: { title: "x", range: [globalXMin, globalXMax], color: textColor, gridcolor: gridColor, zeroline: true, zerolinecolor: textColor },
           yaxis: { title: "f(x)", color: textColor, gridcolor: gridColor, zeroline: true, zerolinecolor: textColor, range: yAxisRange },
+          
           paper_bgcolor: bgColor,
           plot_bgcolor: bgColor,
           font: { color: textColor },
@@ -2231,7 +2306,6 @@
           displaylogo: false
         });
 
-        // КРОКИ 1, 2, 3, ... З ЗУМОМ
         for (let i = 0; i < steps.length; i++) {
           const step = steps[i];
           
@@ -2247,41 +2321,33 @@
             divN.style.borderRadius = '8px';
             divN.style.marginBottom = '30px';
             container.appendChild(divN);
-            console.log(`➕ Created graph-${i+1}`);
-          } else {
-            console.log(`✅ Reusing existing graph-${i+1}`);
-          }
+          } else {}
 
           const currentA = step.a;
           const currentB = step.b;
           const currentC = step.c;
+          
           const fc = step.fc;
-
           const fa = f(currentA);
           const fb = f(currentB);
 
-          // ЗУМОВАНИЙ діапазон для цього кроку
-          // Центруємо по ПОПЕРЕДНЬОМУ інтервалу для кращої візуалізації звуження
           let prevA, prevB;
           if (i === 0) {
-            // Для першого кроку використовуємо початковий інтервал
             prevA = a0;
             prevB = b0;
           } else {
-            // Для наступних кроків використовуємо попередній інтервал
             const prevStep = steps[i - 1];
             prevA = prevStep.a;
             prevB = prevStep.b;
           }
-          
-          const zoomPad = 0.3;
+
           const prevIntervalWidth = prevB - prevA;
+          const zoomPad = 0.3;
           const zoomSpan = prevIntervalWidth * (1 + zoomPad);
-          const zoomCen = (prevA + prevB) / 2; // Центруємо по попередньому інтервалу
+          const zoomCen = (prevA + prevB) / 2;
           const zoomXMin = zoomCen - zoomSpan / 2;
           const zoomXMax = zoomCen + zoomSpan / 2;
 
-          // Генеруємо точки функції для зумованого діапазону
           const xVZoom = [], yVZoom = [];
           const stZoom = (zoomXMax - zoomXMin) / 300;
           for (let x = zoomXMin; x <= zoomXMax; x += stZoom) {
@@ -2289,7 +2355,6 @@
             yVZoom.push(f(x));
           }
 
-          // Обмежити діапазон Y для зумованих графіків
           const validYZoom = yVZoom.filter(y => isFinite(y));
           let yMinZoom = Math.min(...validYZoom);
           let yMaxZoom = Math.max(...validYZoom);
@@ -2349,21 +2414,18 @@
               }
             }
           ];
-          
-          // Додати візуалізацію інтервалу точності ±tol навколо c (тільки для методу precision)
+
           if (stopMethod === 'precision') {
-            // Ліва межа: c - tol — showlegend з порожньою назвою (лише іконка)
             tracesN.push({
               x: [currentC - tol, currentC - tol],
               y: [yMinZoom, yMaxZoom],
               mode: 'lines',
               line: { color: 'rgba(76, 175, 80, 0.7)', width: 2, dash: 'dash' },
               name: ' ',
-              showlegend: true, //false || true
+              showlegend: true,
               hoverinfo: 'skip'
             });
-            
-            // Права межа: c + tol — showlegend s názvom
+
             tracesN.push({
               x: [currentC + tol, currentC + tol],
               y: [yMinZoom, yMaxZoom],
@@ -2374,7 +2436,6 @@
               hoverinfo: 'skip'
             });
 
-            // Hint in legend when tolerance zone is too small to see visually
             const visibleWidth = zoomXMax - zoomXMin;
             if (tol * 2 < visibleWidth * 0.01) {
               tracesN.push({
@@ -2382,7 +2443,7 @@
                 mode: 'markers',
                 marker: { color: 'transparent', size: 1 },
                 showlegend: true,
-                name: `💡 Oblasť presnosti je<br>veľmi malá — priblíž<br>sa na bod c`,
+                name: `💡 Oblasť presnosti je<br>veľmi malá - priblíž<br>sa na bod c`,
                 hoverinfo: 'none'
               });
             }
@@ -2390,18 +2451,17 @@
 
           const isLast = i === steps.length - 1;
           let isAcc = false;
+
           if (stopMethod === 'precision') {
             const intervalLength = Math.abs(step.b - step.a);
             isAcc = intervalLength <= 2 * tol;
           } else if (stopMethod === 'steps') {
             isAcc = step.i === maxSteps;
-            
-            // Додати візуалізацію похибки на останньому кроці
+
             if (isLast && isAcc) {
               const initialInterval = Math.abs(b0 - a0);
               const error = initialInterval / Math.pow(2, step.i + 1);
-              
-              // Ліва межа: c - error
+
               tracesN.push({
                 x: [currentC - error, currentC - error],
                 y: [yMinZoom, yMaxZoom],
@@ -2412,8 +2472,7 @@
                 showlegend: true,
                 hoverinfo: 'name'
               });
-              
-              // Права межа: c + error
+
               tracesN.push({
                 x: [currentC + error, currentC + error],
                 y: [yMinZoom, yMaxZoom],
@@ -2426,6 +2485,7 @@
               });
             }
           }
+
           const titleColor = isLast && isAcc ? '#4caf50' : textColor;
 
           Plotly.react(divN, tracesN, {
@@ -2434,8 +2494,10 @@
               text: `<b>Krok ${i+1}:</b> c${i+1}=${currentC.toFixed(decimalPlaces)}, f(c${i+1})=${fc.toFixed(decimalPlaces)}`,
               font: { color: titleColor }
             },
+
             xaxis: { title: "x", range: [zoomXMin, zoomXMax], color: textColor, gridcolor: gridColor, zeroline: true, zerolinecolor: textColor },
             yaxis: { title: "f(x)", color: textColor, gridcolor: gridColor, zeroline: true, zerolinecolor: textColor, range: yAxisRangeZoom },
+            
             paper_bgcolor: bgColor,
             plot_bgcolor: bgColor,
             font: { color: textColor },
@@ -2453,35 +2515,22 @@
           });
         }
         
-        // Spotify-style auto-scroll: прокручувати тільки якщо користувач не скролив
         if (rightPanel) {
           setTimeout(() => {
-            console.log('Attempting auto-scroll. userScrolled:', userScrolled, 'steps:', steps.length);
-            
-            // ВАЖЛИВО: Показати/сховати кнопку залежно від userScrolled
             const scrollBtn = document.getElementById('scrollToLatestBtn');
-            console.log('🔍 Button element:', scrollBtn);
-            console.log('🔍 Button classes before:', scrollBtn ? scrollBtn.className : 'NO BUTTON');
             
             if (scrollBtn) {
               if (userScrolled) {
                 scrollBtn.classList.add('visible');
-                console.log('🔘 Added visible class');
               } else {
                 scrollBtn.classList.remove('visible');
-                console.log('🔘 Removed visible class (auto-scroll enabled)');
               }
-              console.log('🔍 Button classes after:', scrollBtn.className);
-              console.log('🔍 Button computed style:', window.getComputedStyle(scrollBtn).opacity);
             }
             
             if (!userScrolled) {
-              // Автоматично скролити до останнього графіка
               autoScrollToLatest();
             } else {
-              // ВІДНОВИТИ збережену позицію (instant, без анімації)
               rightPanel.scrollTop = savedScrollTop;
-              console.log('🔒 Restored scroll position to:', savedScrollTop);
             }
           }, 150);
         }
@@ -2491,13 +2540,12 @@
         window.location.href = "interval.html";
       }
 
-      // Функції для модального вікна результату
-      // ---- HISTORY: save completed calculation ----
       function saveToHistory() {
         try {
           const record = {
             id: Date.now().toString(),
             date: new Date().toLocaleString('sk-SK', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' }),
+            
             functionOriginal: exprOriginal,
             functionExpr: expr,
             a0: a0,
@@ -2505,26 +2553,27 @@
             stopMethod: stopMethod,
             tol: stopMethod === 'precision' ? tol : null,
             maxSteps: stopMethod === 'steps' ? maxSteps : null,
+            
             result: steps.length ? steps[steps.length-1].c : null,
             iterations: steps.length,
             steps: steps.map(s => ({ i: s.i, a: s.a, b: s.b, c: s.c, fc: s.fc }))
           };
+
           const existing = JSON.parse(localStorage.getItem('bisectionHistory') || '[]');
-          existing.unshift(record); // newest first
-          // Keep max 50 records
+          existing.unshift(record);
           if (existing.length > 50) existing.splice(50);
+
           localStorage.setItem('bisectionHistory', JSON.stringify(existing));
         } catch(e) {
-          console.warn('Could not save to history:', e);
         }
       }
 
-      // Автоматично вибирає кількість знаків: мінімум minD, але збільшує поки не покаже ненульове значення
       function smartFixed(value, minD = 3, maxD = 10) {
         for (let d = minD; d <= maxD; d++) {
           const str = Math.abs(value).toFixed(d);
           if (str.replace('0.', '').replace(/0+$/, '') !== '') return value.toFixed(d);
         }
+
         return value.toFixed(maxD);
       }
 
@@ -2532,15 +2581,16 @@
         const overlay = document.getElementById('resultOverlay');
         const titleEl = document.getElementById('resultTitle');
         const infoEl = document.getElementById('resultInfo');
-        
-        // Зберегти дані для повторного відкриття
+
         lastResultData = { root, fValue, aVal, bVal, iterations, method };
 
-        // Save to history
-        saveToHistory();
-        
-        // Обчислити кількість знаків після коми (presnosť + 2)
-        let decimalPlaces = 6; // За замовчуванням
+        if (!savedToHistory) {
+          saveToHistory();
+          savedToHistory = true;
+        }
+
+        let decimalPlaces = 6;
+
         if (method === 'precision') {
           const tolStr = tol.toString();
           if (tolStr.includes('.')) {
@@ -2550,8 +2600,7 @@
             decimalPlaces = 2;
           }
         }
-        
-        // Встановити заголовок залежно від методу
+
         if (method === 'precision') {
           const intervalLength = Math.abs(bVal - aVal);
           titleEl.textContent = '✅ Presnosť dosiahnutá!';
@@ -2580,7 +2629,6 @@
           `;
         } else if (method === 'steps') {
           const intervalLength = Math.abs(bVal - aVal);
-          // Правильна формула абсолютної похибки: |c_n - α| < (b₀ - a₀) / 2^(n+1)
           const initialInterval = Math.abs(b0 - a0);
           const error = initialInterval / Math.pow(2, iterations + 1);
           titleEl.textContent = '✅ Počet krokov dosiahnutý!';
@@ -2636,7 +2684,7 @@
 
       function resetFromResult() {
         closeResultOverlay();
-        window.location.href = "menu.html"; // Перейти до меню
+        window.location.href = "menu.html";
       }
 
       updateGraph();

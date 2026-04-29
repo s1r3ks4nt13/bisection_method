@@ -29,13 +29,13 @@
       }
 
       body.dark {
-        --bg-gradient-1: #1a1a2e;
+        --bg-gradient-1: #1f1f64;
         --bg-gradient-2: #16213e;
         --card-bg: #2d2d2d;
         --text-primary: #e0e0e0;
         --text-secondary: #b0b0b0;
         --border-color: #404040;
-        --input-bg: #3a3a3a;
+        --input-bg: #3e3e3e;
         --btn-primary: #2196f3;
         --btn-hover: #64b5f6;
         --success-bg: #1b5e20;
@@ -51,11 +51,9 @@
         --syntax-value-bg: #1e3a5f;
         --modal-bg: #2d2d2d;
       }
-      
-      /* Dark theme for bisection card */
       body.dark .bisection-card {
-        background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%) !important;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4) !important;
+        background: linear-gradient(135deg, #57647a 0%, #2d3748 100%);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
       }
 
       * {
@@ -72,6 +70,7 @@
         margin: 0;
         padding: 20px;
       }
+
       .card {
         background: var(--card-bg);
         padding: 40px;
@@ -82,16 +81,19 @@
         max-width: 900px;
         position: relative;
       }
+
       h2 {
         color: var(--btn-primary);
         margin-bottom: 10px;
         font-size: 1.8em;
       }
+
       .subtitle {
         color: var(--text-secondary);
         margin-bottom: 25px;
         font-size: 0.95em;
       }
+
       input {
         flex: 1;
         padding: 14px;
@@ -114,8 +116,7 @@
         padding: 0;
       }
       
-      .equation-left,
-      .equation-right {
+      .equation-left, .equation-right {
         font-size: 1.3em;
         font-weight: 500;
         color: var(--text-primary);
@@ -128,6 +129,7 @@
         border-color: var(--btn-primary);
         box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
       }
+
       button {
         background: var(--btn-primary);
         color: white;
@@ -145,6 +147,7 @@
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
       }
+
       .error-message {
         background: var(--error-bg);
         border: 2px solid var(--error-border);
@@ -159,29 +162,43 @@
         display: block;
       }
       
-      #helpBtn {
-        position: static;
-        background: var(--btn-primary);
-        color: white;
-        border: none;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        font-size: 1.3em;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
-        padding: 0;
-        margin: 0;
-      }
-      #helpBtn:hover {
-        background: var(--btn-hover);
-        transform: scale(1.1);
+      .btn-wrapper {
+        position: relative;
+        display: inline-flex;
       }
 
-      #themeToggle {
+      .hint-tooltip {
+        position: absolute;
+        top: 50%;
+        left: calc(100% + 10px);
+        transform: translateY(-50%);
+        background: var(--btn-primary);
+        color: white;
+        padding: 8px 14px;
+        border-radius: 8px;
+        font-size: 0.85em;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        white-space: nowrap;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s;
+        z-index: 9999;
+      }
+
+      .hint-tooltip::before {
+        content: '';
+        position: absolute;
+        left: -7px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 0;
+        height: 0;
+        border-top: 7px solid transparent;
+        border-bottom: 7px solid transparent;
+        border-right: 7px solid var(--btn-primary);
+      }
+
+      .icon-btn {
         position: static;
         background: var(--btn-primary);
         color: white;
@@ -198,7 +215,7 @@
         padding: 0;
         margin: 0;
       }
-      #themeToggle:hover {
+      .icon-btn:hover {
         background: var(--btn-hover);
         transform: scale(1.1);
       }
@@ -257,7 +274,6 @@
         color: var(--text-primary);
         line-height: 1;
       }
-      
       .close-btn:hover {
         color: var(--btn-primary);
         transform: scale(1.1);
@@ -343,96 +359,240 @@
         transform: translateX(5px);
         box-shadow: 0 2px 8px rgba(33, 150, 243, 0.2);
       }
+
+      .top-bar {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .main-layout {
+        display: flex;
+        gap: 40px;
+        align-items: stretch;
+        margin-bottom: 10px;
+      }
+
+      .main-left {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+      }
+      .main-right {
+        flex: 1;
+        display: flex;
+        align-items: flex-start;
+        margin-top: 60px;
+      }
+
+      .btn-history {
+        margin-top: 10px;
+        background: transparent;
+        color: var(--btn-primary);
+        border: 2px solid var(--btn-primary);
+        font-size: 0.95em;
+      }
+      .btn-history:hover{
+        background: #65a0dbaf;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+      }
+
+      .bisection-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 24px;
+        border-radius: 14px;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        width: 100%;
+      }
+
+      .bisection-card-inner {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+
+      .bisection-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 16px;
+      }
+
+      .bisection-card-title {
+        font-size: 1.15em;
+        font-weight: 700;
+      }
+
+      .bisection-anim {
+        font-family: monospace;
+        font-size: 0.85em;
+        white-space: nowrap;
+        padding: 8px 14px;
+        background: rgba(255,255,255,0.15);
+        border-radius: 8px;
+        text-align: center;
+        letter-spacing: 1px;
+      }
+
+      .bisection-card-desc {
+        font-size: 0.9em;
+        opacity: 0.95;
+        line-height: 1.6;
+        text-align: left;
+      }
+
+      .stepper-wrapper {
+        margin-top: 25px;
+        padding: 15px 0;
+        border-top: 1px solid var(--border-color);
+      }
+
+      .stepper-inner {
+        max-width: 650px;
+        margin: 0 auto;
+      }
+
+      .stepper {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        position: relative;
+        padding: 0 15px;
+      }
+
+      .stepper-line {
+        position: absolute;
+        top: 15px;
+        left: calc(16.66% + 15px);
+        right: calc(16.66% + 15px);
+        height: 2px;
+        background: var(--border-color);
+        z-index: 0;
+      }
+
+      .stepper-step {
+        flex: 1;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+      }
+
+      .step-circle {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 0.9em;
+        margin: 0 auto 6px auto;
+      }
+
+      .step-circle.active {
+        background: var(--btn-primary);
+        color: white;
+        box-shadow: 0 2px 6px rgba(33, 150, 243, 0.4);
+      }
+
+      .step-circle.inactive {
+        background: var(--card-bg);
+        border: 2px solid var(--border-color);
+        color: var(--text-secondary);
+      }
+
+      .step-label {
+        font-size: 0.8em;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 1px;
+      }
+
+      .step-sublabel {
+        font-size: 0.7em;
+        color: var(--text-secondary);
+      }
+
+      .step-label-inactive {
+        font-size: 0.8em;
+        color: var(--text-secondary);
+      }
     </style>
   </head>
   <body>
     <div class="card">
-      <div style="position: absolute; right: 15px; top: 15px; display: flex; align-items: center; gap: 8px;">
-        <button id="themeToggle" onclick="toggleTheme()" title="Zmeniť tému">🌙</button>
-        <button id="helpBtn" onclick="showHelp()" title="Klikni pre príklady funkcií a syntax">❓</button>
-      </div>
-      <!-- Hint bubble absolutely positioned to the right of helpBtn, can overflow card -->
-      <div id="helpHint" style="position: fixed; top: 0; left: 0; background: var(--btn-primary); color: white; padding: 8px 14px; border-radius: 8px; font-size: 0.85em; box-shadow: 0 4px 12px rgba(0,0,0,0.2); opacity: 0; transition: opacity 0.3s; pointer-events: none; white-space: nowrap; z-index: 9999;">
-        <div style="position: absolute; left: -7px; top: 50%; transform: translateY(-50%); width: 0; height: 0; border-top: 7px solid transparent; border-bottom: 7px solid transparent; border-right: 7px solid var(--btn-primary);"></div>
-        Príklady a nápoveda
+      <div class="top-bar">
+        <button id="themeToggle" class="icon-btn" onclick="toggleTheme()" title="Zmeniť tému">🌙</button>
+        <div class="btn-wrapper">
+          <button id="helpBtn" class="icon-btn" onclick="showHelp()" title="Klikni pre príklady funkcií a syntax">❓</button>
+          <div id="helpHint" class="hint-tooltip">Príklady a nápoveda</div>
+        </div>
       </div>
       
-      <!-- Two-column layout -->
-      <div style="display: flex; gap: 40px; align-items: stretch; margin-bottom: 10px;">
-        <!-- Left column: title, input, button -->
-        <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; text-align: center;">
+      <div class="main-layout">
+        <div class="main-left">
           <h2>🧮 Zadaj funkciu</h2>
           <p class="subtitle">pre hľadanie koreňa metódou bisekcie</p>
           
           <div class="equation-wrapper">
-            <input
-              id="func"
-              placeholder="f(x)"
-              value="x^3 + 4*x + 2"
-            />
+            <input id="func" placeholder="f(x)" value="x^3 + 4*x + 2"/>
             <span class="equation-right">= 0</span>
           </div>
           
           <div class="error-message" id="errorMsg"></div>
           
-          <button onclick="goNext()">Zobraziť graf →</button>
-          <button onclick="window.location.href='history.html'" id="historyBtn" style="display:none; margin-top:10px; background: transparent; color: var(--btn-primary); border: 2px solid var(--btn-primary); font-size:0.95em;">📋 História výpočtov</button>
+          <button onclick="goNext()" title="Prejsť na výber intervalu">Vybrať interval →</button>
+          <button onclick="window.location.href='history.html'" id="historyBtn" class="btn-history" title="Zobraziť históriu výpočtov">📋 História výpočtov</button>
         </div>
 
-        <!-- Right column: bisection card -->
-        <div style="flex: 1; display: flex; align-items: flex-start; margin-top: 60px;">
-          <div class="bisection-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 24px; border-radius: 14px; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3); width: 100%;">
-            <div style="display: flex; flex-direction: column; gap: 0;">
-              <!-- Top section: Title and Animation side by side -->
-              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
-                <div style="font-size: 1.15em; font-weight: 700;">
-                  ✨ Čo program ponúka
-                </div>
-                <div id="bisectionAnim" style="font-family: monospace; font-size: 0.85em; white-space: nowrap; padding: 8px 14px; background: rgba(255,255,255,0.15); border-radius: 8px; text-align: center; letter-spacing: 1px;">
-                  [a]────●────[b]
-                </div>
+        <div class="main-right">
+          <div class="bisection-card">
+            <div class="bisection-card-inner">
+              <div class="bisection-card-header">
+                <div class="bisection-card-title">✨ Čo program ponúka</div>
+                <div id="bisectionAnim" class="bisection-anim">[a]────●────[b]</div>
               </div>
-              <!-- Bottom section: Description (left-aligned) -->
-              <div style="font-size: 0.9em; opacity: 0.95; line-height: 1.6; text-align: left;">
+
+              <div class="bisection-card-desc">
                 Interaktívnu vizualizáciu hľadania koreňa nelineárnej rovnice metódou bisekcie. Sleduj každý krok výpočtu s grafmi, ako sa počiatočný interval zmenšuje, ako sa vyberá jeho stred a postupne približuje ku koreňu.
               </div>
             </div>
           </div>
         </div>
       </div>
-      
-      <!-- Progress indicator -->
-      <div style="margin-top: 25px; padding: 15px 0; border-top: 1px solid var(--border-color);">
-        <div style="max-width: 650px; margin: 0 auto;">
-          <!-- Steps with circles and connecting lines -->
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; position: relative; padding: 0 15px;">
-            <!-- Connecting line background -->
-            <div style="position: absolute; top: 15px; left: calc(16.66% + 15px); right: calc(16.66% + 15px); height: 2px; background: var(--border-color); z-index: 0;"></div>
+
+      <div class="stepper-wrapper">
+        <div class="stepper-inner">
+          <div class="stepper">
+            <div class="stepper-line"></div>
             
-            <!-- Step 1 - Active -->
-            <div style="flex: 1; text-align: center; position: relative; z-index: 1;">
-              <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--btn-primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.9em; margin: 0 auto 6px auto; box-shadow: 0 2px 6px rgba(33, 150, 243, 0.4);">1</div>
-              <div style="font-size: 0.8em; font-weight: 600; color: var(--text-primary); margin-bottom: 1px;">Zadaj funkciu</div>
-              <div style="font-size: 0.7em; color: var(--text-secondary);">(si tu)</div>
+            <div class="stepper-step">
+              <div class="step-circle active">1</div>
+              <div class="step-label">Zadanie funkcie</div>
+              <div class="step-sublabel">(si tu)</div>
             </div>
             
-            <!-- Step 2 - Inactive -->
-            <div style="flex: 1; text-align: center; position: relative; z-index: 1;">
-              <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--card-bg); border: 2px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.9em; margin: 0 auto 6px auto; color: var(--text-secondary);">2</div>
-              <div style="font-size: 0.8em; color: var(--text-secondary);">Interval</div>
+            <div class="stepper-step">
+              <div class="step-circle inactive">2</div>
+              <div class="step-label-inactive">Interval</div>
             </div>
             
-            <!-- Step 3 - Inactive -->
-            <div style="flex: 1; text-align: center; position: relative; z-index: 1;">
-              <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--card-bg); border: 2px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.9em; margin: 0 auto 6px auto; color: var(--text-secondary);">3</div>
-              <div style="font-size: 0.8em; color: var(--text-secondary);">Výpočet</div>
+            <div class="stepper-step">
+              <div class="step-circle inactive">3</div>
+              <div class="step-label-inactive">Výpočet</div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Modal pre nápovedu -->
     <div id="helpModal" class="modal">
       <div class="modal-content">
         <div class="modal-header">
@@ -447,19 +607,25 @@
               <div class="syntax-label">Mocnina:</div>
               <div class="syntax-value">x^2, x^3, x^n</div>
             </div>
+
             <div class="syntax-row">
               <div class="syntax-label">Násobenie:</div>
               <div class="syntax-value">2*x, 3*x^2</div>
             </div>
+
             <div class="syntax-row">
               <div class="syntax-label">Delenie:</div>
               <div class="syntax-value">x/2, 1/x</div>
             </div>
+
             <div class="syntax-row">
               <div class="syntax-label">Zátvorky:</div>
               <div class="syntax-value">(x+1)^2</div>
             </div>
           </div>
+          <p style="font-size:0.85em; margin-top:10px; color:var(--text-secondary);">
+            💡 Hviezda <code>*</code> nie je povinná - <code>2x</code> funguje rovnako ako <code>2*x</code>.
+          </p>
         </div>
 
         <div class="syntax-section">
@@ -469,10 +635,12 @@
               <div class="syntax-label">Sínus:</div>
               <div class="syntax-value">sin(x), sin^n(x)</div>
             </div>
+
             <div class="syntax-row">
               <div class="syntax-label">Kosínus:</div>
               <div class="syntax-value">cos(x), cos^n(x)</div>
             </div>
+
             <div class="syntax-row">
               <div class="syntax-label">Tangens:</div>
               <div class="syntax-value">tan(x), tan^n(x)</div>
@@ -489,11 +657,16 @@
                 log(x), log^n(x)
               </div>
             </div>
+
             <div class="syntax-row">
               <div class="syntax-label">Exponenciála:</div>
               <div class="syntax-value">e^x, e^(n*x)</div>
             </div>
           </div>
+
+          <p style="font-size:0.85em; margin-top:10px; color:var(--text-secondary);">
+            ⚠️ <strong>Pozor:</strong> <code>log(x)</code> je prirodzený logaritmus - ln(x), nie log₁₀(x).
+          </p>
         </div>
 
         <div class="syntax-section">
@@ -503,6 +676,7 @@
               <div class="syntax-label">Odmocnina:</div>
               <div class="syntax-value">sqrt(x), sqrt^n(x)</div>
             </div>
+
             <div class="syntax-row">
               <div class="syntax-label">Absolútna hodnota:</div>
               <div class="syntax-value">abs(x)</div>
@@ -530,79 +704,76 @@
     </div>
 
     <script>
-      // Завантажити тему з localStorage
       function loadTheme() {
-        const theme = localStorage.getItem('theme') || 'light';
-        if (theme === 'dark') {
-          document.body.classList.add('dark');
-          document.getElementById('themeToggle').textContent = '☀️';
-        }
+        try {
+          const theme = localStorage.getItem('theme') || 'light';
+          
+          if (theme === 'dark') {
+            document.body.classList.add('dark');
+            document.getElementById('themeToggle').textContent = '☀️';
+          }
+        } catch(e) {}
       }
-
-      // Перемикач теми
       function toggleTheme() {
         document.body.classList.toggle('dark');
         const isDark = document.body.classList.contains('dark');
         document.getElementById('themeToggle').textContent = isDark ? '☀️' : '🌙';
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        try {
+          localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        } catch(e) {}
       }
-
-      // Ініціалізація теми при завантаженні
       loadTheme();
 
-      // Show history button if history exists
       (function() {
         try {
           const h = JSON.parse(localStorage.getItem("bisectionHistory") || "[]");
-          if (h.length > 0) {
-            const btn = document.getElementById("historyBtn");
-            if (btn) { btn.style.display = "block"; btn.textContent = "📋 História výpočtov (" + h.length + ")"; }
+          const btn = document.getElementById("historyBtn");
+          
+          if (btn) {
+            if (h.length > 0) {
+              btn.textContent = "📋 História výpočtov (" + h.length + ")";
+              btn.title = "Zobraziť históriu výpočtov (" + h.length + ")";
+              btn.style.opacity = "1";
+              btn.style.cursor = "pointer";
+              btn.onclick = function() { window.location.href = 'history.html'; };
+            } else {
+              btn.textContent = "📋 História výpočtov";
+              btn.title = "História je zatiaľ prázdna";
+              btn.style.opacity = "0.4";
+              btn.style.cursor = "pointer";
+              btn.onclick = function() { window.location.href = 'history.html'; };
+            }
           }
         } catch(e) {}
       })();
 
-      // Покращена функція конверсії
       function convertMathToJS(expr) {
         let converted = expr.trim();
         
-        console.log('Step 0 (original):', converted);
-        
-        // КРОК 1: Спочатку обробляємо функції у степені
         converted = converted.replace(/sin\^(\d+)\s*\(([^)]+)\)/g, (match, power, arg) => {
-          console.log(`  sin^${power}(${arg}) → __SIN_${power}__(${arg})`);
           return `__SIN_${power}__(${arg})`;
         });
         
         converted = converted.replace(/cos\^(\d+)\s*\(([^)]+)\)/g, (match, power, arg) => {
-          console.log(`  cos^${power}(${arg}) → __COS_${power}__(${arg})`);
           return `__COS_${power}__(${arg})`;
         });
         
         converted = converted.replace(/tan\^(\d+)\s*\(([^)]+)\)/g, (match, power, arg) => {
-          console.log(`  tan^${power}(${arg}) → __TAN_${power}__(${arg})`);
           return `__TAN_${power}__(${arg})`;
         });
         
-
         converted = converted.replace(/log\^(\d+)\s*\(([^)]+)\)/g, (match, power, arg) => {
-          console.log(`  log^${power}(${arg}) → __LOG_${power}__(${arg})`);
           return `__LOG_${power}__(${arg})`;
         });
         
-
         converted = converted.replace(/sqrt\^(\d+)\s*\(([^)]+)\)/g, (match, power, arg) => {
-          console.log(`  sqrt^${power}(${arg}) → __SQRT_${power}__(${arg})`);
           return `__SQRT_${power}__(${arg})`;
         });
         
         converted = converted.replace(/abs\^(\d+)\s*\(([^)]+)\)/g, (match, power, arg) => {
-          console.log(`  abs^${power}(${arg}) → __ABS_${power}__(${arg})`);
           return `__ABS_${power}__(${arg})`;
         });
         
-        console.log('Step 1 (after marking power functions):', converted);
-        
-        // КРОК 2: Тепер обробляємо прості функції
         converted = converted.replace(/(?<![a-zA-Z])sin\(/g, 'Math.sin(');
         converted = converted.replace(/(?<![a-zA-Z])cos\(/g, 'Math.cos(');
         converted = converted.replace(/(?<![a-zA-Z])tan\(/g, 'Math.tan(');
@@ -610,60 +781,45 @@
         converted = converted.replace(/(?<![a-zA-Z])sqrt\(/g, 'Math.sqrt(');
         converted = converted.replace(/(?<![a-zA-Z])abs\(/g, 'Math.abs(');
         
-        console.log('Step 2 (after simple functions):', converted);
-        
-        // КРОК 3: Обробка e^x
         converted = converted.replace(/e\s*\^\s*\(([^)]+)\)/g, 'Math.exp($1)');
         converted = converted.replace(/e\s*\^\s*([a-zA-Z0-9*+\-/]+)/g, 'Math.exp($1)');
         
-        console.log('Step 3 (after e^x):', converted);
-        
-        // КРОК 4: Замінити ^ на **
         converted = converted.replace(/\^/g, '**');
-        
-        console.log('Step 4 (after ^→**):', converted);
-        
-        // КРОК 5: Розгорнути тимчасові заміни
+
         converted = converted.replace(/__SIN_(\d+)__\(([^)]+)\)/g, '(Math.sin($2))**$1');
         converted = converted.replace(/__COS_(\d+)__\(([^)]+)\)/g, '(Math.cos($2))**$1');
         converted = converted.replace(/__TAN_(\d+)__\(([^)]+)\)/g, '(Math.tan($2))**$1');
         converted = converted.replace(/__LOG_(\d+)__\(([^)]+)\)/g, '(Math.log($2))**$1');
         converted = converted.replace(/__SQRT_(\d+)__\(([^)]+)\)/g, '(Math.sqrt($2))**$1');
         converted = converted.replace(/__ABS_(\d+)__\(([^)]+)\)/g, '(Math.abs($2))**$1');
-        
-        console.log('Step 5 (after expanding power functions):', converted);
-        
-        // КРОК 6: Імплікатне множення
+
         converted = converted.replace(/(\d+)\s*([a-zA-Z])/g, '$1*$2');
-        
-        console.log('Step 6 (final):', converted);
         
         return converted;
       }
 
-      // Валідація функції
       function validateFunction(expr) {
         try {
           const testFunc = new Function('x', 'return ' + expr);
-          // Тестуємо тільки позитивні значення для log/sqrt
+
           const testValues = expr.includes('Math.log') || expr.includes('Math.sqrt') 
             ? [1, 2, 0.5, 10] 
             : [1, 2, 0.5, 10, -1, 0];
           
           for (const val of testValues) {
             const result = testFunc(val);
-            // Дозволяємо NaN тільки якщо є log або sqrt
+
             if (isNaN(result) && !expr.includes('Math.log') && !expr.includes('Math.sqrt')) {
               return { valid: false, error: 'Funkcia vracia neplatnú hodnotu (NaN)' };
             }
           }
+
           return { valid: true, error: null };
         } catch (e) {
           return { valid: false, error: e.message };
         }
       }
 
-      // Real-time validácia
       const funcInput = document.getElementById('func');
       funcInput.addEventListener('input', function() {
         const userInput = this.value.trim();
@@ -697,42 +853,39 @@
       }
 
       function selectExample(example) {
-        // Закрити модал
         closeHelp();
-        
-        // Підставити функцію
+
         document.getElementById('func').value = example;
-        
-        // Trigger валідацію
+
         funcInput.dispatchEvent(new Event('input'));
-        
-        // Почекати трохи для візуального ефекту
+
         setTimeout(() => {
           goNext();
         }, 300);
       }
 
-      window.onclick = function(event) {
+      window.addEventListener('click', function(event) {
         const modal = document.getElementById('helpModal');
+        
         if (event.target == modal) {
           modal.style.display = 'none';
         }
-      }
+      });
 
+      function isSafeExpr(expr) {
+        return /^[\dx\s\+\-\*\/\^\(\)\.\,_a-zA-Z]+$/.test(expr) &&
+          !/\b(?:fetch|alert|eval|Function|localStorage|document|window|import|require)\b/.test(expr);
+      }
+      
       function goNext() {
         const userInput = document.getElementById("func").value.trim();
         
-        if (!userInput) {
-          alert("❌ Zadaj funkciu!");
+        if (!isSafeExpr(userInput)) {
+          alert("❌ Nedovolený vstup!");
           return;
         }
         
         const jsFunc = convertMathToJS(userInput);
-        
-        console.log('=== FINAL CONVERSION ===');
-        console.log('Original:', userInput);
-        console.log('Converted:', jsFunc);
-        
         const validation = validateFunction(jsFunc);
         
         if (!validation.valid) {
@@ -746,8 +899,11 @@
       }
       
       funcInput.dispatchEvent(new Event('input'));
-      
-      // Bisection animation
+
+      funcInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') goNext();
+      });
+
       const animStates = [
         '[a]────●────[b]',
         '[a]──●──[b]',
@@ -762,19 +918,9 @@
         animEl.textContent = animStates[animIndex];
       }, 1200);
       
-      // Show help hint on page load
       window.addEventListener('load', () => {
         const hint = document.getElementById('helpHint');
-        const btn = document.getElementById('helpBtn');
-        const rect = btn.getBoundingClientRect();
-        hint.style.top = (rect.top + rect.height / 2 - hint.offsetHeight / 2 || rect.top) + 'px';
-        hint.style.left = (rect.right + 10) + 'px';
-        
         setTimeout(() => {
-          const r = btn.getBoundingClientRect();
-          hint.style.top = (r.top + r.height / 2) + 'px';
-          hint.style.left = (r.right + 10) + 'px';
-          hint.style.transform = 'translateY(-50%)';
           hint.style.opacity = '1';
           setTimeout(() => {
             hint.style.opacity = '0';

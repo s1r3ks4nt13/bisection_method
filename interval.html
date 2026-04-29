@@ -8,12 +8,12 @@
       --bg-gradient-1: #667eea;
       --bg-gradient-2: #764ba2;
       --card-bg: #ffffff;
-      --text-primary: #2c3e50;
-      --text-secondary: #7f8c8d;
+      --text-primary: #333;
+      --text-secondary: #666;
       --border-color: #e0e0e0;
       --input-bg: #ffffff;
       --btn-primary: #1976d2;
-      --btn-hover: #1565c0;
+      --btn-hover: #125aa0;
       --btn-bg: #2196f3;
       --hint-bg: #e3f2fd;
       --hint-border: #2196f3;
@@ -27,13 +27,13 @@
     }
 
     body.dark {
-      --bg-gradient-1: #1a1a2e;
+      --bg-gradient-1: #1f1f64;
       --bg-gradient-2: #16213e;
-      --card-bg: #2a2a2a;
-      --text-primary: #e8e8e8;
-      --text-secondary: #a0a0a0;
-      --border-color: #4a4a4a;
-      --input-bg: #353535;
+      --card-bg: #2d2d2d;
+      --text-primary: #e0e0e0;
+      --text-secondary: #b0b0b0;
+      --border-color: #404040;
+      --input-bg: #3e3e3e;
       --btn-primary: #2196f3;
       --btn-hover: #64b5f6;
       --btn-bg: #2196f3;
@@ -107,13 +107,31 @@
       border: 2px solid #2196f3;
     }
 
-    .attempt-1 { background: #e3f2fd; color: #1976d2; }
-    .attempt-2 { background: #fff3e0; color: #f57c00; }
-    .attempt-3 { background: #ffebee; color: #c62828; }
+    .attempt-1 { 
+      background: #e3f2fd; 
+      color: #1976d2; 
+    }
+    .attempt-2 { 
+      background: #fff3e0; 
+      color: #f57c00; 
+    }
+    .attempt-3 { 
+      background: #ffebee; 
+      color: #c62828; 
+    }
 
-    body.dark .attempt-1 { background: #1e3a5f; color: #64b5f6; }
-    body.dark .attempt-2 { background: #4a3000; color: #ffb74d; }
-    body.dark .attempt-3 { background: #4a0000; color: #ef5350; }
+    body.dark .attempt-1 { 
+      background: #1e3a5f; 
+      color: #64b5f6; 
+    }
+    body.dark .attempt-2 { 
+      background: #4a3000; 
+      color: #ffb74d; 
+    }
+    body.dark .attempt-3 { 
+      background: #4a0000; 
+      color: #ef5350; 
+    }
 
     .input-group {
       display: flex;
@@ -157,7 +175,6 @@
       font-weight: 500;
       margin-top: 28px;
     }
-
     button:hover {
       background: var(--btn-hover);
     }
@@ -224,7 +241,6 @@
       height: 50px;
     }
 
-    /* === MODAL STYLES (matched to bisection.html) === */
     .help-modal {
       display: none;
       position: fixed;
@@ -241,6 +257,7 @@
       from { transform: translateY(-50px); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
     }
+
     .help-modal-content {
       background: var(--card-bg);
       margin: 5% auto;
@@ -254,6 +271,7 @@
       animation: slideDownModal 0.3s;
       color: var(--text-primary);
     }
+
     .help-modal-header {
       display: flex;
       justify-content: space-between;
@@ -262,25 +280,13 @@
       border-bottom: 2px solid var(--btn-primary);
       padding-bottom: 10px;
     }
+
     .help-modal-header h2 {
       color: var(--btn-primary);
       margin: 0;
     }
+
     .help-close-btn {
-      /* font-size: 2em;
-      cursor: pointer;
-      color: var(--text-primary);
-      line-height: 1;
-      background: none;
-      border: none;
-      padding: 0;
-      margin: 0;
-      width: auto;
-      height: auto;
-      border-radius: 0;
-      box-shadow: none;
-      position: static;
-      display: inline; */
       font-size: 2em;
       cursor: pointer;
       color: var(--text);
@@ -290,9 +296,21 @@
       color: var(--btn-bg);
       transform: scale(1.1);
     }
-    .help-section { margin-bottom: 20px; }
-    .help-section h3 { color: var(--btn-primary); margin-bottom: 10px; }
-    .help-section p { color: var(--text-primary); line-height: 1.6; }
+
+    .help-section { 
+      margin-bottom: 20px; 
+    }
+
+    .help-section h3 { 
+      color: var(--btn-primary); 
+      margin-bottom: 10px; 
+    }
+
+    .help-section p { 
+      color: var(--text-primary); 
+      line-height: 1.6; 
+    }
+
     .help-formula {
       background: var(--hint-bg);
       padding: 15px;
@@ -304,6 +322,7 @@
       color: var(--text-primary);
       border: 1px solid var(--hint-border);
     }
+
     .help-box {
       background: var(--hint-bg);
       border-left: 4px solid var(--hint-border);
@@ -313,14 +332,17 @@
       color: var(--text-primary);
       line-height: 1.6;
     }
+
     .help-box.warning {
       background: #fff8e1;
       border-left-color: #ffc107;
     }
+
     body.dark .help-box.warning {
       background: #2d2400;
       border-left-color: #ffc107;
     }
+
     .help-understand-btn {
       padding: 12px 30px;
       margin-top: 10px;
@@ -331,7 +353,9 @@
       font-size: 1em;
       cursor: pointer;
     }
-    .help-understand-btn:hover { background: var(--btn-hover); }
+    .help-understand-btn:hover { 
+      background: var(--btn-hover); 
+    }
 
     #backBtn {
       left: 20px;
@@ -340,7 +364,6 @@
       height: 50px;
     }
 
-    /* СТИЛІ ДЛЯ ВИБОРУ МЕТОДУ */
     .method-selection {
       background: var(--hint-bg);
       padding: 20px 15px;
@@ -373,7 +396,6 @@
       min-width: 250px;
       text-align: center;
     }
-
     .method-card:hover {
       border-color: var(--btn-primary);
       transform: translateY(-5px);
@@ -434,6 +456,182 @@
     #continueToIntervalBtn.active:hover {
       background: var(--btn-hover);
     }
+
+    .stepper-wrapper {
+      margin-top: 25px;
+      padding: 15px 0;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .stepper-inner {
+      max-width: 650px;
+      margin: 0 auto;
+    }
+
+    .stepper {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      position: relative;
+      padding: 0 15px;
+    }
+
+    .stepper-line {
+      position: absolute;
+      top: 15px;
+      left: calc(16.66% + 15px);
+      right: calc(16.66% + 15px);
+      height: 2px;
+      background: var(--border-color);
+      z-index: 0;
+    }
+
+    .stepper-line-active {
+      position: absolute;
+      top: 15px;
+      left: calc(16.66% + 15px);
+      width: calc(33.33% - 30px);
+      height: 2px;
+      background: var(--btn-primary);
+      z-index: 0;
+    }
+
+    .stepper-step {
+      flex: 1;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .step-circle {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.9em;
+      margin: 0 auto 6px auto;
+    }
+
+    .step-circle.done {
+      background: #4caf50;
+      color: white;
+      box-shadow: 0 2px 6px rgba(76, 175, 80, 0.4);
+      font-size: 0.85em;
+    }
+
+    .step-circle.active {
+      background: var(--btn-primary);
+      color: white;
+      box-shadow: 0 2px 6px rgba(33, 150, 243, 0.4);
+    }
+
+    .step-circle.inactive {
+      background: var(--card-bg);
+      border: 2px solid var(--border-color);
+      color: var(--text-secondary);
+    }
+
+    .step-label {
+      font-size: 0.8em;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 1px;
+    }
+
+    .step-sublabel {
+      font-size: 0.7em;
+      color: var(--text-secondary);
+    }
+
+    .step-label-inactive {
+      font-size: 0.8em;
+      color: var(--text-secondary);
+    }
+
+    .interval-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 20px 0;
+      padding: 0 20px;
+    }
+
+    .method-display {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .method-display-label {
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+
+    .method-display-value {
+      color: var(--btn-primary);
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+
+    .interval-hint {
+      text-align: center;
+      margin: 15px 0 20px 0;
+      color: var(--text-secondary);
+      font-size: 0.9em;
+    }
+
+    .interval-inputs {
+      display: flex;
+      gap: 15px;
+      align-items: flex-end;
+      justify-content: center;
+      margin: 20px 0;
+    }
+
+    .interval-input-wrapper {
+      flex: 0 0 auto;
+    }
+
+    .interval-input-wrapper label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .interval-input-wrapper .label-note {
+      color: var(--text-secondary);
+      font-weight: 400;
+      font-size: 0.9em;
+    }
+
+    .interval-input-wrapper input {
+      width: 150px;
+      padding: 12px;
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 1.1em;
+      background: var(--input-bg);
+      color: var(--text-primary);
+    }
+
+    .method-select-center {
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    .continue-btn-wrapper {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -441,20 +639,18 @@
   <button class="theme-toggle" id="helpBtn" onclick="showHelp()" title="Nápoveda">❓</button>
   <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Zmeniť tému">🌙</button>
 
-  <!-- Help Modal -->
   <div id="helpModal" class="help-modal">
     <div class="help-modal-content">
       <div class="help-modal-header">
         <h2>📚 Ako vybrať správny interval?</h2>
-        <!-- <button class="help-close-btn" onclick="closeHelp()">&times;</button> -->
         <span class="help-close-btn" onclick="closeHelp()">&times;</span>
-        <!-- <span class="close-btn" onclick="closeHelp()">&times;</span> -->
       </div>
 
       <div class="help-section">
         <h3>🎯 Podmienka: f(a) · f(b) &lt; 0</h3>
         <p>Funkcia musí meniť znamienko na intervale <strong>[a, b]</strong>!</p>
         <p>To znamená, že v intervale musí byť aspoň <em>jeden bod</em>, kde funkcia má <strong>nulovú hodnotu</strong> (pretína os X). Ak <strong>f(a)</strong> a <strong>f(b)</strong> majú <em>opačné znamienka</em>, funkcia určite prechádza cez nulu v tomto intervale.</p>
+        
         <div class="help-formula">f(a) · f(b) &lt; 0</div>
         <div class="help-box">
           💡 <strong>Bolzanova veta:</strong> Ak je funkcia spojitá na [a, b] a f(a) · f(b) &lt; 0, potom existuje aspoň jeden koreň c ∈ (a, b) taký, že f(c) = 0.
@@ -464,24 +660,28 @@
       <div class="help-section">
         <h3>🔍 Ako nájsť správny interval?</h3>
         <p>Hľadaj dve hodnoty <strong>a</strong> a <strong>b</strong> také, že funkcia zmení znamienko:</p>
+        
         <div class="help-formula">f(a) &lt; 0  a  f(b) &gt; 0</div>
         <div class="help-formula">alebo: f(a) &gt; 0  a  f(b) &lt; 0</div>
+        
         <div class="help-box warning">
-          ⚠️ <strong>Pozor:</strong> Ak f(a) · f(b) &gt; 0 (rovnaké znamienka), interval je neplatný — metóda bisekcie sa nedá použiť! Buď interval neobsahuje koreň, alebo obsahuje párny počet koreňov.
+          ⚠️ <strong>Pozor:</strong> Ak f(a) · f(b) &gt; 0 (rovnaké znamienka), interval je neplatný - metóda bisekcie sa nedá použiť! Buď interval neobsahuje koreň, alebo obsahuje párny počet koreňov.
         </div>
       </div>
 
       <div class="help-section">
         <h3>🎓 Systém podpôr:</h3>
+        
         <ul style="line-height: 2; color: var(--text-primary);">
-          <li><strong>Pokus 1:</strong> Skús sám — zadaj hodnoty a a b bez pomoci</li>
-          <li><strong>Pokus 2:</strong> Graf dvoch funkcií — graf rozdelený na dve časti ukáže, kde funkcia mení znamienko</li>
-          <li><strong>Pokus 3:</strong> Kompletný graf funkcie — vidíš presné miesta, kde funkcia pretína os X</li>
+          <li><strong>Pokus 1:</strong> Skús sám - zadaj hodnoty a a b bez pomoci</li>
+          <li><strong>Pokus 2:</strong> Graf dvoch funkcií - graf rozdelený na dve časti ukáže, kde sa funkcie pretínajú, čo zodpovedá koreňu rovnice</li>
+          <li><strong>Pokus 3:</strong> Kompletný graf funkcie - vidíš presné miesta, kde funkcia pretína os X</li>
         </ul>
       </div>
 
       <div class="help-section">
         <h3>📊 Vzorce na overenie</h3>
+        
         <div class="help-formula">Platný interval: f(a) · f(b) &lt; 0 ✅</div>
         <div class="help-formula">Neplatný interval: f(a) · f(b) ≥ 0 ❌</div>
       </div>
@@ -497,7 +697,6 @@
       <strong>📐 Rovnica:</strong> <span id="funcDisplay"></span> <strong>= 0</strong>
     </div>
 
-    <!-- НОВИЙ БЛОК: Вибір методу -->
     <div id="methodSelectionSection" class="method-selection">
       <h3>🎯 Vyber podmienku zastavenia</h3>
       
@@ -505,8 +704,9 @@
         <div class="method-card" id="precisionCard" onclick="selectMethod('precision')">
           <h4>📏 Presnosť</h4>
           <p>Výpočet sa zastaví, keď dosiahne požadovanú presnosť</p>
+
           <div class="method-input-group" id="precisionInputGroup">
-            <label for="methodPrecisionInput">Presnosť (0.000001 - 1):</label>
+            <label for="methodPrecisionInput">Presnosť (min: 0.000001, max: 1):</label>
             <input type="number" id="methodPrecisionInput" value="0.01" min="0.000001" max="1" step="0.000001">
           </div>
         </div>
@@ -514,51 +714,39 @@
         <div class="method-card" id="stepsCard" onclick="selectMethod('steps')">
           <h4>🔢 Počet krokov</h4>
           <p>Výpočet sa zastaví po určitom počte iterácií</p>
+          
           <div class="method-input-group" id="stepsInputGroup">
-            <label for="methodStepsInput">Počet krokov (1 - 100):</label>
-            <input type="number" id="methodStepsInput" value="10" min="1" max="100" step="1">
+            <label for="methodStepsInput">Počet krokov (min: 3, max: 100):</label>
+            <input type="number" id="methodStepsInput" value="10" min="3" max="100" step="1">
           </div>
         </div>
       </div>
 
-      <div style="text-align: center; margin-top: 15px;">
-        <button id="continueToIntervalBtn" onclick="continueToIntervalSelection()">Pokračovať →</button>
+      <div class="method-select-center">
+        <button id="continueToIntervalBtn" onclick="continueToIntervalSelection()" title="Pokračovať na výber intervalu [a, b]">Pokračovať →</button>
       </div>
     </div>
 
-    <!-- ОРИГІНАЛЬНИЙ БЛОК (спочатку прихований) -->
-    <div id="intervalSelectionSection" style="display: none;">
-      <!-- Обраний метод і спроби на одному рівні -->
-      <div style="display: flex; justify-content: space-between; align-items: center; margin: 20px 0; padding: 0 20px;">
-        <div id="methodDisplayDiv" style="display: flex; align-items: center; gap: 10px;">
-          <!-- Тут буде відображатися обраний метод -->
-        </div>
-        
+    <div id="intervalSelectionSection" class="hidden">
+      <div class="interval-top-bar">
+        <div id="methodDisplayDiv" class="method-display"></div>
         <span class="attempt-badge" id="attemptBadge">Pokus 1/3</span>
       </div>
 
-      <!-- Hint about interval selection -->
-      <div style="text-align: center; margin: 15px 0 20px 0; color: var(--text-secondary); font-size: 0.9em;">
-        💡 Zadaj interval separácie [a, b].
-      </div>
+      <div class="interval-hint">💡 Zadaj interval separácie [a, b].</div>
 
-      <!-- Поля a, b і кнопка в один ряд -->
-      <div style="display: flex; gap: 15px; align-items: flex-end; justify-content: center; margin: 20px 0;">
-        <div style="flex: 0 0 auto;">
-          <label for="aInput" style="display: block; margin-bottom: 8px; color: var(--text-primary); font-weight: 500;">
-            a <span style="color: var(--text-secondary); font-weight: 400; font-size: 0.9em;">(ľavý bod)</span>:
-          </label>
-          <input type="number" id="aInput" step="0.1" value="-2" style="width: 150px; padding: 12px; border: 2px solid var(--border-color); border-radius: 8px; font-size: 1.1em; background: var(--input-bg); color: var(--text-primary);" title="Zadaj ľavú hranicu intervalu">
-        </div>
-        
-        <div style="flex: 0 0 auto;">
-          <label for="bInput" style="display: block; margin-bottom: 8px; color: var(--text-primary); font-weight: 500;">
-            b <span style="color: var(--text-secondary); font-weight: 400; font-size: 0.9em;">(pravý bod)</span>:
-          </label>
-          <input type="number" id="bInput" step="0.1" value="2" style="width: 150px; padding: 12px; border: 2px solid var(--border-color); border-radius: 8px; font-size: 1.1em; background: var(--input-bg); color: var(--text-primary);" title="Zadaj pravú hranicu intervalu">
+      <div class="interval-inputs">
+        <div class="interval-input-wrapper">
+          <label for="aInput">a <span class="label-note">(ľavý bod)</span>:</label>
+          <input type="number" id="aInput" step="0.1" value="-2" title="Zadaj ľavú hranicu intervalu" onkeydown="if(event.key==='Enter') checkInterval()">
         </div>
 
-        <button id="checkBtn" onclick="checkInterval()" style="padding: 14px 32px; background: var(--btn-primary); color: white; border: none; border-radius: 8px; font-size: 1em; cursor: pointer; font-weight: 500; white-space: nowrap;" title="Skontroluj či interval obsahuje koreň">Skontrolovať ✓</button>
+        <div class="interval-input-wrapper">
+          <label for="bInput">b <span class="label-note">(pravý bod)</span>:</label>
+          <input type="number" id="bInput" step="0.1" value="2" title="Zadaj pravú hranicu intervalu" onkeydown="if(event.key==='Enter') checkInterval()">
+        </div>
+
+        <button id="checkBtn" onclick="checkInterval()" title="Skontroluj či interval obsahuje koreň">Skontrolovať ✓</button>
       </div>
 
       <div class="error-box" id="errorBox"></div>
@@ -567,40 +755,33 @@
 
       <div id="chartContainer"></div>
 
-      <div style="text-align: center; margin-top: 20px;">
-        <button id="continueBtn" onclick="continueToBisection()" style="display: none;">
+      <div class="continue-btn-wrapper">
+        <button id="continueBtn" onclick="continueToBisection()" class="hidden">
           Pokračovať na riešenie →
         </button>
       </div>
     </div>
 
-    <!-- Progress indicator -->
-    <div style="margin-top: 25px; padding: 15px 0; border-top: 1px solid var(--border-color);">
-      <div style="max-width: 650px; margin: 0 auto;">
-        <!-- Steps with circles and connecting lines -->
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; position: relative; padding: 0 15px;">
-          <!-- Connecting line background -->
-          <div style="position: absolute; top: 15px; left: calc(16.66% + 15px); right: calc(16.66% + 15px); height: 2px; background: var(--border-color); z-index: 0;"></div>
-          <!-- Active progress line (from step 1 to step 2) -->
-          <div style="position: absolute; top: 15px; left: calc(16.66% + 15px); width: calc(33.33% - 30px); height: 2px; background: var(--btn-primary); z-index: 0;"></div>
-          
-          <!-- Step 1 - Completed -->
-          <div style="flex: 1; text-align: center; position: relative; z-index: 1;">
-            <div style="width: 28px; height: 28px; border-radius: 50%; background: #4caf50; color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.85em; margin: 0 auto 6px auto; box-shadow: 0 2px 6px rgba(76, 175, 80, 0.4);">✓</div>
-            <div style="font-size: 0.8em; color: var(--text-secondary);">Zadaj funkciu</div>
+    <div class="stepper-wrapper">
+      <div class="stepper-inner">
+        <div class="stepper">
+          <div class="stepper-line"></div>
+          <div class="stepper-line-active"></div>
+
+          <div class="stepper-step">
+            <div class="step-circle done">✓</div>
+            <div class="step-label-inactive">Zadanie funkcie</div>
           </div>
-          
-          <!-- Step 2 - Active -->
-          <div style="flex: 1; text-align: center; position: relative; z-index: 1;">
-            <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--btn-primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.9em; margin: 0 auto 6px auto; box-shadow: 0 2px 6px rgba(33, 150, 243, 0.4);">2</div>
-            <div style="font-size: 0.8em; font-weight: 600; color: var(--text-primary); margin-bottom: 1px;">Interval</div>
-            <div style="font-size: 0.7em; color: var(--text-secondary);">(si tu)</div>
+
+          <div class="stepper-step">
+            <div class="step-circle active">2</div>
+            <div class="step-label">Interval</div>
+            <div class="step-sublabel">(si tu)</div>
           </div>
-          
-          <!-- Step 3 - Inactive -->
-          <div style="flex: 1; text-align: center; position: relative; z-index: 1;">
-            <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--card-bg); border: 2px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.9em; margin: 0 auto 6px auto; color: var(--text-secondary);">3</div>
-            <div style="font-size: 0.8em; color: var(--text-secondary);">Výpočet</div>
+
+          <div class="stepper-step">
+            <div class="step-circle inactive">3</div>
+            <div class="step-label-inactive">Výpočet</div>
           </div>
         </div>
       </div>
@@ -615,17 +796,14 @@
     let selectedMethod = null;
     let methodValue = null;
 
-    // === ФУНКЦІЇ ДЛЯ ВИБОРУ МЕТОДУ ===
     function selectMethod(method) {
       selectedMethod = method;
-      
-      // Прибираємо виділення з обох карток
+
       document.getElementById('precisionCard').classList.remove('selected');
       document.getElementById('stepsCard').classList.remove('selected');
       document.getElementById('precisionInputGroup').classList.remove('active');
       document.getElementById('stepsInputGroup').classList.remove('active');
       
-      // Додаємо виділення до вибраної картки
       if (method === 'precision') {
         document.getElementById('precisionCard').classList.add('selected');
         document.getElementById('precisionInputGroup').classList.add('active');
@@ -634,7 +812,6 @@
         document.getElementById('stepsInputGroup').classList.add('active');
       }
       
-      // Активуємо кнопку продовження
       const continueBtn = document.getElementById('continueToIntervalBtn');
       continueBtn.classList.add('active');
       continueBtn.disabled = false;
@@ -646,44 +823,46 @@
         return;
       }
 
-      // Зберігаємо вибраний метод і значення
       if (selectedMethod === 'precision') {
         const precision = parseFloat(document.getElementById('methodPrecisionInput').value);
+        
         if (precision < 0.000001 || precision > 1) {
           alert('Presnosť musí byť medzi 0.000001 a 1');
           return;
         }
+
         methodValue = precision;
         localStorage.setItem('stopMethod', 'precision');
         localStorage.setItem('precision', precision);
       } else if (selectedMethod === 'steps') {
         const steps = parseInt(document.getElementById('methodStepsInput').value);
-        if (steps < 1 || steps > 100) {
-          alert('Počet krokov musí byť medzi 1 a 100');
+        
+        if (steps < 3 || steps > 100) {
+          alert('Počet krokov musí byť medzi 3 a 100');
           return;
         }
+
         methodValue = steps;
         localStorage.setItem('stopMethod', 'steps');
         localStorage.setItem('maxSteps', steps);
       }
 
-      // Скидаємо стан перед показом нового методу (якщо прийшли з "Назад")
       attempt = 1;
       updateAttemptBadge();
       hideAllMessages();
+
       const chartContainer = document.getElementById('chartContainer');
       chartContainer.style.display = 'none';
       chartContainer.innerHTML = '';
-      document.getElementById('continueBtn').style.display = 'none';
+      
+      document.getElementById('continueBtn').classList.add('hidden');
       document.getElementById('aInput').value = '-2';
       document.getElementById('bInput').value = '2';
 
-      // Приховуємо секцію вибору методу
-      document.getElementById('methodSelectionSection').style.display = 'none';
+      document.getElementById('methodSelectionSection').classList.add('hidden');
       
-      // Показуємо секцію вибору інтервалу
-      document.getElementById('intervalSelectionSection').style.display = 'block';
-      // Reset tlacidla kontroly - mohlo byt deaktivovane z predchadzajuceho pokusu
+      document.getElementById('intervalSelectionSection').classList.remove('hidden');
+
       const checkBtnReset = document.getElementById('checkBtn');
       if (checkBtnReset) {
         checkBtnReset.disabled = false;
@@ -691,31 +870,27 @@
         checkBtnReset.style.cursor = '';
         checkBtnReset.title = 'Skontroluj či interval obsahuje koreň';
       }
-      // Reset success/error boxes
       hideAllMessages();
-      
-      // Оновлюємо відображення обраного методу
+
       updateMethodDisplay();
     }
 
     function updateMethodDisplay() {
       const methodDisplayDiv = document.getElementById('methodDisplayDiv');
-      
+
       if (selectedMethod === 'precision') {
         methodDisplayDiv.innerHTML = `
-          <label style="font-weight: 600; color: var(--text-primary); white-space: nowrap;">⚙️ Presnosť:</label>
-          <span style="color: var(--btn-primary); font-weight: bold; font-size: 1.1em;">${methodValue}</span>
+          <span class="method-display-label">📏 Presnosť:</span>
+          <span class="method-display-value">${methodValue}</span>
         `;
       } else if (selectedMethod === 'steps') {
         methodDisplayDiv.innerHTML = `
-          <label style="font-weight: 600; color: var(--text-primary); white-space: nowrap;">🔢 Počet krokov:</label>
-          <span style="color: var(--btn-primary); font-weight: bold; font-size: 1.1em;">${methodValue}</span>
+          <span class="method-display-label">🔢 Počet krokov:</span>
+          <span class="method-display-value">${methodValue}</span>
         `;
       }
     }
-    // === КІНЕЦЬ ФУНКЦІЙ ДЛЯ ВИБОРУ МЕТОДУ ===
 
-    // Načítať funkciu
     window.addEventListener('DOMContentLoaded', () => {
       expr = localStorage.getItem('functionExpr') || 'x**3+4*x+2';
       funcOriginal = localStorage.getItem('functionOriginal') || 'x^3 + 4*x + 2';
@@ -724,7 +899,14 @@
       loadTheme();
     });
 
+    function isSafeExpr(expression) {
+      return /^[\dx\s\+\-\*\/\^\(\)\.\,_a-zA-Z]+$/.test(expression) &&
+        !/\b(?:fetch|alert|eval|Function|localStorage|document|window|import|require)\b/.test(expression);
+    }
+
     function f(x) {
+      if (!isSafeExpr(expr)) return NaN;
+
       try {
         const fn = new Function('x', 'return ' + expr);
         return fn(x);
@@ -747,7 +929,6 @@
         return;
       }
 
-      // Обмеження діапазону інтервалу
       const intervalRange = Math.abs(b - a);
       if (intervalRange > 20) {
         showError('❌ Interval je príliš veľký! Maximálna šírka intervalu je 20. Skús menší interval.');
@@ -757,11 +938,9 @@
       const fa = f(a);
       const fb = f(b);
 
-      // Перевірка чи функція визначена
       const isUndefined = isNaN(fa) || isNaN(fb) || !isFinite(fa) || !isFinite(fb);
 
       if (isUndefined) {
-        // Функція не визначена - показати графік та пояснення
         hideAllMessages();
         
         document.getElementById('errorBox').style.display = 'block';
@@ -773,7 +952,6 @@
           Pozri sa na graf - funkcia je definovaná len pre určité hodnoty x!
         `;
 
-        // Posunúť na ďalšiu spróbu a ukázať graf
         if (attempt === 1) {
           attempt = 2;
           updateAttemptBadge();
@@ -783,17 +961,14 @@
           updateAttemptBadge();
           setTimeout(() => showFullGraph(), 500);
         } else {
-          // Tretia spróba - automatický prechod
           setTimeout(() => autoFindInterval(), 1500);
         }
         
         return;
       }
 
-      // Підрахунок коренів в інтервалі
       const rootsCount = countRootsInInterval(a, b);
 
-      // Kontrola znamienok
       const isCorrect = fa * fb < 0;
 
       if (isCorrect) {
@@ -804,7 +979,6 @@
     }
 
     function countRootsInInterval(a, b) {
-      // Підрахунок приблизної кількості коренів
       let count = 0;
       const step = (b - a) / 100;
       
@@ -835,12 +1009,10 @@
         f(${a}) = ${f(a).toFixed(3)} a f(${b}) = ${f(b).toFixed(3)} majú opačné znamienka.${rootsInfo}
       `;
 
-      // Ukázať celý graf
       showFullGraph();
 
-      // Ukázať tlačidlo
-      document.getElementById('continueBtn').style.display = 'inline-block';
-      // Deaktivovat tlacidlo kontroly - interval je uz spravny
+      document.getElementById('continueBtn').classList.remove('hidden');
+
       const checkBtn = document.getElementById('checkBtn');
       if (checkBtn) {
         checkBtn.disabled = true;
@@ -848,8 +1020,7 @@
         checkBtn.style.cursor = 'not-allowed';
         checkBtn.title = 'Interval je už správny ✓';
       }
-      
-      // Uložiť interval
+
       localStorage.setItem('a', a);
       localStorage.setItem('b', b);
     }
@@ -858,7 +1029,6 @@
       hideAllMessages();
 
       if (attempt === 1) {
-        // Spro ba 1: Vysvetlenie + prejsť na Spróbu 2
         document.getElementById('errorBox').style.display = 'block';
         document.getElementById('errorBox').innerHTML = `
           <strong>❌ Nesprávny interval!</strong><br>
@@ -866,17 +1036,15 @@
           f(${b}) = ${fb.toFixed(3)} ${fb > 0 ? '➕' : '➖'}<br><br>
           <strong>Prečo je to zlé?</strong><br>
           Obe hodnoty majú rovnaké znamienko ${fa > 0 ? '➕' : '➖'}.<br>
-          Separačný interval môže obsahovať iba jeden koreň a funkčné hodnotu v jeho ktajných bodoch misia mať opačne znamienka!
+          Separačný interval môže obsahovať iba jeden koreň a funkčné hodnoty v jeho krajných bodoch musia mať opačné znamienka!
         `;
         
         attempt = 2;
         updateAttemptBadge();
 
-        // Ukázať graf 2 funkcií
         setTimeout(() => showTwoFunctionsGraph(), 500);
 
       } else if (attempt === 2) {
-        // Spróba 2: Ukázať celý graf
         document.getElementById('errorBox').style.display = 'block';
         document.getElementById('errorBox').innerHTML = `
           <strong>❌ Stále nesprávny interval!</strong><br>
@@ -888,11 +1056,8 @@
         attempt = 3;
         updateAttemptBadge();
 
-        // Ukázať celý graf
         setTimeout(() => showFullGraph(), 500);
-
       } else {
-        // Spróba 3: Automatický prechod
         document.getElementById('errorBox').style.display = 'block';
         document.getElementById('errorBox').innerHTML = `
           <strong>⚠️ Dosiahnutý limit pokusov!</strong><br>
@@ -911,18 +1076,15 @@
         return;
       }
 
-      // Отримати кольори залежно від теми
       const isDark = document.body.classList.contains('dark');
       const textColor = isDark ? '#e0e0e0' : '#222';
       const gridColor = isDark ? '#404040' : '#e0e0e0';
       const bgColor = isDark ? '#2d2d2d' : '#ffffff';
 
-      // Динамічний діапазон X для log(x)
       let xMin = -5, xMax = 5;
-      
       if (expr.includes('Math.log')) {
-        xMin = -0.5;  // Почати з -0.5 щоб показати вісь
-        xMax = 10;     // Розширюємо вправо
+        xMin = -0.5;
+        xMax = 10;
       }
 
       const xVals = [];
@@ -931,15 +1093,14 @@
 
       for (let x = xMin; x <= xMax; x += (xMax - xMin) / 300) {
         xVals.push(x);
-        
-        // Для log функцій, значення буде null для x <= 0
+
         let y1, y2;
         if (expr.includes('Math.log') && x <= 0) {
           y1 = null;
           y2 = null;
         } else {
-          y1 = func1(x, components[0]);
-          y2 = func2(x, components[1]);
+          y1 = evalExpr(x, components[0]);
+          y2 = evalExpr(x, components[1]);
         }
         
         if (isFinite(y1) && isFinite(y2)) {
@@ -951,7 +1112,6 @@
         }
       }
 
-      // Знайти перетини
       const intersections = [];
       for (let i = 0; i < xVals.length - 1; i++) {
         if (y1Vals[i] === null || y2Vals[i] === null) continue;
@@ -960,11 +1120,8 @@
         const diff2 = y1Vals[i+1] - y2Vals[i+1];
         
         if (diff1 * diff2 < 0) {
-          // Лінійна інтерполяція для точнішого X
           const xIntersect = xVals[i] - diff1 * (xVals[i+1] - xVals[i]) / (diff2 - diff1);
-          
-          // Y = значення другої функції (константа)
-          const yIntersect = func2(xIntersect, components[1]);
+          const yIntersect = evalExpr(xIntersect, components[1]);
           
           intersections.push({
             x: xIntersect,
@@ -973,21 +1130,17 @@
         }
       }
 
-      // Автоматичний діапазон Y з обмеженням для кращого перегляду коренів
       const allYVals = [...y1Vals, ...y2Vals].filter(y => y !== null && isFinite(y));
       let yMin = Math.min(...allYVals);
       let yMax = Math.max(...allYVals);
-      
-      // Обмежити діапазон Y для кращого відображення коренів
+
       const yRange = yMax - yMin;
-      const maxRange = 50; // Стандартний максимальний діапазон для Y
+      const maxRange = 50;
       
       if (yRange > maxRange) {
-        // Перевірити чи є перетини поза стандартним діапазоном [-25, 25]
         const hasIntersectionsOutside = intersections.some(p => Math.abs(p.y) > maxRange / 2);
         
         if (hasIntersectionsOutside && intersections.length > 0) {
-          // Адаптувати діапазон щоб включити всі перетини
           const intersectionYs = intersections.map(p => p.y);
           const intersectionMin = Math.min(...intersectionYs);
           const intersectionMax = Math.max(...intersectionYs);
@@ -996,8 +1149,8 @@
           yMin = intersectionMin - padding;
           yMax = intersectionMax + padding;
         } else {
-          // Центрувати навколо нуля зі стандартним діапазоном
           const centerY = 0;
+
           yMin = centerY - maxRange / 2;
           yMax = centerY + maxRange / 2;
         }
@@ -1070,40 +1223,41 @@
 
 
     function showFullGraph() {
-      // Отримати кольори залежно від теми
       const isDark = document.body.classList.contains('dark');
       const textColor = isDark ? '#e0e0e0' : '#222';
       const gridColor = isDark ? '#404040' : '#e0e0e0';
       const bgColor = isDark ? '#2d2d2d' : '#ffffff';
 
-      // Dynamicky rozsah X
       let xMin = -5, xMax = 5;
       if (expr.includes('Math.log')) { xMin = -0.5; xMax = 10; }
       if (expr.includes('Math.exp')) { xMin = -5; xMax = 5; }
       if (expr.includes('Math.sqrt')) { xMin = -0.5; xMax = 5; }
 
-      // Ak funkcia nema koren v [-5,5] a nie je periodicka, rozsir okno
       const isTrig = expr.includes('Math.sin') || expr.includes('Math.cos') || expr.includes('Math.tan');
       if (!isTrig) {
         const hasRootInDefault = (() => {
           let py = null;
+
           for (let x = xMin; x <= xMax; x += (xMax-xMin)/200) {
             const y = f(x);
+
             if (!isFinite(y)) { py = null; continue; }
             if (py !== null && py * y < 0) return true;
             py = y;
           }
+
           return false;
         })();
         if (!hasRootInDefault) {
-          // Hladat koren v sirokom rozsahu
           (function() {
             for (const [lo, hi] of [[-500, 500], [-2000, 2000]]) {
               const sStep = (hi - lo) / 2000;
+              
               let px = lo, py = null;
               for (let x = lo; x <= hi; x += sStep) {
                 const y = f(x);
                 if (!isFinite(y)) { px = x; py = null; continue; }
+                
                 if (py !== null && py * y < 0) {
                   const rootApprox = (px + x) / 2;
                   const margin = Math.max(Math.abs(rootApprox) * 0.5, 5);
@@ -1111,6 +1265,7 @@
                   xMax = rootApprox + margin;
                   return;
                 }
+
                 px = x; py = y;
               }
             }
@@ -1121,41 +1276,42 @@
       const xVals = [];
       const yVals = [];
 
-      // Dvojpriebehova metoda: prvy prebeh zbiera surove Y, druhy detekuje skoky
       const step300 = (xMax - xMin) / 300;
       const rawXs = [], rawYs = [];
+
       for (let x = xMin; x <= xMax; x += step300) {
         rawXs.push(x);
         rawYs.push(f(x));
       }
+
       const finiteRaw = rawYs.filter(y => isFinite(y));
       const yRangeRaw = finiteRaw.length > 1 ? Math.max(...finiteRaw) - Math.min(...finiteRaw) : 10;
-      // Prah skoku: ak rozdiel medzi susednymi bodmi presiahne toto, vlozime null (prerusenie)
+
       const jumpThreshold = Math.max(yRangeRaw * 0.15, 2);
       let prevY = null;
       for (let i = 0; i < rawXs.length; i++) {
         const x = rawXs[i], y = rawYs[i];
+
         if (isFinite(y)) {
           if (prevY !== null && Math.abs(y - prevY) > jumpThreshold) {
-            // Vlozit null pred velky skok - prerus ciaru
             xVals.push(x - step300 / 2);
             yVals.push(null);
           }
+
           xVals.push(x);
           yVals.push(y);
+
           prevY = y;
         } else {
           xVals.push(x);
           yVals.push(null);
+
           prevY = null;
         }
       }
 
-      // Обмежити діапазон Y для кращого перегляду коренів
       const validYVals = yVals.filter(y => y !== null && isFinite(y));
-      
       if (validYVals.length === 0) {
-        // Якщо немає валідних значень, використати стандартний діапазон
         const trace = {
           x: xVals,
           y: yVals,
@@ -1197,6 +1353,7 @@
       const yRange = yMax_calc - yMin_calc;
       const maxRange = 50;
       let yAxisRange = undefined;
+
       if (yRange > maxRange) {
         yAxisRange = [-maxRange / 2, maxRange / 2];
       }
@@ -1238,7 +1395,6 @@
     }
 
     function autoFindInterval() {
-      // Динамічний діапазон пошуку
       let searchMin = -5, searchMax = 5, step = 0.5;
       
       if (expr.includes('Math.log')) {
@@ -1268,53 +1424,42 @@
           localStorage.setItem('a', a);
           localStorage.setItem('b', b);
           
-          // Показуємо графік
           showFullGraph();
           
           return;
         }
       }
-      
       showError('❌ Nemožno nájsť interval automaticky! Skús inú funkciu.');
     }
 
     function continueToBisection() {
-      // Дані вже збережені в localStorage, просто переходимо
       window.location.href = 'bisection.html';
     }
 
     function goBackToMenu() {
       const intervalSection = document.getElementById('intervalSelectionSection');
       const methodSection = document.getElementById('methodSelectionSection');
-      
-      // Якщо показано вибір інтервалу - повернутись до вибору методу
-      if (intervalSection && intervalSection.style.display !== 'none') {
-        intervalSection.style.display = 'none';
-        methodSection.style.display = 'block';
-        
-        // Зберігаємо попередній метод для відновлення вибору
+
+      if (intervalSection && !intervalSection.classList.contains('hidden')) {
+        intervalSection.classList.add('hidden');
+        methodSection.classList.remove('hidden');
+
         const previousMethod = selectedMethod;
-        
-        // Скидаємо стан спроб і результатів
+
         attempt = 1;
         updateAttemptBadge();
-        
-        // Ховаємо всі повідомлення
+
         hideAllMessages();
-        
-        // Ховаємо та очищаємо графік
+
         const chartContainer = document.getElementById('chartContainer');
         chartContainer.style.display = 'none';
         chartContainer.innerHTML = '';
-        
-        // Ховаємо кнопку продовження
-        document.getElementById('continueBtn').style.display = 'none';
-        
-        // Скидаємо поля введення
+
+        document.getElementById('continueBtn').classList.add('hidden');
+
         document.getElementById('aInput').value = '-2';
         document.getElementById('bInput').value = '2';
 
-        // Відновлюємо виділення попередньо вибраної картки
         if (previousMethod === 'precision') {
           document.getElementById('precisionCard').classList.add('selected');
           document.getElementById('stepsCard').classList.remove('selected');
@@ -1326,15 +1471,13 @@
           document.getElementById('stepsInputGroup').classList.add('active');
           document.getElementById('precisionInputGroup').classList.remove('active');
         }
-        
-        // Показати кнопку "Pokračovať" якщо метод був вибраний
+
         if (previousMethod) {
           const continueBtn = document.getElementById('continueToIntervalBtn');
           continueBtn.classList.add('active');
           continueBtn.disabled = false;
         }
       } else {
-        // Якщо показано вибір методу - повернутись в меню
         window.location.href = 'menu.html';
       }
     }
@@ -1358,10 +1501,8 @@
     }
 
     function getSimplifiedComponents(expr) {
-      // Видаляємо пробіли
       const clean = expr.replace(/\s/g, '');
-      
-      // === ВАРІАНТ 1: x**n + polynom (x**3 + 4*x + 2) ===
+
       const xPowMatch = clean.match(/x\*\*\d+/);
       if (xPowMatch && !clean.includes('Math.log') && !clean.includes('Math.sin') && !clean.includes('Math.cos')) {
         const pow = xPowMatch[0];
@@ -1371,11 +1512,11 @@
           const comp2 = rest.startsWith('+') ? '0-(' + rest.substring(1) + ')' : 
                         rest.startsWith('-') ? rest.substring(1) : 
                         '0-(' + rest + ')';
+
           return [pow, comp2];
         }
       }
-      
-      // === ВАРІАНТ 1b: Math.pow(x,n) + polynom (якщо з menu старої версії) ===
+
       const mathPowMatch = clean.match(/Math\.pow\(x,\d+\)/);
       if (mathPowMatch && !clean.includes('Math.log') && !clean.includes('Math.sin') && !clean.includes('Math.cos')) {
         const pow = mathPowMatch[0];
@@ -1385,16 +1526,13 @@
           const comp2 = rest.startsWith('+') ? '0-(' + rest.substring(1) + ')' : 
                         rest.startsWith('-') ? rest.substring(1) : 
                         '0-(' + rest + ')';
+
           return [pow, comp2];
         }
       }
-      
-      // === ВАРІАНТ 2: Два степені функцій ===
-      // Шукаємо (Math.func(...))**n
+
       const funcPowRegex = /\(Math\.(log|sin|cos|tan)\([^)]*\)\)\*\*\d+/g;
       let powMatches = [...clean.matchAll(funcPowRegex)];
-      
-      // Якщо немає, пробуємо Math.pow
       if (powMatches.length === 0) {
         powMatches = [...clean.matchAll(/Math\.pow\([^,]+,[^)]+\)/g)];
       }
@@ -1415,9 +1553,6 @@
         }
       }
       
-      // === ВАРІАНТ 3: Один степінь функції + щось ===
-      // (Math.log(x))**3 + Math.log(x)
-      // (Math.log(x))**2 - x
       if (powMatches.length === 1) {
         const pow = powMatches[0][0];
         const rest = clean.substring(powMatches[0].index + pow.length);
@@ -1426,11 +1561,11 @@
           const comp2 = rest.startsWith('+') ? '0-(' + rest.substring(1) + ')' :
                         rest.startsWith('-') ? rest.substring(1) :
                         '0-(' + rest + ')';
+
           return [pow, comp2];
         }
       }
-      
-      // === ВАРІАНТ 4: Проста Math функція + константа ===
+
       const simpleFuncs = [
         /Math\.exp\([^)]+\)/,
         /Math\.sqrt\([^)]+\)/,
@@ -1451,6 +1586,7 @@
             const comp2 = rest.startsWith('+') ? '0-(' + rest.substring(1) + ')' :
                           rest.startsWith('-') ? rest.substring(1) :
                           '0-(' + rest + ')';
+
             return [func, comp2];
           }
         }
@@ -1471,8 +1607,7 @@
                     .replace(/\-\+/g, '-')
                     .replace(/\-\-/g, '+')
                     .replace(/\+\+/g, '+');
-      
-      // Якщо починається з - треба додати 0
+
       if (result.startsWith('-')) {
         result = '0' + result;
       } else if (result.startsWith('+')) {
@@ -1482,18 +1617,10 @@
       return result;
     }
 
-    function func1(x, expr1) {
+    function evalExpr(x, expression) {
+      if (!isSafeExpr(expression)) return NaN;
       try {
-        const fn = new Function('x', 'return ' + expr1);
-        return fn(x);
-      } catch(e) {
-        return NaN;
-      }
-    }
-
-    function func2(x, expr2) {
-      try {
-        const fn = new Function('x', 'return ' + expr2);
+        const fn = new Function('x', 'return ' + expression);
         return fn(x);
       } catch(e) {
         return NaN;
@@ -1502,31 +1629,30 @@
 
     function beautifyFormula(expr) {
       return expr
-        // Спочатку обробляємо 0-(...) → -(...)
         .replace(/0-\(/g, '-(')
-        // Степені функцій з дужками: (Math.sin(x))**4 → sin^4(x)
+
         .replace(/\(Math\.log\(x\)\)\*\*(\d+)/g, 'log^$1(x)')
         .replace(/\(Math\.sin\(x\)\)\*\*(\d+)/g, 'sin^$1(x)')
         .replace(/\(Math\.cos\(x\)\)\*\*(\d+)/g, 'cos^$1(x)')
         .replace(/\(Math\.tan\(x\)\)\*\*(\d+)/g, 'tan^$1(x)')
-        // Степені функцій Math.pow
+
         .replace(/Math\.pow\(Math\.log\(x\),(\d+)\)/g, 'log^$1(x)')
         .replace(/Math\.pow\(Math\.sin\(x\),(\d+)\)/g, 'sin^$1(x)')
         .replace(/Math\.pow\(Math\.cos\(x\),(\d+)\)/g, 'cos^$1(x)')
         .replace(/Math\.pow\(Math\.tan\(x\),(\d+)\)/g, 'tan^$1(x)')
-        // Прості функції
+
         .replace(/Math\.exp\(([^)]+)\)/g, 'e^($1)')
         .replace(/Math\.sin\(([^)]+)\)/g, 'sin($1)')
         .replace(/Math\.cos\(([^)]+)\)/g, 'cos($1)')
         .replace(/Math\.tan\(([^)]+)\)/g, 'tan($1)')
         .replace(/Math\.log\(([^)]+)\)/g, 'log($1)')
         .replace(/Math\.sqrt\(([^)]+)\)/g, '√($1)')
-        // Загальні степені
+
         .replace(/Math\.pow\(([^,]+),([^)]+)\)/g, '($1)^$2')
         .replace(/x\*\*(\d+)/g, 'x^$1')
         .replace(/\*\*/g, '^')
         .replace(/\*/g, '·')
-        // Прибираємо зайві дужки
+
         .replace(/\((\d+)\)/g, '$1')
         .replace(/\(x\)/g, 'x');
     }
@@ -1535,12 +1661,13 @@
       document.body.classList.toggle('dark');
       const isDark = document.body.classList.contains('dark');
       document.getElementById('themeToggle').textContent = isDark ? '☀️' : '🌙';
-      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+
+      try {
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      } catch(e) {}
       
-      // Оновити графік якщо він відображений
       const chartContainer = document.getElementById('chartContainer');
       if (chartContainer && chartContainer.style.display === 'block') {
-        // Перемалювати графік з новими кольорами теми
         const components = getSimplifiedComponents(expr);
         if (components) {
           showTwoFunctionsGraph();
@@ -1550,7 +1677,6 @@
       }
     }
 
-    
     function showHelp() {
       document.getElementById('helpModal').style.display = 'block';
     }
@@ -1559,19 +1685,22 @@
       document.getElementById('helpModal').style.display = 'none';
     }
 
-    window.onclick = function(event) {
+    window.addEventListener('click', function(event) {
       const modal = document.getElementById('helpModal');
+
       if (event.target == modal) {
         modal.style.display = 'none';
       }
-    }
+    });
 
-function loadTheme() {
-      const theme = localStorage.getItem('theme') || 'light';
-      if (theme === 'dark') {
-        document.body.classList.add('dark');
-        document.getElementById('themeToggle').textContent = '☀️';
-      }
+    function loadTheme() {
+      try {
+        const theme = localStorage.getItem('theme') || 'light';
+        if (theme === 'dark') {
+          document.body.classList.add('dark');
+          document.getElementById('themeToggle').textContent = '☀️';
+        }
+      } catch(e) {}
     }
   </script>
 </body>
