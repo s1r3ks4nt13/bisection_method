@@ -364,6 +364,29 @@
       height: 50px;
     }
 
+    #homeBtn {
+      position: fixed;
+      top: 20px;
+      left: 80px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: var(--btn-primary);
+      color: white;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      margin: 0;
+    }
+    #homeBtn:hover {
+      background: var(--btn-hover);
+    }
+
     .method-selection {
       background: var(--hint-bg);
       padding: 20px 15px;
@@ -635,7 +658,13 @@
   </style>
 </head>
 <body>
-  <button class="theme-toggle" id="backBtn" onclick="goBackToMenu()" title="Späť na menu">←</button>
+  <button class="theme-toggle" id="backBtn" onclick="goBackToMenu()" title="Vrátiť sa o krok späť">←</button>
+  <button class="theme-toggle" id="homeBtn" onclick="window.location.href='menu.html'" title="Vrátiť sa do hlavného menu">
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9.5z"/>
+      <polyline points="9 21 9 12 15 12 15 21"/>
+    </svg>
+  </button>
   <button class="theme-toggle" id="helpBtn" onclick="showHelp()" title="Nápoveda">❓</button>
   <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Zmeniť tému">🌙</button>
 

@@ -272,6 +272,30 @@
         transform: scale(1.1);
       }
 
+      #homeBtn {
+        position: absolute;
+        left: 65px;
+        top: 15px;
+        background: var(--btn-bg);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
+        padding: 0;
+        margin: 0;
+        transition: all 0.3s;
+      }
+      #homeBtn:hover {
+        background: var(--btn-hover);
+        transform: scale(1.1);
+      }
+
       .btn-row {
         display: flex;
         gap: 10px;
@@ -1085,6 +1109,12 @@
 
     <section id="solution">
       <button id="back" onclick="goBack()" title="Späť na zadanie intervalu">←</button>
+      <button id="homeBtn" onclick="goHome()" title="Vrátiť sa do hlavného menu">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9.5z"/>
+          <polyline points="9 21 9 12 15 12 15 21"/>
+        </svg>
+      </button>
       
       <div class="layout">
         <div class="left">
@@ -1132,7 +1162,7 @@
                   <th onmouseenter="showTooltip(event, 'Stredný bod intervalu:<br>cₙ = (aₙ + bₙ) / 2')" onmouseleave="hideTooltip()" style="cursor:help">c<sub>n</sub></th>
                   <th onmouseenter="showTooltip(event, 'Pravá hranica intervalu - bₙ')" onmouseleave="hideTooltip()" style="cursor:help">b<sub>n</sub></th>
                   <th onmouseenter="showTooltip(event, 'Súčin funkčných hodnôt:<br>f(aₙ)·f(cₙ) &lt; 0 → koreň v [aₙ, cₙ]<br>f(aₙ)·f(cₙ) &gt; 0 → koreň v [cₙ, bₙ]')" onmouseleave="hideTooltip()" style="cursor:help">f(a<sub>n</sub>)·f(c<sub>n</sub>)</th>
-                  <th id="intervalHeader" onmouseenter="showTooltip(event, 'Dĺžka aktuálneho intervalu')" onmouseleave="hideTooltip()" style="cursor:help">|b<sub>n</sub> &minus; a<sub>n</sub>|</th>
+                  <th id="intervalHeader" onmouseenter="showTooltip(event, stopMethod === 'steps' ? 'Odhad chyby aproximácie koreňa:<br>±(b₀ − a₀) / 2^(n+1)' : 'Dĺžka aktuálneho intervalu')" onmouseleave="hideTooltip()" style="cursor:help"><span id="intervalHeaderLabel">|b<sub>n</sub> &minus; a<sub>n</sub>|</span></th>
                 </tr>
               </thead>
               <tbody id="stepsBody"></tbody>
@@ -1198,6 +1228,10 @@
       let currentC, currentFc;
       let stopMethod = 'precision'; // 'precision' || 'steps'
       let maxSteps = 10;
+
+      // subStep for auto mode: 0=show a,b only | 1=+c | 2=+signs | 3=+length (then advance)
+      let autoSubStep = 0;
+      let autoCurrentStep = null; // the pending step object being revealed
 
       const INLINE_QUIZ_STEPS = 3;
       let inlineQuizActive = false;
@@ -1271,6 +1305,8 @@
       } else if (stopMethod === 'steps') {
         methodDisplay.innerHTML = `🔢 Počet krokov: <strong>${maxSteps}</strong>`;
       }
+
+      updateIntervalHeader();
 
       function loadTheme() {
         try {
@@ -1457,9 +1493,12 @@
       setupTableAutoScroll();
       
       if (mode === 'mixed') {
-        currentC = (a + b) / 2;
+        currentC = (a0 + b0) / 2;
         currentFc = f(currentC);
         inlineQuizActive = true; inlineQuizField = 0;
+      } else {
+        autoSubStep = 0;
+        autoCurrentStep = { i: 0, a: a0, b: b0, c: (a0+b0)/2, fc: f((a0+b0)/2) };
       }
       updateTable();
       updateButtons();
@@ -1486,11 +1525,14 @@
       });
 
       function setMode(newMode) {
-        if (steps.length > 1 || (mode === 'mixed' && inlineQuizActive && inlineQuizField > 0)) {
+        const hasProgress = steps.filter(x=>x.i!==0).length > 0
+          || (mode === 'mixed' && inlineQuizActive && (inlineQuizField > 0 || steps.length > 0))
+          || (mode === 'auto' && autoSubStep > 0);
+        if (hasProgress) {
           const sameMode = mode === newMode;
           const msg = sameMode
-            ? `⚠️ Reštart režimu vymaže aktuálny postup!\n\nMáte ${steps.length} ${steps.length === 1 ? 'krok' : 'krokov'}.\n\nPokračovať?`
-            : `⚠️ Zmena režimu vymaže aktuálny postup!\n\nMáte ${steps.length} ${steps.length === 1 ? 'krok' : 'krokov'}.\n\nPokračovať?`;
+            ? `⚠️ Reštart režimu vymaže aktuálny postup!\n\nMáte ${steps.filter(x=>x.i!==0).length} ${steps.filter(x=>x.i!==0).length === 1 ? 'krok' : 'krokov'}.\n\nPokračovať?`
+            : `⚠️ Zmena režimu vymaže aktuálny postup!\n\nMáte ${steps.filter(x=>x.i!==0).length} ${steps.filter(x=>x.i!==0).length === 1 ? 'krok' : 'krokov'}.\n\nPokračovať?`;
 
           if (!confirm(msg)) return;
         }
@@ -1500,14 +1542,8 @@
         document.getElementById('mixedBtn').classList.toggle('active', mode === 'mixed');
 
         reset(true);
-
-        if (mode === 'mixed') {
-          currentC = (a + b) / 2;
-          currentFc = f(currentC);
-          inlineQuizActive = true; inlineQuizField = 0;
-          updateTable();
-          updateButtons();
-        }
+        updateTable();
+        updateButtons();
       }
 
       function showHelp() {
@@ -1524,7 +1560,7 @@
         }
       });
 
-      function generateExplanation(step, stepNumber) {
+      function generateExplanation(step, stepNumber, subStep = 3) {
         const fa = f(step.a);
         const fc = step.fc;
         const prod = fa * fc;
@@ -1533,7 +1569,6 @@
         let decimalPlaces = 3;
         if (stopMethod === 'precision') {
           const tolStr = tol.toString();
-
           if (tolStr.includes('.')) {
             const afterDot = tolStr.split('.')[1].length;
             decimalPlaces = afterDot + 2;
@@ -1541,44 +1576,55 @@
             decimalPlaces = 2;
           }
         }
-        
+
+        const isLastFinal = (stopMethod === 'precision' && intervalLength <= 2 * tol)
+                          || (stopMethod === 'steps' && step.i === maxSteps);
+
         let exp = `<strong>Krok ${step.i}:</strong><br>`;
-        exp += `c = (${step.a.toFixed(decimalPlaces)} + ${step.b.toFixed(decimalPlaces)}) / 2 = ${step.c.toFixed(decimalPlaces)}<br>`;
-        exp += `|b - a| = ${intervalLength.toFixed(decimalPlaces)}<br><br>`;
-        
-        if (stopMethod === 'precision' && intervalLength <= 2 * tol) {
-          exp += `✅ |b - a| = ${intervalLength.toFixed(decimalPlaces)} ≤ 2·${tol}<br>`;
-          exp += `<strong>Presnosť dosiahnutá!</strong>`;
-        } else if (stopMethod === 'steps' && step.i === maxSteps) {
-          const initialInterval = Math.abs(b0 - a0);
-          const error = initialInterval / Math.pow(2, step.i + 1);
 
-          const minRoot = step.c - error;
-          const maxRoot = step.c + error;
+        // subStep >= 1: c hodnota
+        if (subStep >= 1) {
+          exp += `c = (${step.a.toFixed(decimalPlaces)} + ${step.b.toFixed(decimalPlaces)}) / 2 = ${step.c.toFixed(decimalPlaces)}<br>`;
+        }
 
-          exp += `✅ Dosiahnutý zadaný počet krokov (${maxSteps})<br>`;
-          exp += `Chyba: (b₀−a₀)/2ⁿ⁺¹ = ±${smartFixed(error, decimalPlaces)}<br>`;
-          exp += `<em>${smartFixed(minRoot, decimalPlaces)} < α < ${smartFixed(maxRoot, decimalPlaces)}</em><br>`;
-          exp += `<strong>Výpočet ukončený!</strong>`;
-        } else {
-          exp += `f(a) = ${fa.toFixed(decimalPlaces)} ${fa > 0 ? '➕' : '➖'}<br>`;
+        // subStep >= 2: f(a), f(c), znamienka
+        if (subStep >= 2) {
+          exp += `<br>f(a) = ${fa.toFixed(decimalPlaces)} ${fa > 0 ? '➕' : '➖'}<br>`;
           exp += `f(c) = ${fc.toFixed(decimalPlaces)} ${fc > 0 ? '➕' : '➖'}<br>`;
           exp += `f(a)·f(c) = ${prod.toFixed(decimalPlaces)}<br>`;
-
           if (prod < 0) {
             exp += `→ Rôzne znamienka → Koreň v [a, c]<br>`;
           } else {
             exp += `→ Rovnaké znamienka → Koreň v [c, b]<br>`;
           }
-          
-          if (stopMethod === 'steps') {
-            const error = Math.abs(b0 - a0) / Math.pow(2, stepNumber + 1);
-            exp += `<br>Chyba: (b₀−a₀)/2ⁿ⁺¹ = ±${smartFixed(error, decimalPlaces)}`;
+        }
+
+        // subStep >= 3: |b-a| a záver
+        if (subStep >= 3) {
+          exp += `<br>|b − a| = ${intervalLength.toFixed(decimalPlaces)}<br>`;
+          if (isLastFinal) {
+            if (stopMethod === 'precision') {
+              exp += `✅ |b - a| = ${intervalLength.toFixed(decimalPlaces)} ≤ 2·${tol}<br>`;
+              exp += `<strong>Presnosť dosiahnutá!</strong>`;
+            } else {
+              const error = Math.abs(b0 - a0) / Math.pow(2, step.i + 1);
+              const minRoot = step.c - error;
+              const maxRoot = step.c + error;
+              exp += `✅ Dosiahnutý zadaný počet krokov (${maxSteps})<br>`;
+              exp += `Chyba: (b₀−a₀)/2ⁿ⁺¹ = ±${smartFixed(error, decimalPlaces)}<br>`;
+              exp += `<em>${smartFixed(minRoot, decimalPlaces)} < α < ${smartFixed(maxRoot, decimalPlaces)}</em><br>`;
+              exp += `<strong>Výpočet ukončený!</strong>`;
+            }
           } else {
-            exp += `<br>|b − a| = ${intervalLength.toFixed(decimalPlaces)}, nie je ≤ 2·${tol}`;
+            if (stopMethod === 'steps') {
+              const error = Math.abs(b0 - a0) / Math.pow(2, stepNumber + 1);
+              exp += `Chyba: (b₀−a₀)/2ⁿ⁺¹ = ±${smartFixed(error, decimalPlaces)}`;
+            } else {
+              exp += `|b − a| = ${intervalLength.toFixed(decimalPlaces)}, nie je ≤ 2·${tol}`;
+            }
           }
         }
-        
+
         return exp;
       }
 
@@ -1588,51 +1634,168 @@
             ? "⚠️ Presnosť dosiahnutá. Použite Reset."
             : "⚠️ Počet krokov dosiahnutý. Použite Reset.";
           alert(msg);
-
           return;
         }
 
+        // Quiz mode — handled separately
+        if (mode === 'mixed') {
+          _bisectionStepMixed();
+          return;
+        }
+
+        // AUTO MODE — sub-step reveal logic
+        if (autoSubStep < 3) {
+          // Just reveal more of the current step
+          autoSubStep++;
+          updateTable();
+          updateGraph();
+          return;
+        }
+
+        // autoSubStep === 3 → finalize current step, advance to next
+        const s = autoCurrentStep;
+        const fa = f(s.a);
+        steps.push(s);
+        if (fa * s.fc < 0) { b = s.c; } else { a = s.c; }
+
+        // Check stop condition
+        let shouldStop = false;
+        if (stopMethod === 'precision') {
+          if (Math.abs(b - a) <= 2 * tol) shouldStop = true;
+        } else if (stopMethod === 'steps') {
+          if (steps.filter(x => x.i !== 0).length >= maxSteps) shouldStop = true;
+        }
+
+        if (shouldStop) {
+          if (stopMethod === 'steps') {
+            // Для режиму кроків: поточний крок вже є фінальним, додатковий не потрібен
+            autoCurrentStep = null;
+            autoSubStep = 0;
+            running = false;
+            updateButtons();
+            updateTable();
+            updateGraph();
+            const lastS = steps[steps.length - 1];
+            setTimeout(() => {
+              showResultOverlay(lastS.c, lastS.fc, lastS.a, lastS.b, steps.filter(x => x.i !== 0).length, stopMethod);
+            }, 300);
+          } else {
+            // Для режиму presnosti: крок вже в steps, але показуємо фінальний стан інтервалу
+            const nextC = (a + b) / 2;
+            const nextFc = f(nextC);
+            const nextStep = { i: steps.length, a, b, c: nextC, fc: nextFc };
+            steps.push(nextStep);
+            autoCurrentStep = null;
+            autoSubStep = 0;
+            running = false;
+            updateButtons();
+            updateTable();
+            updateGraph();
+            setTimeout(() => {
+              showResultOverlay(nextC, nextFc, a, b, steps.filter(x => x.i !== 0).length, stopMethod);
+            }, 300);
+          }
+          return;
+        }
+
+        // Prepare next step at subStep 0
+        const nextC = (a + b) / 2;
+        const nextFc = f(nextC);
+        autoCurrentStep = { i: steps.length, a, b, c: nextC, fc: nextFc };
+        autoSubStep = 0;
+
+        updateTable();
+        updateGraph();
+      }
+
+      function _bisectionStepMixed() {
+        // After INLINE_QUIZ_STEPS quizzes, use same autoSubStep logic as auto mode
+        const completedQuizSteps = steps.filter(x => x.i !== 0).length;
+        if (!inlineQuizActive && completedQuizSteps >= INLINE_QUIZ_STEPS - 1) {
+          // Initialize autoCurrentStep if not set yet (first entry after last quiz)
+          if (!autoCurrentStep) {
+            const nextC = (a + b) / 2;
+            autoCurrentStep = { i: steps.length, a, b, c: nextC, fc: f(nextC) };
+            autoSubStep = 0;
+            updateTable(); updateGraph();
+            return;
+          }
+          if (autoSubStep < 3) {
+            autoSubStep++;
+            updateTable();
+            updateGraph();
+            return;
+          }
+          // finalize pending step
+          const s = autoCurrentStep;
+          if (!s) return;
+          const fa = f(s.a);
+          steps.push(s);
+          if (fa * s.fc < 0) { b = s.c; } else { a = s.c; }
+
+          let shouldStop = false;
+          if (stopMethod === 'precision') {
+            if (Math.abs(b - a) <= 2 * tol) shouldStop = true;
+          } else if (stopMethod === 'steps') {
+            if (steps.filter(x => x.i !== 0).length >= maxSteps) shouldStop = true;
+          }
+
+          if (shouldStop) {
+            if (stopMethod === 'steps') {
+              autoCurrentStep = null; autoSubStep = 0;
+              running = false; updateButtons();
+              updateTable(); updateGraph();
+              const lastS = steps[steps.length - 1];
+              setTimeout(() => { showResultOverlay(lastS.c, lastS.fc, lastS.a, lastS.b, steps.filter(x => x.i !== 0).length, stopMethod); }, 300);
+            } else {
+              const nextC = (a + b) / 2;
+              const nextFc = f(nextC);
+              steps.push({ i: steps.length, a, b, c: nextC, fc: nextFc });
+              autoCurrentStep = null; autoSubStep = 0;
+              running = false; updateButtons();
+              updateTable(); updateGraph();
+              setTimeout(() => { showResultOverlay(nextC, nextFc, a, b, steps.filter(x => x.i !== 0).length, stopMethod); }, 300);
+            }
+            return;
+          }
+
+          const nextC = (a + b) / 2;
+          autoCurrentStep = { i: steps.length, a, b, c: nextC, fc: f(nextC) };
+          autoSubStep = 0;
+          updateTable(); updateGraph();
+          return;
+        }
+
+        // Quiz mode for first INLINE_QUIZ_STEPS steps
         currentC = (a + b) / 2;
         currentFc = f(currentC);
         const fa = f(a);
 
         let shouldStop = false;
-        
         if (stopMethod === 'precision') {
-          const intervalLength = Math.abs(b - a);
-          if (intervalLength <= 2 * tol) shouldStop = true;
+          if (Math.abs(b - a) <= 2 * tol) shouldStop = true;
         } else if (stopMethod === 'steps') {
-          if (steps.length >= maxSteps - 1) shouldStop = true;
+          if (steps.length >= maxSteps) shouldStop = true;
         }
 
         if (shouldStop) {
-          steps.push({ i: steps.length + 1, a, b, c: currentC, fc: currentFc });
-          updateTable();
-          updateGraph();
-          running = false;
-          updateButtons();
-          setTimeout(() => {
-            showResultOverlay(currentC, currentFc, a, b, steps.length, stopMethod);
-          }, 300);
-
+          steps.push({ i: steps.length, a, b, c: currentC, fc: currentFc });
+          running = false; updateButtons();
+          updateTable(); updateGraph();
+          setTimeout(() => { showResultOverlay(currentC, currentFc, a, b, steps.filter(s => s.i !== 0).length, stopMethod); }, 300);
           return;
         }
 
-        const nextStepNumber = steps.length;
-        if (mode === 'mixed' && nextStepNumber < INLINE_QUIZ_STEPS) {
+        const nextQuizStepNumber = steps.filter(x => x.i !== 0).length;
+        if (nextQuizStepNumber < INLINE_QUIZ_STEPS - 1) {
           inlineQuizActive = true; inlineQuizField = 0;
           inlineQuizChecked = false;
-          updateTable();
-          updateButtons();
-
+          updateTable(); updateGraph(); updateButtons();
           return;
         }
 
-        steps.push({ i: steps.length + 1, a, b, c: currentC, fc: currentFc });
-        if (fa * currentFc < 0) { b = currentC; } else { a = currentC; }
-
-        updateTable();
-        updateGraph();
+        // Last quiz step confirmed — next call will init autoCurrentStep
+        // (handled at top of function)
       }
 
       let explainCallback = null;
@@ -1686,6 +1849,7 @@
             inlineQuizField = 1;
 
             updateTable();
+            updateGraph();
             btn.textContent = '✅ Skontrolovať'; btn.style.background = '';
           } else {
             inputC.classList.add('incorrect');
@@ -1708,6 +1872,7 @@
                 inlineQuizField = 1;
 
                 updateTable();
+                updateGraph();
                 btn.textContent = '✅ Skontrolovať'; btn.style.background = '';
               }
             );
@@ -1726,6 +1891,7 @@
             inlineQuizField = 2;
 
             updateTable();
+            updateGraph();
             btn.textContent = '✅ Skontrolovať'; btn.style.background = '';
           } else {
             inputSign.classList.add('incorrect');
@@ -1750,6 +1916,7 @@
                 inlineQuizField = 2;
 
                 updateTable();
+                updateGraph();
                 btn.textContent = '✅ Skontrolovať'; btn.style.background = '';
               }
             );
@@ -1759,13 +1926,22 @@
           const inputLen = document.getElementById('inlineInput_len');
           if (!inputLen) return;
 
+          const quizStepIdx = steps.length;
+          const correctError = Math.abs(b0 - a0) / Math.pow(2, quizStepIdx + 1);
+          const expectedVal = stopMethod === 'steps' ? correctError : correctInterval;
+          const displayVal = stopMethod === 'steps'
+            ? `±${correctError.toFixed(decimalPlaces)}`
+            : correctInterval.toFixed(decimalPlaces);
+
           const userVal = parseFloat(inputLen.value.replace(',', '.'));
           
-          const ok = !isNaN(userVal) && Math.abs(userVal - correctInterval) < thr;
+          const ok = !isNaN(userVal) && Math.abs(userVal - expectedVal) < thr;
           if (ok) {
             inputLen.classList.remove('incorrect'); inputLen.classList.add('correct');
             inputLen.readOnly = true;
             inlineQuizField = 3;
+            updateTable();
+            updateGraph();
 
             btn.textContent = '✅ Správne! Pokračovať →';
             btn.style.background = '#4caf50';
@@ -1776,20 +1952,29 @@
             inputLen.style.animation = 'none';
 
             setTimeout(() => { inputLen.style.animation = 'shake 0.3s'; }, 10);
+            const explainTitle = stopMethod === 'steps' ? 'Nesprávny odhad chyby' : 'Nesprávna dĺžka intervalu';
+            const explainBody = stopMethod === 'steps'
+              ? `Odhad chyby sa vypočíta ako:<br><code>±(b₀ − a₀) / 2^(n+1)</code><br><br>
+                 V tomto kroku (n = ${quizStepIdx}):<br>
+                 b₀ = <strong>${b0.toFixed(decimalPlaces)}</strong>, a₀ = <strong>${a0.toFixed(decimalPlaces)}</strong>`
+              : `Dĺžka intervalu sa vypočíta ako:<br><code>|b − a|</code><br><br>
+                 V tomto kroku:<br>
+                 a = <strong>${a.toFixed(decimalPlaces)}</strong>, b = <strong>${b.toFixed(decimalPlaces)}</strong>`;
+
             showExplain(
-              'Nesprávna dĺžka intervalu',
-              `Dĺžka intervalu sa vypočíta ako:<br><code>|b − a|</code><br><br>
-               V tomto kroku:<br>
-               a = <strong>${a.toFixed(decimalPlaces)}</strong>, b = <strong>${b.toFixed(decimalPlaces)}</strong>`,
-              `✅ Správna hodnota: <strong>|b − a| = ${correctInterval.toFixed(decimalPlaces)}</strong>`,
+              explainTitle,
+              explainBody,
+              `✅ Správna hodnota: <strong>${displayVal}</strong>`,
               () => {
                 const el = document.getElementById('inlineInput_len');
                 if (el) { 
-                  el.value = correctInterval.toFixed(decimalPlaces); 
+                  el.value = stopMethod === 'steps' ? correctError.toFixed(decimalPlaces) : correctInterval.toFixed(decimalPlaces);
                   el.classList.add('revealed'); 
                   el.readOnly = true; 
                 }
                 inlineQuizField = 3;
+                updateTable();
+                updateGraph();
 
                 btn.textContent = '➡️ Pokračovať (zobrazená správna hodnota)';
                 btn.style.background = '#ff9800';
@@ -1800,8 +1985,10 @@
       }}
 
       function confirmInlineQuiz(autoAdvance = false) {
-        const fa = f(a);
-        steps.push({ i: steps.length + 1, a, b, c: currentC, fc: currentFc });
+        const stepA = steps.length === 0 ? a0 : a;
+        const stepB = steps.length === 0 ? b0 : b;
+        const fa = f(stepA);
+        steps.push({ i: steps.length, a: stepA, b: stepB, c: currentC, fc: currentFc });
         if (fa * currentFc < 0) { b = currentC; } else { a = currentC; }
 
         inlineQuizActive = false;
@@ -1830,10 +2017,10 @@
       }
 
       function reset(skipConfirm = false) {
-        if ((steps.length > 1 || (mode === 'mixed' && inlineQuizActive && inlineQuizField > 0)) && !skipConfirm) {
+        if ((steps.filter(x=>x.i!==0).length > 0 || (mode === 'mixed' && inlineQuizActive && (inlineQuizField > 0 || steps.length > 0)) || (mode === 'auto' && autoSubStep > 0)) && !skipConfirm) {
           const confirmReset = confirm(
             `⚠️ Reštart režimu vymaže aktuálny postup!\n\n` +
-            `Máte ${steps.length} ${steps.length === 1 ? 'krok' : 'krokov'}.\n\n` +
+            `Máte ${steps.filter(x=>x.i!==0).length} ${steps.filter(x=>x.i!==0).length === 1 ? 'krok' : 'krokov'}.\n\n` +
             `Pokračovať?`
           );
 
@@ -1849,21 +2036,22 @@
         inlineQuizChecked = false;
         lastResultData = null;
         savedToHistory = false;
+        autoSubStep = 0;
+        autoCurrentStep = null;
 
-        const c0init = (a0 + b0) / 2;
-        const fc0init = f(c0init);
-        const fa0init = f(a0);
-        if (fa0init * fc0init < 0) { 
-          b = c0init; 
-        } else { 
-          a = c0init; 
-        }
+        // Очищаємо контейнер графіків при скиданні
+        const graphsContainer = document.getElementById('graphsContainer');
+        if (graphsContainer) graphsContainer.innerHTML = '';
 
         if (mode === 'mixed') {
-          currentC = (a + b) / 2;
+          currentC = (a0 + b0) / 2;
           currentFc = f(currentC);
           inlineQuizActive = true; 
           inlineQuizField = 0;
+        } else {
+          // auto mode: start at subStep 0 for step 0 (just show a0, b0)
+          autoSubStep = 0;
+          autoCurrentStep = { i: 0, a: a0, b: b0, c: (a0+b0)/2, fc: f((a0+b0)/2) };
         }
 
         updateTable();
@@ -1902,15 +2090,18 @@
         }
       }
 
+      function updateIntervalHeader() {
+        const lbl = document.getElementById('intervalHeaderLabel');
+        if (!lbl) return;
+        lbl.innerHTML = stopMethod === 'steps'
+          ? '&plusmn;chyba'
+          : '|b<sub>n</sub> &minus; a<sub>n</sub>|';
+      }
+
       function updateTable() {
+        if (typeof updateIntervalHeader === 'function') updateIntervalHeader();
         const body = document.getElementById("stepsBody");
         body.innerHTML = "";
-
-        const intervalHeader = document.getElementById('intervalHeader');
-        if (intervalHeader) {
-          intervalHeader.style.display = '';
-          intervalHeader.innerHTML = `|b<sub>n</sub> − a<sub>n</sub>|`;
-        }
 
         const errorHeader = document.getElementById('errorHeader');
         if (errorHeader) errorHeader.style.display = 'none';
@@ -1926,7 +2117,14 @@
           }
         }
 
-        {
+        // Show static row 0 only before any steps are computed
+        // In quiz mode: hidden when quiz is active on step 0 (steps empty)
+        // In auto mode: always hidden (autoCurrentStep handles step 0 display)
+        const hideStaticRow0 = (mode === 'mixed' && inlineQuizActive && steps.length === 0)
+                             || (mode === 'auto')
+                             || (steps.length > 0 && steps[0].i === 0);
+
+        if (!hideStaticRow0) {
           const c0 = (a0 + b0) / 2;
           const fa0 = f(a0), fc0 = f(c0);
           const sign0 = `${fa0 > 0 ? '+' : '−'}${fc0 > 0 ? '+' : '−'}`;
@@ -1958,25 +2156,79 @@
           </tr>`;
         }
 
+        // AUTO MODE: render completed steps + current pending subStep row
+        if (mode === 'auto') {
+          // Render all fully completed steps
+          for (const s of steps) {
+            const fa = f(s.a);
+            const fc = s.fc;
+            const signProduct = `${fa > 0 ? '+' : '−'}${fc > 0 ? '+' : '−'}`;
+            const intervalLength = Math.abs(s.b - s.a);
+            const isAcc = stopMethod === 'precision' ? intervalLength <= 2 * tol
+                        : (s === steps[steps.length - 1] && !autoCurrentStep && !running);
+            const styleClass = isAcc && !autoCurrentStep && !running ? 'success' : '';
+            const indicator = stopMethod === 'precision'
+              ? (isAcc ? '<span class="accuracy-indicator achieved"></span>' : '<span class="accuracy-indicator not-achieved"></span>')
+              : (isAcc ? '<span class="accuracy-indicator achieved"></span>' : '');
+            const exp = generateExplanation(s, s.i);
+            const onclickAttr = (isAcc && !running) ? ` onclick="reopenResultOverlay()" style="cursor: pointer;"` : '';
+            body.innerHTML += `<tr class="step-row ${styleClass}"${onclickAttr}>
+              <td onmouseenter="showTooltip(event, \`${exp.replace(/`/g, '\\`')}\`)">${s.i}</td>
+              <td>${s.a.toFixed(decimalPlaces)}</td>
+              <td>${s.c.toFixed(decimalPlaces)}</td>
+              <td>${s.b.toFixed(decimalPlaces)}</td>
+              <td style="font-weight:bold; color:${fa*fc<0?'var(--success)':'var(--danger)'};">${signProduct}</td>
+              <td>${intervalLength.toFixed(decimalPlaces)} ${indicator}</td>
+            </tr>`;
+          }
+
+          // Render current pending step with progressive reveal
+          if (autoCurrentStep) {
+            const s = autoCurrentStep;
+            const fa = f(s.a);
+            const fc = s.fc;
+            const signProduct = `${fa > 0 ? '+' : '−'}${fc > 0 ? '+' : '−'}`;
+            const intervalLength = Math.abs(s.b - s.a);
+            const isAcc = stopMethod === 'precision' ? intervalLength <= 2 * tol : false;
+            const indicator = stopMethod === 'precision'
+              ? (isAcc ? '<span class="accuracy-indicator achieved"></span>' : '<span class="accuracy-indicator not-achieved"></span>')
+              : '';
+            const exp = generateExplanation(s, s.i, autoSubStep);
+            const cCell     = autoSubStep >= 1 ? `<td>${s.c.toFixed(decimalPlaces)}</td>` : `<td style="color:var(--text-secondary)">—</td>`;
+            const signCell  = autoSubStep >= 2 ? `<td style="font-weight:bold; color:${fa*fc<0?'var(--success)':'var(--danger)'};">${signProduct}</td>` : `<td style="color:var(--text-secondary)">—</td>`;
+            const autoErrVal = Math.abs(b0 - a0) / Math.pow(2, s.i + 1);
+            const lenCellVal = stopMethod === 'steps' ? `±${autoErrVal.toFixed(decimalPlaces)}` : `${intervalLength.toFixed(decimalPlaces)} ${indicator}`;
+            const lenCell   = autoSubStep >= 3 ? `<td>${lenCellVal}</td>` : `<td style="color:var(--text-secondary)">—</td>`;
+            body.innerHTML += `<tr class="step-row" style="background:var(--theory-bg);">
+              <td onmouseenter="showTooltip(event, \`${exp.replace(/`/g, '\\`')}\`)">${s.i}</td>
+              <td>${s.a.toFixed(decimalPlaces)}</td>
+              ${cCell}
+              <td>${s.b.toFixed(decimalPlaces)}</td>
+              ${signCell}
+              ${lenCell}
+            </tr>`;
+          }
+          updateTableHint();
+          return; // skip the rest (quiz rows etc.)
+        }
+
         for (let idx = 0; idx < steps.length; idx++) {
           const s = steps[idx];
-          const stepNumber = idx + 1;
+          const stepNumber = s.i; // already correct: 0 for step0, 1 for step1, etc.
           const isLast = idx === steps.length - 1;
           
+          const intervalLength = Math.abs(s.b - s.a);
           let isAcc = false;
           if (stopMethod === 'precision') {
-            const intervalLength = Math.abs(s.b - s.a);
             isAcc = intervalLength <= 2 * tol;
           } else if (stopMethod === 'steps') {
-            isAcc = stepNumber === maxSteps;
+            isAcc = isLast && !running && !autoCurrentStep;
           }
           
           const styleClass = isLast && isAcc ? 'success' : '';
           const indicator = stopMethod === 'precision'
             ? (isAcc ? '<span class="accuracy-indicator achieved"></span>' : '<span class="accuracy-indicator not-achieved"></span>')
-            : '';
-          
-          const intervalLength = Math.abs(s.b - s.a);
+            : (isAcc ? '<span class="accuracy-indicator achieved"></span>' : '');
           
           const fa = f(s.a);
           const fc = s.fc;
@@ -1995,19 +2247,21 @@
             <td>${s.c.toFixed(decimalPlaces)}</td>
             <td>${s.b.toFixed(decimalPlaces)}</td>
             <td style="font-weight: bold; color: ${fa * fc < 0 ? 'var(--success)' : 'var(--danger)'};">${signProduct}</td>
-            <td>${intervalLength.toFixed(decimalPlaces)} ${indicator}</td>
+            <td>${stopMethod === 'steps' ? ('±' + errorVal.toFixed(decimalPlaces)) : (intervalLength.toFixed(decimalPlaces) + ' ' + indicator)}</td>
           </tr>`;
         }
 
         if (mode === 'mixed' && inlineQuizActive) {
-          const quizStepNum = steps.length + 1;
-          const fa_q = f(a);
+          const quizStepNum = steps.length; // 0 for first quiz, 1 for second, etc.
+          const qa = steps.length === 0 ? a0 : a;
+          const qb = steps.length === 0 ? b0 : b;
+          const fa_q = f(qa);
           const faPos_q = fa_q >= 0;
           const fcPos_q = currentFc >= 0;
 
           const correctSignStr_q = (faPos_q ? '+' : '-') + (fcPos_q ? '+' : '-');
           const correctC_q = currentC;
-          const correctLen_q = Math.abs(b - a);
+          const correctLen_q = Math.abs(qb - qa);
 
           const cCell = inlineQuizField >= 1
             ? `<td><div class="quiz-input-cell">
@@ -2040,32 +2294,33 @@
                 </select>
                 </div></td>`;
 
+          const correctError_q = Math.abs(b0 - a0) / Math.pow(2, quizStepNum + 1);
+          const quizCorrectVal_q = stopMethod === 'steps' ? correctError_q : correctLen_q;
           const lenCell = inlineQuizField < 2
             ? `<td><div class="quiz-input-cell" style="opacity:0.25;pointer-events:none;">
                 <input class="quiz-input" type="text" placeholder="?" disabled>
                 </div></td>`
-            : `<td><div class="quiz-input-cell">
-                <input class="quiz-input" id="inlineInput_len" type="text" placeholder="?" autocomplete="off"
-                  ${inlineQuizField >= 3 ? 'readonly' : ''}
-                  onkeydown="if(event.key==='Enter') checkInlineQuiz()">
-                </div></td>`;
-
-          const correctError_q = Math.abs(b0 - a0) / Math.pow(2, quizStepNum + 1);
-          const errorCell = inlineQuizField < 2
-            ? `<td><div class="quiz-input-cell" style="opacity:0.25;pointer-events:none;">
-                <input class="quiz-input" type="text" placeholder="?" disabled>
+            : inlineQuizField >= 3
+            ? `<td><div class="quiz-input-cell">
+                <input class="quiz-input correct" id="inlineInput_len" type="text"
+                  value="${(stopMethod === 'steps' ? '±' : '') + quizCorrectVal_q.toFixed(getDecimalPlaces())}" readonly>
                 </div></td>`
             : `<td><div class="quiz-input-cell">
                 <input class="quiz-input" id="inlineInput_len" type="text" placeholder="?" autocomplete="off"
-                  ${inlineQuizField >= 3 ? 'readonly' : ''}
                   onkeydown="if(event.key==='Enter') checkInlineQuiz()">
                 </div></td>`;
 
+
+
+          const quizStep = { i: quizStepNum, a: qa, b: qb, c: currentC, fc: currentFc };
+          // field=0: нічого | field=1: +c | field=2: +знак | field=3: +|b-a| (синхронно з кривою f(x))
+          const quizSubStep = inlineQuizField >= 3 ? 3 : inlineQuizField;
+          const quizExp = generateExplanation(quizStep, quizStepNum, quizSubStep);
           body.innerHTML += `<tr class="step-row" id="inlineQuizRow" style="background: var(--theory-bg);">
-            <td style="font-weight:bold; color: var(--btn-bg);">${quizStepNum}</td>
-            <td>${a.toFixed(decimalPlaces)}</td>
+            <td style="font-weight:bold; color: var(--btn-bg);" onmouseenter="showTooltip(event, \`${quizExp.replace(/`/g, '\\`')}\`)" onmouseleave="hideTooltip()">${quizStepNum}</td>
+            <td>${qa.toFixed(decimalPlaces)}</td>
             ${cCell}
-            <td>${b.toFixed(decimalPlaces)}</td>
+            <td>${qb.toFixed(decimalPlaces)}</td>
             ${signCell}
             ${lenCell}
           </tr>`;
@@ -2075,6 +2330,33 @@
             else if (inlineQuizField === 1) { const el = document.getElementById('inlineInput_sign'); if(el) el.focus(); }
             else if (inlineQuizField === 2) { const el = document.getElementById('inlineInput_len'); if(el) el.focus(); }
           }, 50);
+        }
+
+        // Mixed mode after quizzes: show pending autoCurrentStep row with substep reveal
+        if (mode === 'mixed' && !inlineQuizActive && autoCurrentStep) {
+          const s = autoCurrentStep;
+          const fa = f(s.a);
+          const fc = s.fc;
+          const signProduct = `${fa > 0 ? '+' : '−'}${fc > 0 ? '+' : '−'}`;
+          const intervalLength = Math.abs(s.b - s.a);
+          const isAcc = stopMethod === 'precision' ? intervalLength <= 2 * tol : false;
+          const indicator = stopMethod === 'precision'
+            ? (isAcc ? '<span class="accuracy-indicator achieved"></span>' : '<span class="accuracy-indicator not-achieved"></span>')
+            : '';
+          const exp = generateExplanation(s, s.i, autoSubStep);
+          const cCell    = autoSubStep >= 1 ? `<td>${s.c.toFixed(decimalPlaces)}</td>` : `<td style="color:var(--text-secondary)">—</td>`;
+          const signCell = autoSubStep >= 2 ? `<td style="font-weight:bold; color:${fa*fc<0?'var(--success)':'var(--danger)'};">${signProduct}</td>` : `<td style="color:var(--text-secondary)">—</td>`;
+          const mixedErrVal = Math.abs(b0 - a0) / Math.pow(2, s.i + 1);
+          const mixedLenVal = stopMethod === 'steps' ? `±${mixedErrVal.toFixed(decimalPlaces)}` : `${intervalLength.toFixed(decimalPlaces)} ${indicator}`;
+          const lenCell  = autoSubStep >= 3 ? `<td>${mixedLenVal}</td>` : `<td style="color:var(--text-secondary)">—</td>`;
+          body.innerHTML += `<tr class="step-row" style="background:var(--theory-bg);">
+            <td onmouseenter="showTooltip(event, \`${exp.replace(/`/g, '\\`')}\`)">${s.i}</td>
+            <td>${s.a.toFixed(decimalPlaces)}</td>
+            ${cCell}
+            <td>${s.b.toFixed(decimalPlaces)}</td>
+            ${signCell}
+            ${lenCell}
+          </tr>`;
         }
 
         if (!tableUserScrolled && body.children.length > 0) {
@@ -2111,37 +2393,67 @@
           }
         }
 
+        updateTableHint();
+      }
+
+      function updateTableHint() {
         const tableHint = document.getElementById('tableHint');
-        if (tableHint) {
+        if (!tableHint) return;
 
-          if (mode === 'mixed' && inlineQuizActive) {
-            tableHint.innerHTML = '✏️ Vypĺňaj polia zľava doprava - každé potvrď tlačidlom Skontrolovať, polia sa odomykajú postupne'; 
-            tableHint.style.color = '#f57c00';
-            tableHint.style.fontWeight = '500';
+        // Is the calculation fully complete? (last step in steps, no pending autoCurrentStep)
+        const isFinished = !running && !autoCurrentStep && steps.length > 0;
+
+        const circlesHintTooltipRed = stopMethod === 'precision'
+          ? 'Pokračuj, presnosť ešte nie je dosiahnutá.'
+          : 'Pokračuj, ešte nie je posledný krok.';
+        const circlesHintTooltipGreen = stopMethod === 'precision'
+          ? 'Hotovo, presnosť je dosiahnutá.'
+          : 'Hotovo, posledný krok dosiahnutý.';
+        const circlesHint = stopMethod === 'precision'
+          ? `• <span style="cursor:help;" onmouseenter="showTooltip(event, '${circlesHintTooltipRed}')" onmouseleave="hideTooltip()">🔴 Červený krúžok = pokračuj</span> • <span style="cursor:help;" onmouseenter="showTooltip(event, '${circlesHintTooltipGreen}')" onmouseleave="hideTooltip()">🟢 Zelený krúžok = hotovo</span>`
+          : '';
+
+        function setHint(html, color, weight) {
+          tableHint.innerHTML = html;
+          tableHint.style.color = color || '';
+          tableHint.style.fontWeight = weight || '';
+        }
+
+        // FINAL state (both modes): calculation done, show click hint
+        if (isFinished) {
+          setHint('👆 Klikni na zelený riadok pre zobrazenie výsledku', '', '');
+          return;
+        }
+
+        if (mode === 'auto') {
+          // Show circles hint only after step 0's |b-a| column has been revealed
+          // That happens at autoSubStep >= 3 for step i=0, OR when step 0 is already in steps[]
+          const step0Done = steps.some(s => s.i === 0)
+                         || (autoCurrentStep && autoCurrentStep.i === 0 && autoSubStep >= 3)
+                         || (autoCurrentStep && autoCurrentStep.i > 0);
+          if (step0Done) {
+            setHint(circlesHint, '', '');
           } else {
-            tableHint.style.color = '';
-            tableHint.style.fontWeight = '';
-
-            const hasCompletedStep = steps.some((s, idx) => {
-              const isLast = idx === steps.length - 1;
-              if (stopMethod === 'precision') {
-                const intervalLength = Math.abs(s.b - s.a);
-                return isLast && intervalLength <= 2 * tol;
-              } else if (stopMethod === 'steps') {
-                return isLast && s.i === maxSteps;
-              }
-
-              return false;
-            });
-
-            if (hasCompletedStep) {
-              tableHint.innerHTML = '👆 Klikni na zelený riadok pre zobrazenie výsledku';
-            } else if (stopMethod === 'precision') {
-              tableHint.innerHTML = '• <span style="cursor:help; position:relative;" onmouseenter="showTooltip(event, \'Pokračuj, presnosť ešte nie je dosiahnutá.\')" onmouseleave="hideTooltip()">🔴 Červený krúžok = pokračuj</span> • <span style="cursor:help;" onmouseenter="showTooltip(event, \'Hotovo, presnosť je dosiahnutá.\')" onmouseleave="hideTooltip()">🟢 Zelený krúžok = hotovo</span>';
-            } else {
-              tableHint.innerHTML = '';
-            }
+            setHint('', '', '');
           }
+
+        } else if (mode === 'mixed') {
+          // completedQuizSteps = how many non-zero-index steps are confirmed (steps 1,2 from quiz)
+          // Note: step i=0 is always the first quiz step confirmed
+          const completedQuizSteps = steps.filter(x => x.i !== 0).length;
+          const allQuizDone = !inlineQuizActive && completedQuizSteps >= INLINE_QUIZ_STEPS - 1;
+
+          if (inlineQuizActive) {
+            // Quiz phase: show fill-in hint
+            setHint('✏️ Vypĺňaj polia zľava doprava - každé potvrď tlačidlom Skontrolovať, polia sa odomykajú postupne', '#f57c00', '500');
+          } else if (allQuizDone) {
+            // Post-quiz auto phase: show circles hint (persists until end)
+            setHint(circlesHint, '', '');
+          } else {
+            setHint('', '', '');
+          }
+        } else {
+          setHint('', '', '');
         }
       }
 
@@ -2197,9 +2509,17 @@
         }
 
         const savedScrollTop = rightPanel ? rightPanel.scrollTop : 0;
+
+        // In auto mode: 1 graph for step 0 (always) + one per completed step with i>0 + 1 if pendingStep exists
+        // In mixed mode: 1 for step 0 + one per completed step with i>0 + 1 if pending quiz or autoCurrentStep
+        let targetGraphCount;
+        if (mode === 'auto') {
+          targetGraphCount = 1 + steps.filter(s => s.i !== 0).length + (autoCurrentStep ? 1 : 0);
+        } else {
+          targetGraphCount = 1 + steps.filter(s => s.i !== 0).length + (inlineQuizActive || autoCurrentStep ? 1 : 0);
+        }
         const currentGraphCount = container.children.length;
-        const targetGraphCount = steps.length + 1;
-        const shouldAppendOnly = currentGraphCount === targetGraphCount - 1;
+        const shouldAppendOnly = currentGraphCount >= targetGraphCount - 1;
         
         if (!shouldAppendOnly) {
           container.innerHTML = '';
@@ -2227,11 +2547,198 @@
         const yRange = yMax - yMin;
         const maxYRange = 50;
         
-        let yAxisRange = null;
+        let yAxisRange;
         if (yRange > maxYRange) {
           yAxisRange = [-maxYRange / 2, maxYRange / 2];
+        } else {
+          const pad = yRange * 0.15 || 1;
+          yAxisRange = [yMin - pad, yMax + pad];
         }
 
+        function getZoomRange(prevA, prevB) {
+          const w = prevB - prevA;
+          const pad = 0.3;
+          const span = w * (1 + pad);
+          const cen = (prevA + prevB) / 2;
+          return [cen - span/2, cen + span/2];
+        }
+
+        // Helper: sample f(x) on range
+        function sampleF(xMin, xMax) {
+          const xs = [], ys = [];
+          const st = (xMax - xMin) / 300;
+          for (let x = xMin; x <= xMax; x += st) { xs.push(x); ys.push(f(x)); }
+          return { xs, ys };
+        }
+
+        // Helper: render one graph div (create or reuse)
+        function getOrCreateDiv(id, height) {
+          let div = document.getElementById(id);
+          if (!div || !shouldAppendOnly) {
+            div = document.createElement('div');
+            div.id = id;
+            div.style.height = height + 'px';
+            div.style.width = '100%';
+            div.style.border = '2px solid ' + gridColor;
+            div.style.borderRadius = '8px';
+            div.style.marginBottom = '30px';
+            container.appendChild(div);
+          }
+          return div;
+        }
+
+        // Helper: get y range for zoom — завжди фіксований, щоб масштаб не стрибав при зникненні кривої
+        function getYRange(ys) {
+          const valid = ys.filter(isFinite);
+          if (valid.length === 0) return null;
+          const mn = Math.min(...valid), mx = Math.max(...valid);
+          const r = mx - mn;
+          if (r > maxYRange) return [-maxYRange/2, maxYRange/2];
+          const pad = r * 0.15 || 1;
+          return [mn - pad, mx + pad];
+        }
+
+        // Helper: build interval + a/b markers traces (always shown from subStep 0)
+        function intervalTraces(sA, sB, sC, sI, subSt, showFx, xArr, yArr) {
+          const faC = f(sA), fbC = f(sB), fcC = f(sC);
+          const aColor = faC > 0 ? '#4caf50' : '#f44336';
+          const bColor = fbC > 0 ? '#4caf50' : '#f44336';
+          const cColor = fcC > 0 ? '#4caf50' : '#f44336';
+          const tr = [];
+          // f(x) curve — shown only at subStep 3 (or for completed steps)
+          if (showFx) {
+            tr.push({ x: xArr, y: yArr, mode: 'lines', name: 'f(x)', line: { color: '#2196f3', width: 2 } });
+          }
+          // interval line
+          tr.push({ x: [sA, sB], y: [0, 0], mode: 'lines+markers', name: 'interval', line: { color: 'red', width: 5 }, marker: { size: 10, color: 'red' } });
+          // a marker
+          tr.push({ x: [sA], y: [0], mode: 'markers+text', text: [`a${sI}`], textposition: 'top', name: `a${sI}`, marker: { size: 12, color: aColor, symbol: 'square' } });
+          // b marker
+          tr.push({ x: [sB], y: [0], mode: 'markers+text', text: [`b${sI}`], textposition: 'top', name: `b${sI}`, marker: { size: 12, color: bColor, symbol: 'square' } });
+          // c marker — subStep >= 1
+          if (subSt >= 1) {
+            tr.push({ x: [sC], y: [0], mode: 'markers+text', text: [`c${sI}`], textposition: 'top', name: `c${sI}`, marker: { size: 10, color: 'orange', symbol: 'diamond', line: { color: cColor, width: 2 } } });
+          }
+          // f(a) and f(c) value markers on curve — subStep >= 2
+          if (subSt >= 2) {
+            tr.push({ x: [sA], y: [faC], mode: 'markers', name: `f(a${sI})`, marker: { size: 12, color: aColor, symbol: 'circle' } });
+            tr.push({ x: [sC], y: [fcC], mode: 'markers', name: `f(c${sI})`, marker: { size: 12, color: 'orange', symbol: 'circle', line: { color: cColor, width: 2 } } });
+          }
+          return tr;
+        }
+
+        if (mode === 'auto') {
+          // --- AUTO MODE GRAPH RENDERING ---
+
+          // Determine which step is "current" (being revealed)
+          const pendingStep = autoCurrentStep;
+          const pendingSubSt = autoSubStep;
+
+          // Completed steps (in steps[]) — all fully shown but f(x) removed from all except last
+          // "last completed" = steps[steps.length-1], but only if pendingStep exists we hide f(x) from it too
+          const allSteps = steps; // includes step 0 if it was pushed at finish
+
+          // Graph for each completed step
+          for (let i = 0; i < allSteps.length; i++) {
+            const s = allSteps[i];
+            const isLastCompleted = i === allSteps.length - 1;
+            // hide f(x) from all completed steps when there's a pending step being revealed
+            const showFx = !running ? true : (!pendingStep && isLastCompleted);
+
+            let prevA, prevB;
+            if (s.i === 0) { prevA = a0; prevB = b0; }
+            else if (i === 0) { prevA = a0; prevB = b0; }
+            else { prevA = allSteps[i-1].a; prevB = allSteps[i-1].b; }
+
+            const [zXMin, zXMax] = s.i === 0
+              ? [globalXMin, globalXMax]
+              : getZoomRange(prevA, prevB);
+            const { xs, ys } = sampleF(zXMin, zXMax);
+            const yRng = getYRange(ys);
+
+            const div = getOrCreateDiv(`graph-${s.i}`, s.i === 0 ? 500 : 450);
+            const traces = intervalTraces(s.a, s.b, s.c, s.i, 3, showFx, xs, ys);
+
+            // precision lines for last completed if no pending
+            if (!pendingStep && isLastCompleted && stopMethod === 'precision') {
+              const mn = Math.min(...ys.filter(isFinite)), mx = Math.max(...ys.filter(isFinite));
+              traces.push({ x: [s.c - tol, s.c - tol], y: [mn, mx], mode: 'lines', line: { color: 'rgba(76,175,80,0.7)', width: 2, dash: 'dash' }, name: `oblasť presnosti ±${tol}`, showlegend: true, hoverinfo: 'skip' });
+              traces.push({ x: [s.c + tol, s.c + tol], y: [mn, mx], mode: 'lines', line: { color: 'rgba(76,175,80,0.7)', width: 2, dash: 'dash' }, name: ' ', showlegend: false, hoverinfo: 'skip' });
+            }
+
+            const titleColor = (!pendingStep && isLastCompleted && !running) ? '#4caf50' : textColor;
+            const title = s.i === 0
+              ? `<b>Krok 0</b>`
+              : `<b>Krok ${s.i}</b>`;
+
+            Plotly.react(div, traces, {
+              margin: { t: 60, b: 40, l: 50, r: 20 },
+              title: { text: title, font: { color: titleColor } },
+              xaxis: { title: 'x', range: [zXMin, zXMax], color: textColor, gridcolor: gridColor, zeroline: true, zerolinecolor: textColor },
+              yaxis: { title: 'f(x)', color: textColor, gridcolor: gridColor, zeroline: true, zerolinecolor: textColor, range: yRng },
+              paper_bgcolor: bgColor, plot_bgcolor: bgColor, font: { color: textColor },
+              showlegend: true, autosize: true,
+              legend: { font: { size: 14 }, itemsizing: 'constant', itemwidth: 40 }
+            }, { responsive: true, displayModeBar: true, displaylogo: false });
+          }
+
+          // Graph for pending step (being progressively revealed)
+          if (pendingStep) {
+            const s = pendingStep;
+            let prevA, prevB;
+            if (s.i === 0) { prevA = a0; prevB = b0; }
+            else if (allSteps.length === 0) { prevA = a0; prevB = b0; }
+            else { prevA = allSteps[allSteps.length-1].a; prevB = allSteps[allSteps.length-1].b; }
+
+            const [zXMin, zXMax] = s.i === 0
+              ? [globalXMin, globalXMax]
+              : getZoomRange(prevA, prevB);
+            const { xs, ys } = sampleF(zXMin, zXMax);
+            const yRng = getYRange(ys);
+            const showFx = pendingSubSt >= 3;
+
+            // Використовуємо той самий id що й після фіналізації, щоб не дублювати
+            const div = getOrCreateDiv(`graph-${s.i}`, s.i === 0 ? 500 : 450);
+            const traces = intervalTraces(s.a, s.b, s.c, s.i, pendingSubSt, showFx, xs, ys);
+
+            const title = s.i === 0
+              ? `<b>Krok 0</b>`
+              : `<b>Krok ${s.i}</b>`;
+
+            Plotly.react(div, traces, {
+              margin: { t: 60, b: 40, l: 50, r: 20 },
+              title: { text: title, font: { color: textColor } },
+              xaxis: { title: 'x', range: [zXMin, zXMax], color: textColor, gridcolor: gridColor, zeroline: true, zerolinecolor: textColor },
+              yaxis: { title: 'f(x)', color: textColor, gridcolor: gridColor, zeroline: true, zerolinecolor: textColor, range: yRng },
+              paper_bgcolor: bgColor, plot_bgcolor: bgColor, font: { color: textColor },
+              showlegend: true, autosize: true,
+              legend: { font: { size: 14 }, itemsizing: 'constant', itemwidth: 40 }
+            }, { responsive: true, displayModeBar: true, displaylogo: false });
+          }
+
+          // scroll to latest
+          if (!tableUserScrolled && container.children.length > 0) {
+            setTimeout(() => { autoScrollToLatest(); }, 100);
+          }
+          return; // skip old mixed-mode graph rendering below
+        }
+
+        // --- MIXED mode graph rendering with progressive reveal ---
+        const fa0 = f(a0);
+        const fb0 = f(b0);
+
+        // Determine what's currently being revealed
+        // During quiz: inlineQuizField = subStep (0=only a,b | 1=+c | 2=+signs/f-dots | 3=+fx)
+        // After quizzes: autoCurrentStep + autoSubStep
+        const mixedPending = inlineQuizActive
+          ? { i: steps.length,
+              a: steps.length === 0 ? a0 : a,
+              b: steps.length === 0 ? b0 : b,
+              c: currentC, fc: currentFc }
+          : autoCurrentStep;
+        const mixedSubSt = inlineQuizActive ? inlineQuizField : autoSubStep;
+
+        // Create or reuse graph-0 div
         let div0 = document.getElementById('graph-0');
         if (!div0 || !shouldAppendOnly) {
           div0 = document.createElement('div');
@@ -2244,299 +2751,137 @@
           container.appendChild(div0);
         }
 
-        const fa0 = f(a0);
-        const fb0 = f(b0);
+        // Render graph-0
+        {
+          const s0IsPending = mixedPending && mixedPending.i === 0;
+          const s0IsCompleted = steps.some(s => s.i === 0);
+          const subStGraph0 = s0IsPending ? mixedSubSt : (s0IsCompleted ? 3 : 0);
+          const showFxGraph0 = !running ? true : (s0IsPending ? mixedSubSt >= 3 : (s0IsCompleted && !mixedPending));
+          const traces0 = intervalTraces(a0, b0, (a0+b0)/2, 0, subStGraph0, showFxGraph0, xVGlobal, yVGlobal);
+          Plotly.react(div0, traces0, {
+            margin: { t: 60, b: 40, l: 50, r: 20 },
+            title: { text: `<b>Krok 0</b>`, font: { color: textColor } },
+            xaxis: { title: 'x', range: [globalXMin, globalXMax], color: textColor, gridcolor: gridColor, zeroline: true, zerolinecolor: textColor },
+            yaxis: { title: 'f(x)', color: textColor, gridcolor: gridColor, zeroline: true, zerolinecolor: textColor, range: yAxisRange },
+            paper_bgcolor: bgColor, plot_bgcolor: bgColor, font: { color: textColor },
+            showlegend: true, autosize: true, legend: { font: { size: 14 }, itemsizing: 'constant', itemwidth: 40 }
+          }, { responsive: true, displayModeBar: true, displaylogo: false });
+        }
 
-        const traces0 = [
-          {
-            x: xVGlobal,
-            y: yVGlobal,
-            mode: "lines",
-            name: "f(x)",
-            line: { color: "#2196f3", width: 2 },
-          },
-          {
-            x: [a0, b0],
-            y: [0, 0],
-            mode: "lines+markers",
-            name: "interval",
-            line: { color: "red", width: 5 },
-            marker: { size: 10, color: "red" }
-          },
-          {
-            x: [a0],
-            y: [0],
-            mode: "markers+text",
-            text: [`a₀`],
-            textposition: "top",
-            name: `a₀`,
-            marker: { size: 12, color: fa0 > 0 ? '#4caf50' : '#f44336', symbol: 'square' }
-          },
-          {
-            x: [b0],
-            y: [0],
-            mode: "markers+text",
-            text: [`b₀`],
-            textposition: "top",
-            name: `b₀`,
-            marker: { size: 12, color: fb0 > 0 ? '#4caf50' : '#f44336', symbol: 'square' }
-          }
-        ];
-
-        Plotly.react(div0, traces0, {
-          margin: { t: 60, b: 40, l: 50, r: 20 },
-          title: `<b>Krok 0:</b> Počiatočný interval [a₀=${a0.toFixed(decimalPlaces)}, b₀=${b0.toFixed(decimalPlaces)}]`,
-          
-          xaxis: { title: "x", range: [globalXMin, globalXMax], color: textColor, gridcolor: gridColor, zeroline: true, zerolinecolor: textColor },
-          yaxis: { title: "f(x)", color: textColor, gridcolor: gridColor, zeroline: true, zerolinecolor: textColor, range: yAxisRange },
-          
-          paper_bgcolor: bgColor,
-          plot_bgcolor: bgColor,
-          font: { color: textColor },
-          showlegend: true,
-          autosize: true,
-          legend: {
-            font: { size: 14 },
-            itemsizing: 'constant',
-            itemwidth: 40
-          }
-        }, {
-          responsive: true,
-          displayModeBar: true,
-          displaylogo: false
-        });
-
+        // Render completed steps (i > 0) — full traces, f(x) removed from last if pending exists
         for (let i = 0; i < steps.length; i++) {
-          const step = steps[i];
-          
-          let divN = document.getElementById(`graph-${i+1}`);
-          const isNewGraph = !divN;
-          
+          const s = steps[i];
+          if (s.i === 0) continue;
+          const isLastCompleted = i === steps.length - 1;
+          const showFx = !running ? true : (isLastCompleted && !mixedPending);
+
+          const prevA = i === 0 ? a0 : steps[i-1].a;
+          const prevB = i === 0 ? b0 : steps[i-1].b;
+          const [zXMin, zXMax] = getZoomRange(prevA, prevB);
+          const { xs, ys } = sampleF(zXMin, zXMax);
+          const yRng = getYRange(ys);
+          const mn = Math.min(...ys.filter(isFinite)), mx = Math.max(...ys.filter(isFinite));
+
+          let divN = document.getElementById(`graph-${s.i}`);
           if (!divN || !shouldAppendOnly) {
             divN = document.createElement('div');
-            divN.id = `graph-${i+1}`;
+            divN.id = `graph-${s.i}`;
             divN.style.height = '450px';
             divN.style.width = '100%';
             divN.style.border = '2px solid ' + gridColor;
             divN.style.borderRadius = '8px';
             divN.style.marginBottom = '30px';
             container.appendChild(divN);
-          } else {}
-
-          const currentA = step.a;
-          const currentB = step.b;
-          const currentC = step.c;
-          
-          const fc = step.fc;
-          const fa = f(currentA);
-          const fb = f(currentB);
-
-          let prevA, prevB;
-          if (i === 0) {
-            prevA = a0;
-            prevB = b0;
-          } else {
-            const prevStep = steps[i - 1];
-            prevA = prevStep.a;
-            prevB = prevStep.b;
           }
 
-          const prevIntervalWidth = prevB - prevA;
-          const zoomPad = 0.3;
-          const zoomSpan = prevIntervalWidth * (1 + zoomPad);
-          const zoomCen = (prevA + prevB) / 2;
-          const zoomXMin = zoomCen - zoomSpan / 2;
-          const zoomXMax = zoomCen + zoomSpan / 2;
+          const traces = intervalTraces(s.a, s.b, s.c, s.i, 3, showFx, xs, ys);
 
-          const xVZoom = [], yVZoom = [];
-          const stZoom = (zoomXMax - zoomXMin) / 300;
-          for (let x = zoomXMin; x <= zoomXMax; x += stZoom) {
-            xVZoom.push(x);
-            yVZoom.push(f(x));
-          }
-
-          const validYZoom = yVZoom.filter(y => isFinite(y));
-          let yMinZoom = Math.min(...validYZoom);
-          let yMaxZoom = Math.max(...validYZoom);
-          const yRangeZoom = yMaxZoom - yMinZoom;
-          
-          let yAxisRangeZoom = null;
-          if (yRangeZoom > maxYRange) {
-            yAxisRangeZoom = [-maxYRange / 2, maxYRange / 2];
-          }
-
-          const tracesN = [
-            {
-              x: xVZoom,
-              y: yVZoom,
-              mode: "lines",
-              name: "f(x)",
-              line: { color: "#2196f3", width: 2 },
-            },
-            {
-              x: [currentA, currentB],
-              y: [0, 0],
-              mode: "lines+markers",
-              name: "interval",
-              line: { color: "red", width: 5 },
-              marker: { size: 10, color: "red" }
-            },
-            {
-              x: [currentA],
-              y: [0],
-              mode: "markers+text",
-              text: [`a${i+1}`],
-              textposition: "top",
-              name: `a${i+1}`,
-              marker: { size: 12, color: fa > 0 ? '#4caf50' : '#f44336', symbol: 'square' }
-            },
-            {
-              x: [currentB],
-              y: [0],
-              mode: "markers+text",
-              text: [`b${i+1}`],
-              textposition: "top",
-              name: `b${i+1}`,
-              marker: { size: 12, color: fb > 0 ? '#4caf50' : '#f44336', symbol: 'square' }
-            },
-            {
-              x: [currentC],
-              y: [0],
-              mode: "markers+text",
-              text: [`c${i+1}`],
-              textposition: "top",
-              name: `c${i+1}`,
-              marker: { 
-                size: 10, 
-                color: 'orange',
-                symbol: 'diamond',
-                line: { color: fc > 0 ? '#4caf50' : '#f44336', width: 2 }
+          // Add precision/steps accuracy lines for last completed step
+          if (isLastCompleted && !mixedPending) {
+            if (stopMethod === 'precision') {
+              const isAcc = Math.abs(s.b - s.a) <= 2 * tol;
+              if (isAcc) {
+                traces.push({ x: [s.c - tol, s.c - tol], y: [mn, mx], mode: 'lines', line: { color: 'rgba(76,175,80,0.7)', width: 2, dash: 'dash' }, name: `oblasť presnosti ±${tol}`, showlegend: true, hoverinfo: 'skip' });
+                traces.push({ x: [s.c + tol, s.c + tol], y: [mn, mx], mode: 'lines', line: { color: 'rgba(76,175,80,0.7)', width: 2, dash: 'dash' }, name: ' ', showlegend: false, hoverinfo: 'skip' });
               }
-            }
-          ];
-
-          if (stopMethod === 'precision') {
-            tracesN.push({
-              x: [currentC - tol, currentC - tol],
-              y: [yMinZoom, yMaxZoom],
-              mode: 'lines',
-              line: { color: 'rgba(76, 175, 80, 0.7)', width: 2, dash: 'dash' },
-              name: ' ',
-              showlegend: true,
-              hoverinfo: 'skip'
-            });
-
-            tracesN.push({
-              x: [currentC + tol, currentC + tol],
-              y: [yMinZoom, yMaxZoom],
-              mode: 'lines',
-              line: { color: 'rgba(76, 175, 80, 0.7)', width: 2, dash: 'dash' },
-              name: `oblasť presnosti ±${tol}`,
-              showlegend: true,
-              hoverinfo: 'skip'
-            });
-
-            const visibleWidth = zoomXMax - zoomXMin;
-            if (tol * 2 < visibleWidth * 0.01) {
-              tracesN.push({
-                x: [null], y: [null],
-                mode: 'markers',
-                marker: { color: 'transparent', size: 1 },
-                showlegend: true,
-                name: `💡 Oblasť presnosti je<br>veľmi malá - priblíž<br>sa na bod c`,
-                hoverinfo: 'none'
-              });
+            } else if (stopMethod === 'steps' && s.i === maxSteps) {
+              const error = Math.abs(b0 - a0) / Math.pow(2, s.i + 1);
+              traces.push({ x: [s.c - error, s.c - error], y: [mn, mx], mode: 'lines', line: { color: 'rgba(76,175,80,0.7)', width: 2, dash: 'dash' }, name: `oblasť chyby ±${error.toFixed(decimalPlaces)}`, legendgroup: 'error', showlegend: true, hoverinfo: 'name' });
+              traces.push({ x: [s.c + error, s.c + error], y: [mn, mx], mode: 'lines', line: { color: 'rgba(76,175,80,0.7)', width: 2, dash: 'dash' }, name: `oblasť chyby ±${error.toFixed(decimalPlaces)}`, legendgroup: 'error', showlegend: false, hoverinfo: 'name' });
             }
           }
 
-          const isLast = i === steps.length - 1;
-          let isAcc = false;
-
-          if (stopMethod === 'precision') {
-            const intervalLength = Math.abs(step.b - step.a);
-            isAcc = intervalLength <= 2 * tol;
-          } else if (stopMethod === 'steps') {
-            isAcc = step.i === maxSteps;
-
-            if (isLast && isAcc) {
-              const initialInterval = Math.abs(b0 - a0);
-              const error = initialInterval / Math.pow(2, step.i + 1);
-
-              tracesN.push({
-                x: [currentC - error, currentC - error],
-                y: [yMinZoom, yMaxZoom],
-                mode: 'lines',
-                line: { color: 'rgba(76, 175, 80, 0.7)', width: 2, dash: 'dash' },
-                name: `oblasť<br>chyby ±${error.toFixed(decimalPlaces)}`,
-                legendgroup: 'error',
-                showlegend: true,
-                hoverinfo: 'name'
-              });
-
-              tracesN.push({
-                x: [currentC + error, currentC + error],
-                y: [yMinZoom, yMaxZoom],
-                mode: 'lines',
-                line: { color: 'rgba(76, 175, 80, 0.7)', width: 2, dash: 'dash' },
-                name: `oblasť<br>chyby ±${error.toFixed(decimalPlaces)}`,
-                legendgroup: 'error',
-                showlegend: false,
-                hoverinfo: 'name'
-              });
-            }
-          }
-
-          const titleColor = isLast && isAcc ? '#4caf50' : textColor;
-
-          Plotly.react(divN, tracesN, {
+          const isAcc = stopMethod === 'precision' ? Math.abs(s.b - s.a) <= 2 * tol : (s.i === maxSteps);
+          const titleColor = (isLastCompleted && isAcc && !running) ? '#4caf50' : textColor;
+          Plotly.react(divN, traces, {
             margin: { t: 60, b: 40, l: 50, r: 20 },
-            title: {
-              text: `<b>Krok ${i+1}:</b> c${i+1}=${currentC.toFixed(decimalPlaces)}, f(c${i+1})=${fc.toFixed(decimalPlaces)}`,
-              font: { color: titleColor }
-            },
+            title: { text: `<b>Krok ${s.i}</b>`, font: { color: titleColor } },
+            xaxis: { title: 'x', range: [zXMin, zXMax], color: textColor, gridcolor: gridColor, zeroline: true, zerolinecolor: textColor },
+            yaxis: { title: 'f(x)', color: textColor, gridcolor: gridColor, zeroline: true, zerolinecolor: textColor, range: yRng },
+            paper_bgcolor: bgColor, plot_bgcolor: bgColor, font: { color: textColor },
+            showlegend: true, autosize: true, legend: { font: { size: 14 }, itemsizing: 'constant', itemwidth: 40 }
+          }, { responsive: true, displayModeBar: true, displaylogo: false });
+        }
 
-            xaxis: { title: "x", range: [zoomXMin, zoomXMax], color: textColor, gridcolor: gridColor, zeroline: true, zerolinecolor: textColor },
-            yaxis: { title: "f(x)", color: textColor, gridcolor: gridColor, zeroline: true, zerolinecolor: textColor, range: yAxisRangeZoom },
-            
-            paper_bgcolor: bgColor,
-            plot_bgcolor: bgColor,
-            font: { color: textColor },
-            showlegend: true,
-            autosize: true,
-            legend: {
-              font: { size: 14 },
-              itemsizing: 'constant',
-              itemwidth: 40
-            }
-          }, {
-            responsive: true,
-            displayModeBar: true,
-            displaylogo: false
-          });
+        // Render pending step graph (i > 0)
+        if (mixedPending && mixedPending.i > 0) {
+          const s = mixedPending;
+          const lastComp = steps.filter(x => x.i > 0);
+          const prevA = lastComp.length > 0 ? lastComp[lastComp.length-1].a : a0;
+          const prevB = lastComp.length > 0 ? lastComp[lastComp.length-1].b : b0;
+          const [zXMin, zXMax] = getZoomRange(prevA, prevB);
+          const { xs, ys } = sampleF(zXMin, zXMax);
+          const yRng = getYRange(ys);
+          const showFx = mixedSubSt >= 3;
+
+          let divN = document.getElementById(`graph-${s.i}`);
+          if (!divN || !shouldAppendOnly) {
+            divN = document.createElement('div');
+            divN.id = `graph-${s.i}`;
+            divN.style.height = '450px';
+            divN.style.width = '100%';
+            divN.style.border = '2px solid ' + gridColor;
+            divN.style.borderRadius = '8px';
+            divN.style.marginBottom = '30px';
+            container.appendChild(divN);
+          }
+
+          const traces = intervalTraces(s.a, s.b, s.c, s.i, mixedSubSt, showFx, xs, ys);
+          Plotly.react(divN, traces, {
+            margin: { t: 60, b: 40, l: 50, r: 20 },
+            title: { text: `<b>Krok ${s.i}</b>`, font: { color: textColor } },
+            xaxis: { title: 'x', range: [zXMin, zXMax], color: textColor, gridcolor: gridColor, zeroline: true, zerolinecolor: textColor },
+            yaxis: { title: 'f(x)', color: textColor, gridcolor: gridColor, zeroline: true, zerolinecolor: textColor, range: yRng },
+            paper_bgcolor: bgColor, plot_bgcolor: bgColor, font: { color: textColor },
+            showlegend: true, autosize: true, legend: { font: { size: 14 }, itemsizing: 'constant', itemwidth: 40 }
+          }, { responsive: true, displayModeBar: true, displaylogo: false });
         }
         
         if (rightPanel) {
           setTimeout(() => {
             const scrollBtn = document.getElementById('scrollToLatestBtn');
-            
             if (scrollBtn) {
-              if (userScrolled) {
-                scrollBtn.classList.add('visible');
-              } else {
-                scrollBtn.classList.remove('visible');
-              }
+              if (userScrolled) { scrollBtn.classList.add('visible'); }
+              else { scrollBtn.classList.remove('visible'); }
             }
-            
-            if (!userScrolled) {
-              autoScrollToLatest();
-            } else {
-              rightPanel.scrollTop = savedScrollTop;
-            }
+            if (!userScrolled) { autoScrollToLatest(); }
+            else { rightPanel.scrollTop = savedScrollTop; }
           }, 150);
         }
       }
+      function goHome() {
+        if ((steps.filter(x=>x.i!==0).length > 0 || (mode === 'mixed' && inlineQuizActive && (inlineQuizField > 0 || steps.length > 0)) || (mode === 'auto' && autoSubStep > 0))) {
+          const n = steps.filter(x=>x.i!==0).length;
+          if (!confirm('⚠️ Návrat do menu vymaže aktuálny postup!\n\nMáte ' + n + ' ' + (n===1?'krok':'krokov') + '.\n\nPokračovať?')) return;
+        }
+        window.location.href = "menu.html";
+      }
 
       function goBack() {
+        if ((steps.filter(x=>x.i!==0).length > 0 || (mode === 'mixed' && inlineQuizActive && (inlineQuizField > 0 || steps.length > 0)) || (mode === 'auto' && autoSubStep > 0))) {
+          const n = steps.filter(x=>x.i!==0).length;
+          if (!confirm('⚠️ Návrat späť vymaže aktuálny postup!\n\nMáte ' + n + ' ' + (n===1?'krok':'krokov') + '.\n\nPokračovať?')) return;
+        }
         window.location.href = "interval.html";
       }
 
@@ -2555,7 +2900,7 @@
             maxSteps: stopMethod === 'steps' ? maxSteps : null,
             
             result: steps.length ? steps[steps.length-1].c : null,
-            iterations: steps.length,
+            iterations: steps.filter(s => s.i !== 0).length,
             steps: steps.map(s => ({ i: s.i, a: s.a, b: s.b, c: s.c, fc: s.fc }))
           };
 
