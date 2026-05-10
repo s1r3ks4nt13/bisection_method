@@ -2,501 +2,381 @@
 <html lang="sk">
 <head>
   <meta charset="UTF-8">
-  <title>História výpočtov |Vizualizácia metódy bisekcie|</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>História výpočtov | Vizualizácia metódy bisekcie</title>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
+    /* DESIGN TOKENS */
     :root {
-      --bg-gradient-1: #667eea; 
-      --bg-gradient-2: #764ba2;
-      --card: #ffffff; 
-      --text: #2c3e50; 
-      --text-secondary: #7f8c8d;
-      --border: #e0e0e0; 
-      --btn-bg: #1976d2; 
-      --btn-hover: #1565c0;
-      --table-header: #f5f5f5; 
-      --success-bg: #e8f5e9; 
-      --success-text: #1b5e20;
-      --tag-bg: #e3f2fd; 
-      --tag-color: #1565c0; 
-      --header-bg: #1976d2;
+      --bg:             #dbe5ff;
+      --surface:        #FFFFFF;
+      --surface2:       #F3F4FF;
+      --border:         #D5D8FF;
+      --border2:        #A5AAEE;
+      --text-primary:   #1E1B4B;
+      --text-secondary: #3730A3;
+      --text-muted:     #6B7280;
+      --accent:         #1976D2;
+      --accent2:        #667EEA;
+      --ok:             #059669;
+      --ok-bg:          rgba(5,150,105,.08);
+      --error:          #DC2626;
+      --shadow:         0 2px 12px rgba(25,118,210,.10), 0 1px 3px rgba(25,118,210,.06);
+      --shadow-lg:      0 16px 48px rgba(25,118,210,.18);
+      --radius:         10px;
+      --radius-lg:      16px;
+      --font:           'Plus Jakarta Sans', sans-serif;
+      --font-mono:      'IBM Plex Mono', 'Courier New', monospace;
+    }
+    html.dark {
+      --bg:             #0d151e;
+      --surface:        #161830;
+      --surface2:       #1E2040;
+      --border:         #252858;
+      --border2:        #383C70;
+      --text-primary:   #E8E8FF;
+      --text-secondary: #8890E0;
+      --text-muted:     #4A5070;
+      --accent:         #2d8fff;
+      --accent2:        #5c68da;
+      --ok:             #34D399;
+      --ok-bg:          rgba(52,211,153,.08);
+      --error:          #F87171;
     }
 
-    body.dark {
-      --bg-gradient-1: #1a1a2e;
-      --bg-gradient-2: #16213e;
-      --card: #2a2a2a; 
-      --text: #e8e8e8; 
-      --text-secondary: #a0a0a0;
-      --border: #4a4a4a; 
-      --btn-bg: #2196f3; 
-      --btn-hover: #64b5f6;
-      --table-header: #1a1a1a; 
-      --success-bg: #0a4d0a; 
-      --success-text: #81c784;
-      --tag-bg: #1e3a5f; 
-      --tag-color: #90caf9; 
-      --header-bg: #1565c0;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font);
+      font-size: 16px;
+      line-height: 1.6;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      transition: background .3s ease, color .3s ease;
     }
-    
-    * { 
-      box-sizing: border-box; 
-      margin: 0; 
-      padding: 0; 
-      transition: background-color 0.3s, color 0.3s, border-color 0.3s; 
+    button { font-family: var(--font); cursor: pointer; }
+
+    /* ── Scrollbar style (zladené s ostatnými stránkami projektu) ──── */
+    .table-container,
+    .detail-right,
+    body {
+      scrollbar-width: thin;
+      scrollbar-color: var(--border2) transparent;
     }
-    
-    body { 
-      font-family: "Segoe UI", sans-serif; 
-      background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%); 
-      min-height: 100vh; 
-      color: var(--text); 
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border2);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--accent);
+    }
+    ::-webkit-scrollbar-corner {
+      background: transparent;
     }
 
+    /* HEADER */
     header {
-      background: var(--header-bg); color: white;
-      padding: 0 20px; height: 60px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.3em; font-weight: bold; position: relative;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      height: 58px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      transition: background .3s ease, border-color .3s ease;
     }
-
-    #backBtn, #themeToggle {
-      background: var(--btn-bg); border: none; color: white;
-      width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
-      font-size: 1.2em; display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 2px 8px rgba(33,150,243,0.3);
-      transition: all 0.3s;
+    .header-title {
       position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.93em;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      pointer-events: none;
+      white-space: nowrap;
     }
-    #backBtn { 
-      left: 15px; 
-      top: 10px; 
+    #backBtn, #themeToggle {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .18s ease;
+      flex-shrink: 0;
     }
-    #backBtn:hover, #themeToggle:hover { 
-      background: var(--btn-hover); 
-      transform: scale(1.1); 
+    #backBtn:hover, #themeToggle:hover {
+      background: var(--surface2);
+      color: var(--text-primary);
     }
-    #themeToggle { 
-      right: 15px; 
-      top: 10px; 
+    #backBtn svg, #themeToggle svg {
+      width: 17px; height: 17px;
+      stroke: currentColor; fill: none;
+      stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
     }
 
-    #listPage {
-      padding: 20px;
-    }
-
+    /* LIST PAGE */
+    #listPage { padding: 22px 24px; max-width: 820px; margin: 0 auto; }
     .list-top {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 16px;
-      color: white;
+      margin-bottom: 14px;
     }
-
-    .list-top h2 {
-      font-size: 1.1em;
-    }
-
+    .list-top h2 { font-size: 0.95em; font-weight: 700; color: var(--text-primary); }
     .clear-btn {
-      background: rgba(255,255,255,0.15);
-      border: 1px solid rgba(255,255,255,0.3);
-      color: white;
+      background: transparent;
+      border: 1px solid rgba(220,38,38,.30);
+      color: var(--error);
       padding: 6px 14px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 0.85em;
-    }
-    .clear-btn:hover {
-      background: rgba(244,67,54,0.3);
-    }
-
-    .card-list {
+      border-radius: var(--radius);
+      font-size: 0.82em;
+      font-weight: 600;
       display: flex;
-      flex-direction: column;
-      gap: 12px;
+      align-items: center;
+      gap: 6px;
+      transition: all .18s ease;
     }
+    .clear-btn:hover { background: rgba(220,38,38,.07); }
+    .clear-btn svg {
+      width: 14px; height: 14px;
+      stroke: currentColor; fill: none;
+      stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+    }
+    .card-list { display: flex; flex-direction: column; gap: 10px; }
 
+    /* HISTORY CARD */
     .history-card {
-      background: var(--card);
-      border-radius: 12px;
-      padding: 16px 20px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 14px 18px;
+      box-shadow: var(--shadow);
       display: flex;
       align-items: center;
       gap: 14px;
       cursor: pointer;
-      transition: transform 0.15s, box-shadow 0.15s;
+      transition: all .18s ease;
     }
     .history-card:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--accent);
     }
-
     .card-icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 10px;
-      background: var(--tag-bg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2em;
+      width: 40px; height: 40px;
+      border-radius: var(--radius);
+      background: rgba(25,118,210,.10);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1em; font-weight: 700;
+      color: var(--accent); font-family: var(--font-mono);
       flex-shrink: 0;
-      color: var(--tag-color);
-      font-weight: 700;
     }
-
-    .card-body {
-      flex: 1;
-      min-width: 0;
-    }
-
+    .card-body { flex: 1; min-width: 0; }
     .card-func {
-      font-family: 'Courier New', monospace;
-      font-size: 0.95em;
-      font-weight: 600;
-      color: var(--text);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-family: var(--font-mono);
+      font-size: 0.92em; font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
-
     .card-meta {
-      font-size: 0.78em;
-      color: var(--text-secondary);
-      margin-top: 5px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      align-items: center;
+      font-size: 0.76em; color: var(--text-muted);
+      margin-top: 4px;
+      display: flex; flex-wrap: wrap; gap: 5px; align-items: center;
     }
-
     .tag {
-      background: var(--tag-bg);
-      color: var(--tag-color);
-      padding: 2px 8px;
-      border-radius: 10px;
-      font-size: 0.85em;
-      font-weight: 500;
+      background: rgba(25,118,210,.10); color: var(--accent);
+      padding: 2px 8px; border-radius: 99px;
+      font-size: 0.85em; font-weight: 600; font-family: var(--font-mono);
     }
-
-    .tag.green {
-      background: var(--success-bg);
-      color: var(--success-text);
-    }
-
-    .card-result {
-      text-align: right;
-      flex-shrink: 0;
-    }
-
+    .tag.green { background: var(--ok-bg); color: var(--ok); }
+    .card-result { text-align: right; flex-shrink: 0; }
     .card-result .root {
-      font-size: 1em;
-      font-weight: 700;
-      color: var(--btn-bg);
-      font-family: 'Courier New', monospace;
+      font-size: 0.95em; font-weight: 700;
+      color: var(--accent); font-family: var(--font-mono);
     }
-
-    .card-result .iters {
-      font-size: 0.72em;
-      color: var(--text-secondary);
-      margin-top: 2px;
-    }
-
-    .card-arrow {
-      color: var(--text-secondary);
-      font-size: 1.2em;
-      flex-shrink: 0;
-    }
-
+    .card-result .iters { font-size: 0.7em; color: var(--text-muted); margin-top: 2px; }
+    .card-arrow { color: var(--text-muted); font-size: 1.1em; flex-shrink: 0; }
     .delete-card-btn {
       background: none;
-      border: 1px solid rgba(132, 132, 132, 0.733);
-      cursor: pointer;
-      font-size: 1em;
-      opacity: 0.4;
-      padding: 4px 6px;
-      border-radius: 6px;
-      flex-shrink: 0;
-      transition: opacity 0.2s, background 0.2s;
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      width: 28px; height: 28px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted); flex-shrink: 0;
+      opacity: 0.5; transition: all .18s ease;
     }
     .delete-card-btn:hover {
       opacity: 1;
-      background: rgba(255, 31, 15, 0.337);
+      background: rgba(220,38,38,.10);
+      border-color: var(--error); color: var(--error);
+    }
+    .delete-card-btn svg {
+      width: 13px; height: 13px;
+      stroke: currentColor; fill: none;
+      stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
     }
 
-    .empty-state {
-      text-align: center;
-      padding: 80px 20px;
-      color: white;
-    }
-
-    .empty-state .icon {
-      font-size: 3.5em;
-      margin-bottom: 14px;
-    }
-
-    .empty-state h2 {
-      font-size: 1.4em;
-      margin-bottom: 8px;
-    }
-
-    .empty-state p {
-      opacity: 0.8;
-      margin-bottom: 22px;
-    }
-
+    /* EMPTY STATE */
+    .empty-state { text-align: center; padding: 80px 20px; }
+    .empty-state .icon { font-size: 3.5em; margin-bottom: 14px; }
+    .empty-state h2 { font-size: 1.35em; font-weight: 700; margin-bottom: 8px; color: var(--text-primary); }
+    .empty-state p { color: var(--text-muted); margin-bottom: 22px; font-size: 0.93em; }
     .empty-state a {
       display: inline-block;
-      background: white;
-      color: #1976d2;
-      padding: 11px 26px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: 600;
+      background: var(--accent); color: white;
+      padding: 11px 26px; border-radius: var(--radius);
+      text-decoration: none; font-weight: 700; font-size: 0.93em;
+      transition: all .2s ease;
+    }
+    .empty-state a:hover {
+      background: var(--accent2); transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(25,118,210,.35);
     }
 
-    #detailPage {
-      display: none;
-      height: calc(100vh - 60px);
-      width: 100%;
-    }
-
-    #detailPage.active {
-      display: flex;
-    }
-
-    .detail-layout {
-      display: flex;
-      height: 100%;
-      width: 100%;
-      gap: 20px;
-      padding: 20px;
-    }
-
+    /* DETAIL PAGE */
+    #detailPage { display: none; height: calc(100vh - 58px); width: 100%; }
+    #detailPage.active { display: flex; }
+    .detail-layout { display: flex; height: 100%; width: 100%; gap: 16px; padding: 16px; }
     .detail-left {
       flex: 1.1;
-      background: var(--card);
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-      max-height: calc(100vh - 100px);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 20px;
+      box-shadow: var(--shadow); max-height: calc(100vh - 90px);
+      display: flex; flex-direction: column; overflow: hidden;
+      transition: background .3s ease;
     }
-
     .detail-func-title {
-      font-size: 0.95em;
-      font-weight: 700;
-      color: var(--btn-bg);
-      margin-bottom: 12px;
-      font-family: 'Courier New', monospace;
+      font-size: 0.92em; font-weight: 700;
+      color: var(--accent); margin-bottom: 12px; font-family: var(--font-mono);
     }
-
-    .info-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 14px;
-    }
-
-    .info-item {
-      background: var(--table-header);
-      border-radius: 8px;
-      padding: 8px 12px;
-    }
-
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-bottom: 13px; }
+    .info-item { background: var(--surface2); border-radius: var(--radius); padding: 8px 11px; }
     .info-item .label {
-      font-size: 0.7em;
-      color: var(--text-secondary);
-      margin-bottom: 2px;
+      font-size: 0.68em; color: var(--text-muted); margin-bottom: 2px;
+      text-transform: uppercase; letter-spacing: 0.05em; font-family: var(--font-mono);
     }
-
-    .info-item .value {
-      font-size: 0.88em;
-      font-weight: 600;
-      font-family: 'Courier New', monospace;
-      color: var(--text);
-    }
-
+    .info-item .value { font-size: 0.86em; font-weight: 600; font-family: var(--font-mono); color: var(--text-primary); }
     .table-container {
-      flex: 1;
-      overflow-y: auto;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      margin-bottom: 10px;
+      flex: 1; overflow-y: auto;
+      border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 10px;
     }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
+    table { width: 100%; border-collapse: collapse; }
     th {
-      background: var(--table-header);
-      padding: 9px 6px;
-      text-align: center;
-      color: var(--text);
-      font-size: 0.82em;
-      font-weight: 600;
-      border-bottom: 2px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 1;
+      background: var(--surface2); padding: 8px 6px;
+      text-align: center; color: var(--text-primary);
+      font-size: 0.78em; font-weight: 700;
+      border-bottom: 2px solid var(--border); position: sticky; top: 0; z-index: 1;
     }
-
     td {
-      padding: 8px 6px;
-      text-align: center;
+      padding: 7px 6px; text-align: center;
       border-bottom: 1px solid var(--border);
-      color: var(--text);
-      font-family: 'Courier New', monospace;
-      font-size: 0.82em;
+      color: var(--text-primary); font-family: var(--font-mono); font-size: 0.79em;
     }
-
-    tr:last-child td {
-      border-bottom: none;
-    }
-
-    tr.last-row {
-      background: var(--success-bg);
-      font-weight: bold;
-    }
-
-    tr.last-row td {
-      color: var(--success-text);
-    }
-
-    .detail-footer {
-      flex-shrink: 0;
-      padding-top: 10px;
-      border-top: 2px solid var(--border);
-    }
-
+    tr:last-child td { border-bottom: none; }
+    tr.last-row { background: var(--ok-bg); }
+    tr.last-row td { color: var(--ok); font-weight: 600; }
+    .detail-footer { flex-shrink: 0; padding-top: 10px; border-top: 1px solid var(--border); }
     .detail-footer-date {
-      font-size: 0.75em;
-      color: var(--text-secondary);
-      text-align: center;
-      margin-bottom: 8px;
+      font-size: 0.73em; color: var(--text-muted);
+      text-align: center; margin-bottom: 8px; font-family: var(--font-mono);
     }
-
     .btn-back-list {
-      width: 100%;
-      padding: 10px;
-      background: var(--btn-bg);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 0.95em;
-      font-weight: 500;
+      width: 100%; padding: 10px;
+      background: var(--accent); color: white;
+      border: none; border-radius: var(--radius);
+      font-size: 0.9em; font-weight: 700; transition: all .2s ease;
     }
     .btn-back-list:hover {
-      background: var(--btn-hover);
+      background: var(--accent2); transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(25,118,210,.35);
     }
-
     .detail-right {
       flex: 1.7;
-      background: var(--card);
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-      max-height: calc(100vh - 100px);
-      overflow-y: auto;
-      position: relative;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 20px;
+      box-shadow: var(--shadow); max-height: calc(100vh - 90px);
+      overflow-y: auto; transition: background .3s ease;
     }
+    .right-label { font-size: 0.82em; color: var(--text-muted); text-align: center; margin-bottom: 14px; }
+    .graphs-container { display: flex; flex-direction: column; gap: 18px; }
+    .graph-wrap { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; min-height: 350px; }
 
-    .right-label {
-      font-size: 0.85em;
-      color: var(--text);
-      opacity: 0.6;
-      text-align: center;
-      margin-bottom: 12px;
-    }
-
-    .graphs-container {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .graph-wrap {
-      border: 2px solid var(--border);
-      border-radius: 8px;
-      overflow: hidden;
-      min-height: 350px;
-    }
-
+    /* MODAL */
     .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.5);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.50); backdrop-filter: blur(4px);
+      z-index: 1000; align-items: center; justify-content: center;
     }
-
-    .modal-overlay.active {
-      display: flex;
-    }
-
+    .modal-overlay.active { display: flex; }
     .modal-box {
-      background: var(--card);
-      border-radius: 12px;
-      padding: 28px;
-      max-width: 360px;
-      width: 90%;
-      text-align: center;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 28px;
+      max-width: 340px; width: 90%; text-align: center;
+      box-shadow: var(--shadow-lg);
+      animation: slideDown .22s cubic-bezier(.34,1.3,.64,1);
     }
-
-    .modal-box h3 {
-      font-size: 1.1em;
-      color: var(--text);
-      margin-bottom: 10px;
+    @keyframes slideDown {
+      from { transform: translateY(-14px); opacity: 0; }
+      to   { transform: translateY(0);     opacity: 1; }
     }
-
-    .modal-box p {
-      font-size: 0.9em;
-      color: var(--text-secondary);
-      margin-bottom: 20px;
-    }
-
-    .modal-btns {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-    }
-
+    .modal-box h3 { font-size: 1em; font-weight: 700; color: var(--text-primary); margin-bottom: 9px; }
+    .modal-box p { font-size: 0.86em; color: var(--text-muted); margin-bottom: 20px; line-height: 1.6; }
+    .modal-btns { display: flex; gap: 10px; justify-content: center; }
     .modal-btns button {
-      padding: 10px 24px;
-      border: none;
-      border-radius: 8px;
-      font-size: 0.95em;
-      font-weight: 600;
-      cursor: pointer;
+      padding: 10px 24px; border: none;
+      border-radius: var(--radius); font-size: 0.9em; font-weight: 700; transition: all .18s ease;
     }
-
-    .btn-cancel {
-      background: var(--border);
-      color: var(--text);
-    }
-
-    .btn-confirm {
-      background: #f44336;
-      color: white;
-    }
+    .btn-cancel { background: var(--surface2); color: var(--text-primary); border: 1px solid var(--border) !important; }
+    .btn-cancel:hover { background: var(--border); }
+    .btn-confirm { background: var(--error); color: white; }
+    .btn-confirm:hover { background: #B91C1C; transform: translateY(-1px); }
   </style>
 </head>
 <body>
+
+  <!-- HEADER -->
   <header>
-    <button id="backBtn" onclick="handleBack()" title="Späť na menu">←</button>
-    📋 História výpočtov
-    <button id="themeToggle" onclick="toggleTheme()" title="Zmeniť tému">🌙</button>
+    <button id="backBtn" onclick="handleBack()" title="Späť na menu">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <div class="header-title">
+      📋 História výpočtov
+    </div>
+    <button id="themeToggle" onclick="toggleTheme()" title="Zmeniť tému">
+      <svg id="moonIco" viewBox="0 0 24 24">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+      <svg id="sunIco" viewBox="0 0 24 24" style="display:none">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1"  x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+    </button>
   </header>
 
+  <!-- LIST PAGE -->
   <div id="listPage">
     <div id="emptyState" class="empty-state" style="display:none;">
       <div class="icon">📭</div>
@@ -504,17 +384,24 @@
       <p>Dokonči nejaký výpočet a automaticky sa uloží sem.</p>
       <a href="menu.html">Začať výpočet →</a>
     </div>
-
     <div id="listContent" style="display:none;">
       <div class="list-top">
         <h2 id="historyCount"></h2>
-        <button class="clear-btn" onclick="confirmClearAll()" title="Vymazať celú históriu výpočtov">🗑️ Vymazať všetko</button>
+        <button class="clear-btn" onclick="confirmClearAll()" title="Vymazať celú históriu výpočtov">
+          <svg viewBox="0 0 24 24">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+            <path d="M10 11v6M14 11v6"/>
+            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+          </svg>
+          Vymazať všetko
+        </button>
       </div>
-
       <div class="card-list" id="cardList"></div>
     </div>
   </div>
 
+  <!-- DETAIL PAGE -->
   <div id="detailPage">
     <div class="detail-layout">
       <div class="detail-left">
@@ -524,35 +411,32 @@
           <table>
             <thead>
               <tr>
-                <th>n</th><th>aₙ</th><th>cₙ</th><th>bₙ</th>
-                <th>f(aₙ)·f(cₙ)</th>
-                <th id="intervalHeader">|bₙ − aₙ|</th>
-                <th id="errorHeader">|bₙ − aₙ| ≤ 2·tol</th>
+                <th>n</th><th>a&#x2099;</th><th>c&#x2099;</th><th>b&#x2099;</th>
+                <th>f(a&#x2099;)&#xB7;f(c&#x2099;)</th>
+                <th id="intervalHeader">|b&#x2099; &#x2212; a&#x2099;|</th>
+                <th id="errorHeader">|b&#x2099; &#x2212; a&#x2099;| &#x2264; 2&#xB7;tol</th>
               </tr>
             </thead>
             <tbody id="detailTableBody"></tbody>
           </table>
         </div>
-
         <div class="detail-footer">
           <div class="detail-footer-date" id="detailDate"></div>
-          <button class="btn-back-list" onclick="showList()">← Späť na zoznam</button>
+          <button class="btn-back-list" onclick="showList()">&#x2190; Sp&#xe4;&#x165; na zoznam</button>
         </div>
       </div>
-
       <div class="detail-right">
-        <div class="right-label">📊 Grafické znázornenie každého kroku • Červený interval sa postupne zmenšuje</div>
+        <div class="right-label">&#x1F4CA; Grafick&#xe9; zn&#xe1;zornenie ka&#x17e;d&#xe9;ho kroku &#x2022; &#x010c;erven&#xfd; interval sa postupne zmen&#x161;uje</div>
         <div class="graphs-container" id="detailGraphs"></div>
       </div>
     </div>
   </div>
 
+  <!-- CONFIRM MODAL -->
   <div class="modal-overlay" id="confirmModal">
     <div class="modal-box">
       <h3>Vymazať celú históriu?</h3>
-
       <p>Táto akcia je nezvratná. Všetky uložené výpočty budú odstránené.</p>
-      
       <div class="modal-btns">
         <button class="btn-cancel" onclick="closeModal()">Zrušiť</button>
         <button class="btn-confirm" onclick="clearAll()">Vymazať</button>
@@ -561,81 +445,75 @@
   </div>
 
   <script>
+    /* THEME */
     function loadTheme() {
       const t = localStorage.getItem('theme') || 'light';
-      
-      if (t === 'dark') { 
-        document.body.classList.add('dark'); 
-        document.getElementById('themeToggle').textContent = '☀️'; 
+      if (t === 'dark') {
+        document.documentElement.classList.add('dark');
+        document.getElementById('moonIco').style.display = 'none';
+        document.getElementById('sunIco').style.display  = '';
       }
     }
     function toggleTheme() {
-      document.body.classList.toggle('dark');
-      const d = document.body.classList.contains('dark');
-      document.getElementById('themeToggle').textContent = d ? '☀️' : '🌙';
+      document.documentElement.classList.toggle('dark');
+      const d = document.documentElement.classList.contains('dark');
+      document.getElementById('moonIco').style.display = d ? 'none' : '';
+      document.getElementById('sunIco').style.display  = d ? ''     : 'none';
       localStorage.setItem('theme', d ? 'dark' : 'light');
     }
     loadTheme();
 
+    /* NAVIGATION */
     let currentPage = 'list';
     function handleBack() {
       if (currentPage === 'detail') showList();
       else window.location.href = 'menu.html';
     }
 
+    /* DATA HELPERS */
     function getHistory() {
-      try { 
-        return JSON.parse(localStorage.getItem('bisectionHistory') || '[]'); 
-      } catch(e) { return []; }
+      try { return JSON.parse(localStorage.getItem('bisectionHistory') || '[]'); } catch(e) { return []; }
     }
-
     function fEval(expr, x) {
-      try { 
-        return new Function('x', 'return ' + expr)(x); 
-      } catch(e) { return NaN; }
+      try { return new Function('x', 'return ' + expr)(x); } catch(e) { return NaN; }
     }
-
     function signStr(fa, fc) { 
       return (fa >= 0 ? '+' : '−') + (fc >= 0 ? '+' : '−'); 
     }
-
     function getDp(rec) {
       if (rec.stopMethod === 'precision' && rec.tol) {
         const s = rec.tol.toString();
         return s.includes('.') ? s.split('.')[1].length + 2 : 2;
       }
-
       return 3;
     }
 
+    /* LIST VIEW */
     function showList() {
       currentPage = 'list';
       document.getElementById('listPage').style.display = 'block';
       document.getElementById('detailPage').classList.remove('active');
       renderList();
     }
-
     function renderList() {
       const history = getHistory();
-
       if (history.length === 0) {
         document.getElementById('emptyState').style.display = 'block';
         document.getElementById('listContent').style.display = 'none';
         return;
       }
-
       document.getElementById('emptyState').style.display = 'none';
       document.getElementById('listContent').style.display = 'block';
       document.getElementById('historyCount').textContent = `${history.length} uložených výpočtov (max. 50)`;
+      const trashSvg = `<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>`;
       document.getElementById('cardList').innerHTML = history.map((rec, idx) => {
         const decP = getDp(rec);
         const methodTag = rec.stopMethod === 'precision'
           ? `<span class="tag">presnosť ${rec.tol}</span>`
           : `<span class="tag">${rec.maxSteps} krokov</span>`;
         const rootVal = rec.result !== null ? rec.result.toFixed(decP) : '-';
-        
         return `<div class="history-card" onclick="showDetail(${idx})">
-          <div class="card-icon">∫</div>
+          <div class="card-icon">ƒ</div>
           <div class="card-body">
             <div class="card-func">f(x) = ${rec.functionOriginal}</div>
             <div class="card-meta">
@@ -644,35 +522,29 @@
               <span>${rec.date}</span>
             </div>
           </div>
-
           <div class="card-result">
             <div class="root">≈ ${rootVal}</div>
             <div class="iters">koreň</div>
           </div>
           <div class="card-arrow">›</div>
-          <button class="delete-card-btn" onclick="event.stopPropagation(); deleteRecord(${idx})" title="Vymazať tento záznam">🗑️</button>
+          <button class="delete-card-btn" onclick="event.stopPropagation(); deleteRecord(${idx})" title="Vymazať tento záznam">${trashSvg}</button>
         </div>`;
       }).join('');
     }
 
+    /* DETAIL VIEW */
     function showDetail(idx) {
       const rec = getHistory()[idx];
-
       if (!rec) return;
-      
       currentPage = 'detail';
       document.getElementById('listPage').style.display = 'none';
       document.getElementById('detailPage').classList.add('active');
-
       const decP = getDp(rec);
       const f = x => fEval(rec.functionExpr, x);
-
       document.getElementById('detailFunc').textContent = `f(x) = ${rec.functionOriginal}`;
       document.getElementById('detailDate').textContent = `Uložené: ${rec.date}`;
-
       const intervalHeader = document.getElementById('intervalHeader');
       const errorHeader = document.getElementById('errorHeader');
-
       if (rec.stopMethod === 'precision' && rec.tol) {
         intervalHeader.style.display = 'none';
         errorHeader.innerHTML = `|b<sub>n</sub> − a<sub>n</sub>| ≤ 2·${rec.tol}`;
@@ -681,7 +553,6 @@
         intervalHeader.innerHTML = `|b<sub>n</sub> − a<sub>n</sub>|`;
         errorHeader.innerHTML = `(b<sub>0</sub>−a<sub>0</sub>) / 2<sup>n+1</sup>`;
       }
-
       const methodStr = rec.stopMethod === 'precision' ? `Presnosť: ${rec.tol}` : `Krokov: ${rec.maxSteps}`;
       const rootVal = rec.result !== null ? rec.result.toFixed(decP) : '-';
       document.getElementById('detailInfoGrid').innerHTML = `
@@ -689,97 +560,61 @@
         <div class="info-item"><div class="label">Zastavenie</div><div class="value">${methodStr}</div></div>
         <div class="info-item"><div class="label">Koreň ≈</div><div class="value">${rootVal}</div></div>
         <div class="info-item"><div class="label">Iterácií</div><div class="value">${rec.iterations}</div></div>`;
-
       const c0 = (rec.a0 + rec.b0) / 2;
       const fc0 = f(c0);
       const fa0 = f(rec.a0);
       const sign0 = (fa0 >= 0 ? '+' : '−') + (fc0 >= 0 ? '+' : '−');
       const len0 = Math.abs(rec.b0 - rec.a0);
-
-      const dot0 = rec.stopMethod === 'precision'
-        ? `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#f44336;margin-left:4px;"></span>` : '';
-
       const col2_0 = rec.stopMethod === 'precision'
         ? `<td>${len0.toFixed(decP)} <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#f44336;margin-left:4px;"></span></td>`
         : `<td style="opacity:0.35">-</td>`;
-
       const intervalCell0 = rec.stopMethod === 'precision' ? '' : `<td>${len0.toFixed(decP)}</td>`;
-      
-      const row0 = `<tr>
-        <td>0</td>
-        <td>${rec.a0.toFixed ? rec.a0.toFixed(decP) : rec.a0}</td>
-        <td>${c0.toFixed(decP)}</td>
-        <td>${rec.b0.toFixed ? rec.b0.toFixed(decP) : rec.b0}</td>
-        <td style="font-weight:bold">${sign0}</td>
-        ${intervalCell0}
-        ${col2_0}
-      </tr>`;
-
+      const row0 = `<tr><td>0</td><td>${rec.a0.toFixed ? rec.a0.toFixed(decP) : rec.a0}</td><td>${c0.toFixed(decP)}</td><td>${rec.b0.toFixed ? rec.b0.toFixed(decP) : rec.b0}</td><td style="font-weight:bold">${sign0}</td>${intervalCell0}${col2_0}</tr>`;
       document.getElementById('detailTableBody').innerHTML = row0 + rec.steps.filter(s => s.i !== 0).map((s, i, arr) => {
         const fa = f(s.a);
         const isLast = i === arr.length - 1;
         const intervalLength = Math.abs(s.b - s.a);
         let isAcc = false;
-
-        if (rec.stopMethod === 'precision' && rec.tol) {
-          isAcc = intervalLength <= 2 * rec.tol;
-        } else if (rec.stopMethod === 'steps') {
-          isAcc = isLast;
-        }
-
+        if (rec.stopMethod === 'precision' && rec.tol) { isAcc = intervalLength <= 2 * rec.tol; }
+        else if (rec.stopMethod === 'steps') { isAcc = isLast; }
         const dot = rec.stopMethod === 'precision'
           ? (isAcc
             ? `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#4caf50;margin-left:4px;"></span>`
             : `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#f44336;margin-left:4px;"></span>`)
           : '';
-
         const col2 = rec.stopMethod === 'precision'
           ? `<td>${intervalLength.toFixed(decP)} ${dot}</td>`
           : `<td>±${smartFixed(Math.abs(rec.b0 - rec.a0) / Math.pow(2, s.i + 1))}</td>`;
-
         const intervalCell = rec.stopMethod === 'precision' ? '' : `<td>${intervalLength.toFixed(decP)}</td>`;
-
-        return `<tr class="${isLast ? 'last-row' : ''}">
-          <td>${s.i}</td><td>${s.a.toFixed(decP)}</td><td>${s.c.toFixed(decP)}</td>
-          <td>${s.b.toFixed(decP)}</td>
-          <td style="font-weight:bold">${signStr(fa, s.fc)}</td>
-          ${intervalCell}
-          ${col2}
-        </tr>`;
+        return `<tr class="${isLast ? 'last-row' : ''}"><td>${s.i}</td><td>${s.a.toFixed(decP)}</td><td>${s.c.toFixed(decP)}</td><td>${s.b.toFixed(decP)}</td><td style="font-weight:bold">${signStr(fa, s.fc)}</td>${intervalCell}${col2}</tr>`;
       }).join('');
-
       renderGraphs(rec, f, decP);
     }
 
+    /* GRAPHS */
     function renderGraphs(rec, f, decP) {
       const container = document.getElementById('detailGraphs');
       container.innerHTML = '';
-      const isDark = document.body.classList.contains('dark');
-      const bg = isDark ? '#2a2a2a' : '#ffffff';
-      const tc = isDark ? '#e8e8e8' : '#2c3e50';
-      const gc = isDark ? '#3a3a3a' : '#e0e0e0';
-
+      const isDark = document.documentElement.classList.contains('dark');
+      const bg = isDark ? '#161830' : '#ffffff';
+      const tc = isDark ? '#E8E8FF' : '#2c3e50';
+      const gc = isDark ? '#252858' : '#e0e0e0';
       const pad = 0.5;
       const span = (rec.b0 - rec.a0) * (1 + pad);
       const cen = (rec.a0 + rec.b0) / 2;
       const xMin = cen - span/2, xMax = cen + span/2;
       const xG = [], yG = [];
-
-      for (let x = xMin; x <= xMax; x += (xMax-xMin)/300) { 
-        xG.push(x); yG.push(f(x)); 
-      }
-
+      for (let x = xMin; x <= xMax; x += (xMax-xMin)/300) { xG.push(x); yG.push(f(x)); }
       const d0 = document.createElement('div');
       d0.className = 'graph-wrap'; d0.style.height = '420px';
       container.appendChild(d0);
       const fa0 = f(rec.a0), fb0 = f(rec.b0);
-
       Plotly.newPlot(d0, [
         { x: xG, y: yG, mode: 'lines', name: 'f(x)', line: { color: '#2196f3', width: 2 } },
         { x: [rec.a0, rec.b0], y: [0,0], mode: 'lines+markers', name: 'interval', line: { color: 'red', width: 5 }, marker: { size: 10, color: 'red' } },
         { x: [rec.a0], y: [0], mode: 'markers+text', text: ['a₀'], textposition: 'top', name: 'a₀', marker: { size: 12, color: fa0>0?'#4caf50':'#f44336', symbol: 'square' } },
         { x: [rec.b0], y: [0], mode: 'markers+text', text: ['b₀'], textposition: 'top', name: 'b₀', marker: { size: 12, color: fb0>0?'#4caf50':'#f44336', symbol: 'square' } },
-        { x: [(rec.a0 + rec.b0) / 2], y: [0], mode: 'markers+text', text: ['c₀'], textposition: 'top', name: 'c₀', marker: { size: 10, color: 'orange', symbol: 'diamond', line: { color: '#e65100', width: 2 } } },
+        { x: [(rec.a0+rec.b0)/2], y: [0], mode: 'markers+text', text: ['c₀'], textposition: 'top', name: 'c₀', marker: { size: 10, color: 'orange', symbol: 'diamond', line: { color: '#e65100', width: 2 } } },
       ], {
         title: { text: `<b>Krok 0:</b> Počiatočný interval [a₀=${rec.a0}, b₀=${rec.b0}]`, font: { color: tc } },
         xaxis: { title: 'x', color: tc, gridcolor: gc, zeroline: true, zerolinecolor: tc },
@@ -787,30 +622,22 @@
         paper_bgcolor: bg, plot_bgcolor: bg, font: { color: tc },
         margin: { t: 55, b: 40, l: 50, r: 20 }, showlegend: true, autosize: true
       }, { responsive: true, displayModeBar: false });
-
       rec.steps.filter(s => s.i !== 0).forEach((step, i, arr) => {
         const dN = document.createElement('div');
         dN.className = 'graph-wrap'; dN.style.height = '420px';
         container.appendChild(dN);
-
         const fa = f(step.a), fb = f(step.b), fc = step.fc;
         const prevA = i > 0 ? arr[i-1].a : rec.a0;
         const prevB = i > 0 ? arr[i-1].b : rec.b0;
         const zSpan = Math.abs(prevB - prevA) * 1.3;
         const zCen = (prevA + prevB) / 2;
         const zXMin = zCen - zSpan/2, zXMax = zCen + zSpan/2;
-
         const xZ = [], yZ = [];
-        for (let x = zXMin; x <= zXMax; x += (zXMax-zXMin)/300) { 
-          xZ.push(x); yZ.push(f(x)); 
-        }
-        
+        for (let x = zXMin; x <= zXMax; x += (zXMax-zXMin)/300) { xZ.push(x); yZ.push(f(x)); }
         const vy = yZ.filter(isFinite);
         const yMin = Math.min(...vy), yMax = Math.max(...vy), yR = yMax - yMin;
-
         const isLast = i === arr.length - 1;
         const yMinZ = yMin - yR*0.15, yMaxZ = yMax + yR*0.15;
-
         const tracesN = [
           { x: xZ, y: yZ, mode: 'lines', name: 'f(x)', line: { color: '#2196f3', width: 2 } },
           { x: [step.a, step.b], y: [0,0], mode: 'lines+markers', name: 'interval', line: { color: 'red', width: 5 }, marker: { size: 10, color: 'red' } },
@@ -818,50 +645,39 @@
           { x: [step.b], y: [0], mode: 'markers+text', text: [`b${step.i}`], textposition: 'top', name: `b${step.i}`, marker: { size: 12, color: fb>0?'#4caf50':'#f44336', symbol: 'square' } },
           { x: [step.c], y: [0], mode: 'markers+text', text: [`c${step.i}`], textposition: 'top', name: `c${step.i}`, marker: { size: 10, color: 'orange', symbol: 'diamond', line: { color: fc>0?'#4caf50':'#f44336', width: 2 } } },
         ];
-
         if (rec.stopMethod === 'precision' && rec.tol) {
           const tol = rec.tol;
-          tracesN.push({ x: [step.c - tol, step.c - tol], y: [yMinZ, yMaxZ], mode: 'lines', line: { color: 'rgba(76,175,80,0.7)', width: 2, dash: 'dash' }, name: `oblasť presnosti ±${tol}`, showlegend: true, hoverinfo: 'skip' });
-          tracesN.push({ x: [step.c + tol, step.c + tol], y: [yMinZ, yMaxZ], mode: 'lines', line: { color: 'rgba(76,175,80,0.7)', width: 2, dash: 'dash' }, name: `oblasť presnosti ±${tol}`, showlegend: false, hoverinfo: 'skip' });
+          tracesN.push({ x: [step.c-tol, step.c-tol], y: [yMinZ,yMaxZ], mode: 'lines', line: { color: 'rgba(76,175,80,0.7)', width: 2, dash: 'dash' }, name: `oblasť presnosti ±${tol}`, showlegend: true, hoverinfo: 'skip' });
+          tracesN.push({ x: [step.c+tol, step.c+tol], y: [yMinZ,yMaxZ], mode: 'lines', line: { color: 'rgba(76,175,80,0.7)', width: 2, dash: 'dash' }, name: `oblasť presnosti ±${tol}`, showlegend: false, hoverinfo: 'skip' });
         }
-
         Plotly.newPlot(dN, tracesN, {
           title: { text: `<b>Krok ${step.i}:</b> c${step.i}=${step.c.toFixed(decP)}, f(c${step.i})=${fc.toFixed(decP)}`, font: { color: isLast?'#4caf50':tc } },
-          xaxis: { title: 'x', range: [zXMin, zXMax], color: tc, gridcolor: gc, zeroline: true, zerolinecolor: tc },
-          yaxis: { title: 'f(x)', color: tc, gridcolor: gc, zeroline: true, zerolinecolor: tc, range: [yMinZ, yMaxZ] },
+          xaxis: { title: 'x', range: [zXMin,zXMax], color: tc, gridcolor: gc, zeroline: true, zerolinecolor: tc },
+          yaxis: { title: 'f(x)', color: tc, gridcolor: gc, zeroline: true, zerolinecolor: tc, range: [yMinZ,yMaxZ] },
           paper_bgcolor: bg, plot_bgcolor: bg, font: { color: tc },
           margin: { t: 55, b: 40, l: 50, r: 20 }, showlegend: true, autosize: true
         }, { responsive: true, displayModeBar: false });
       });
     }
 
-    function confirmClearAll() { 
-      document.getElementById('confirmModal').classList.add('active'); 
-    }
-
-    function closeModal() { 
-      document.getElementById('confirmModal').classList.remove('active'); 
-    }
-
-    function clearAll() { 
-      localStorage.removeItem('bisectionHistory'); closeModal(); renderList(); 
-    }
-
+    /* MODAL */
+    function confirmClearAll() { document.getElementById('confirmModal').classList.add('active'); }
+    function closeModal() { document.getElementById('confirmModal').classList.remove('active'); }
+    function clearAll() { localStorage.removeItem('bisectionHistory'); closeModal(); renderList(); }
     function deleteRecord(idx) {
       if (!confirm('Vymazať tento záznam?')) return;
-
       const history = getHistory();
       history.splice(idx, 1);
       localStorage.setItem('bisectionHistory', JSON.stringify(history));
       renderList();
     }
 
+    /* UTILITY */
     function smartFixed(value, minD = 3, maxD = 10) {
       for (let d = minD; d <= maxD; d++) {
         const str = Math.abs(value).toFixed(d);
         if (str.replace('0.', '').replace(/0+$/, '') !== '') return value.toFixed(d);
       }
-      
       return value.toFixed(maxD);
     }
 

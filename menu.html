@@ -1,932 +1,1148 @@
 <!DOCTYPE html>
 <html lang="sk">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Výber funkcie |Vizualizácia metódy bisekcie|</title>
-    <style>
-      :root {
-        --bg-gradient-1: #667eea;
-        --bg-gradient-2: #764ba2;
-        --card-bg: #ffffff;
-        --text-primary: #333;
-        --text-secondary: #666;
-        --border-color: #e0e0e0;
-        --input-bg: #ffffff;
-        --btn-primary: #1976d2;
-        --btn-hover: #125aa0;
-        --success-bg: #e8f5e9;
-        --success-border: #4caf50;
-        --success-text: #2e7d32;
-        --error-bg: #ffebee;
-        --error-border: #f44336;
-        --error-text: #c62828;
-        --help-bg: #fff3cd;
-        --help-border: #ffc107;
-        --help-text: #856404;
-        --syntax-label-bg: #f5f7fa;
-        --syntax-value-bg: #e3f2fd;
-        --modal-bg: #ffffff;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Výber funkcie | Vizualizácia metódy bisekcie</title>
 
-      body.dark {
-        --bg-gradient-1: #1f1f64;
-        --bg-gradient-2: #16213e;
-        --card-bg: #2d2d2d;
-        --text-primary: #e0e0e0;
-        --text-secondary: #b0b0b0;
-        --border-color: #404040;
-        --input-bg: #3e3e3e;
-        --btn-primary: #2196f3;
-        --btn-hover: #64b5f6;
-        --success-bg: #1b5e20;
-        --success-border: #4caf50;
-        --success-text: #a5d6a7;
-        --error-bg: #b71c1c;
-        --error-border: #f44336;
-        --error-text: #ef9a9a;
-        --help-bg: #3a3100;
-        --help-border: #ffc107;
-        --help-text: #ffd54f;
-        --syntax-label-bg: #3a3a3a;
-        --syntax-value-bg: #1e3a5f;
-        --modal-bg: #2d2d2d;
-      }
-      body.dark .bisection-card {
-        background: linear-gradient(135deg, #57647a 0%, #2d3748 100%);
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-      }
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
-      * {
-        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-      }
+  <style>
 
-      body {
-        font-family: "Segoe UI", sans-serif;
-        background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        margin: 0;
-        padding: 20px;
-      }
+    /* ============================================================
+       DESIGN TOKENS
+       ============================================================ */
 
-      .card {
-        background: var(--card-bg);
-        padding: 40px;
-        border-radius: 16px;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-        text-align: center;
-        width: 100%;
-        max-width: 900px;
-        position: relative;
-      }
+    :root {
+      /* Backgrounds */
+      --bg:           #ECEEFF;
+      --bg2:          #E2E4FD;
+      --surface:      #FFFFFF;
+      --surface2:     #F3F4FF;
 
-      h2 {
-        color: var(--btn-primary);
-        margin-bottom: 10px;
-        font-size: 1.8em;
-      }
+      /* Borders */
+      --border:       #D5D8FF;
+      --border2:      #A5AAEE;
 
-      .subtitle {
-        color: var(--text-secondary);
-        margin-bottom: 25px;
-        font-size: 0.95em;
-      }
+      /* Text */
+      --text-primary:   #1E1B4B;
+      --text-secondary: #3730A3;
+      --text-muted:     #6B7280;
 
-      input {
-        flex: 1;
-        padding: 14px;
-        margin: 0;
-        border-radius: 8px;
-        border: 2px solid var(--border-color);
-        font-size: 1.1em;
-        font-family: 'Courier New', monospace;
-        box-sizing: border-box;
-        background: var(--input-bg);
-        color: var(--text-primary);
-        text-align: center;
-      }
-      
-      .equation-wrapper {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin: 15px 0;
-        padding: 0;
-      }
-      
-      .equation-left, .equation-right {
-        font-size: 1.3em;
-        font-weight: 500;
-        color: var(--text-primary);
-        font-family: 'Courier New', monospace;
-        white-space: nowrap;
-      }
-      
-      input:focus {
-        outline: none;
-        border-color: var(--btn-primary);
-        box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
-      }
+      /* Accent colours */
+      --accent:       #1976D2;
+      --accent2:      #304fa3;
+      --accent3:      #764BA2;
 
-      button {
-        background: var(--btn-primary);
-        color: white;
-        padding: 14px 30px;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        margin-top: 15px;
-        font-size: 1.1em;
-        width: 100%;
-        font-weight: 500;
-      }
-      button:hover {
-        background: var(--btn-hover);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
-      }
+      /* Semantic */
+      --ok:           #059669;
+      --error:        #DC2626;
 
-      .error-message {
-        background: var(--error-bg);
-        border: 2px solid var(--error-border);
-        color: var(--error-text);
-        padding: 12px;
-        border-radius: 8px;
-        margin-top: 15px;
-        display: none;
-        font-size: 0.9em;
-      }
-      .error-message.active {
-        display: block;
-      }
-      
-      .btn-wrapper {
-        position: relative;
-        display: inline-flex;
-      }
+      /* Shadows */
+      --shadow:       0 2px 12px rgba(25, 118, 210, .10),
+                      0 1px  3px rgba(25, 118, 210, .06);
+      --shadow-lg:    0 16px 48px rgba(25, 118, 210, .18);
 
-      .hint-tooltip {
-        position: absolute;
-        top: 50%;
-        left: calc(100% + 10px);
-        transform: translateY(-50%);
-        background: var(--btn-primary);
-        color: white;
-        padding: 8px 14px;
-        border-radius: 8px;
-        font-size: 0.85em;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        white-space: nowrap;
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity 0.3s;
-        z-index: 9999;
-      }
+      /* Radius */
+      --radius:       10px;
+      --radius-lg:    18px;
 
-      .hint-tooltip::before {
-        content: '';
-        position: absolute;
-        left: -7px;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 0;
-        height: 0;
-        border-top: 7px solid transparent;
-        border-bottom: 7px solid transparent;
-        border-right: 7px solid var(--btn-primary);
-      }
+      /* Typography */
+      --font:         'Plus Jakarta Sans', sans-serif;
+      --font-mono:    'IBM Plex Mono', 'Courier New', monospace;
+    }
 
-      .icon-btn {
-        position: static;
-        background: var(--btn-primary);
-        color: white;
-        border: none;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        font-size: 1.3em;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
-        padding: 0;
-        margin: 0;
-      }
-      .icon-btn:hover {
-        background: var(--btn-hover);
-        transform: scale(1.1);
-      }
-      
-      .modal {
-        display: none;
-        position: fixed;
-        z-index: 2000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.6);
-        animation: fadeIn 0.3s;
-      }
-      
-      @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-      }
-      
-      @keyframes slideDown {
-        from { transform: translateY(-50px); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
-      }
-      
-      .modal-content {
-        background: var(--modal-bg);
-        margin: 5% auto;
-        padding: 30px;
-        border-radius: 12px;
-        width: 90%;
-        max-width: 600px;
-        max-height: 80vh;
-        overflow-y: auto;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        animation: slideDown 0.3s;
-      }
-      
-      .modal-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-        border-bottom: 2px solid var(--btn-primary);
-        padding-bottom: 10px;
-      }
+    /* ── Dark mode ─────────────────────────────────────────────── */
+    html.dark {
+      --bg:           #0D0F1E;
+      --bg2:          #111328;
+      --surface:      #161830;
+      --surface2:     #1E2040;
+      --border:       #252858;
+      --border2:      #383C70;
+      --text-primary:   #E8E8FF;
+      --text-secondary: #8890E0;
+      --text-muted:     #4A5070;
+      --accent:       #5BA4F5;
+      --accent2:      #81b5f8;
+      --accent3:      #A78BFA;
+      --ok:           #34D399;
+      --error:        #F87171;
+    }
 
-      .modal-header h2 {
-        margin: 0;
-      }
-      
-      .close-btn {
-        font-size: 2em;
-        cursor: pointer;
-        color: var(--text-primary);
-        line-height: 1;
-      }
-      .close-btn:hover {
-        color: var(--btn-primary);
-        transform: scale(1.1);
-      }
-      
-      .syntax-section {
-        margin-bottom: 25px;
-      }
-      
-      .syntax-section h3 {
-        color: var(--btn-primary);
-        margin-bottom: 15px;
-        font-size: 1.2em;
-      }
 
-      .syntax-section p {
-        color: var(--text-primary);
-      }
-      
-      .syntax-table {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-        margin-top: 10px;
-      }
-      
-      .syntax-row {
-        display: contents;
-      }
-      
-      .syntax-label {
-        background: var(--syntax-label-bg);
-        padding: 12px;
-        border-radius: 6px;
-        font-size: 0.95em;
-        color: var(--text-secondary);
-        text-align: right;
-        font-weight: 500;
-      }
-      
-      .syntax-value {
-        background: var(--syntax-value-bg);
-        padding: 12px;
-        border-radius: 6px;
-        font-family: 'Courier New', monospace;
-        font-size: 0.95em;
-        color: var(--btn-primary);
-        font-weight: 600;
-      }
-      
-      .example-box {
-        background: var(--help-bg);
-        border-left: 4px solid var(--help-border);
-        padding: 15px;
-        border-radius: 6px;
-        margin-top: 15px;
-      }
-      
-      .example-box strong {
-        color: var(--help-text);
-        display: block;
-        margin-bottom: 10px;
-      }
-      
-      .example-list {
-        display: grid;
-        gap: 8px;
-        font-family: 'Courier New', monospace;
-        color: var(--text-secondary);
-        font-size: 0.9em;
-      }
-      
-      .example-item {
-        background: var(--input-bg);
-        padding: 8px 12px;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: all 0.2s;
-      }
-      
-      .example-item:hover {
-        background: var(--syntax-value-bg);
-        transform: translateX(5px);
-        box-shadow: 0 2px 8px rgba(33, 150, 243, 0.2);
-      }
+    /* ============================================================
+       RESET & BASE
+       ============================================================ */
 
-      .top-bar {
-        position: absolute;
-        right: 15px;
-        top: 15px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-      .main-layout {
-        display: flex;
-        gap: 40px;
-        align-items: stretch;
-        margin-bottom: 10px;
-      }
+    body {
+      font-family: var(--font);
+      font-size: 16px;
+      line-height: 1.6;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      transition: background .3s ease, color .3s ease;
+    }
 
-      .main-left {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        text-align: center;
-      }
-      .main-right {
-        flex: 1;
-        display: flex;
-        align-items: flex-start;
-        margin-top: 60px;
-      }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
 
-      .btn-history {
-        margin-top: 10px;
-        background: transparent;
-        color: var(--btn-primary);
-        border: 2px solid var(--btn-primary);
-        font-size: 0.95em;
-      }
-      .btn-history:hover{
-        background: #65a0dbaf;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
-      }
 
-      .bisection-card {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 24px;
-        border-radius: 14px;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-        width: 100%;
-      }
+    /* ============================================================
+       MAIN CARD
+       ============================================================ */
 
-      .bisection-card-inner {
-        display: flex;
-        flex-direction: column;
-        gap: 0;
-      }
+    .card {
+      background: var(--surface);
+      padding: 40px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      width: 100%;
+      max-width: 900px;
+      position: relative;
+      border-top: 3px solid var(--accent);
+      transition: background .3s ease;
+    }
 
-      .bisection-card-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 16px;
-      }
 
-      .bisection-card-title {
-        font-size: 1.15em;
-        font-weight: 700;
-      }
+    /* ============================================================
+       TOP BAR (theme + help icons inside card)
+       ============================================================ */
 
-      .bisection-anim {
-        font-family: monospace;
-        font-size: 0.85em;
-        white-space: nowrap;
-        padding: 8px 14px;
-        background: rgba(255,255,255,0.15);
-        border-radius: 8px;
-        text-align: center;
-        letter-spacing: 1px;
-      }
+    .top-bar {
+      position: absolute;
+      right: 15px;
+      top: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-      .bisection-card-desc {
-        font-size: 0.9em;
-        opacity: 0.95;
-        line-height: 1.6;
-        text-align: left;
-      }
+    .icon-btn {
+      position: static;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 38px;
+      height: 38px;
+      font-size: 1.1em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(25, 118, 210, .30);
+      padding: 0;
+      margin: 0;
+      transition: all .2s ease;
+    }
+    .icon-btn:hover {
+      background: var(--accent2);
+      transform: scale(1.08);
+    }
 
-      .stepper-wrapper {
-        margin-top: 25px;
-        padding: 15px 0;
-        border-top: 1px solid var(--border-color);
-      }
+    .btn-wrapper {
+      position: relative;
+      display: inline-flex;
+    }
 
-      .stepper-inner {
-        max-width: 650px;
-        margin: 0 auto;
-      }
+    .hint-tooltip {
+      position: absolute;
+      top: 50%;
+      left: calc(100% + 10px);
+      transform: translateY(-50%);
+      background: var(--accent);
+      color: white;
+      padding: 7px 12px;
+      border-radius: var(--radius);
+      font-size: 0.82em;
+      box-shadow: var(--shadow);
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .3s;
+      z-index: 9999;
+    }
+    .hint-tooltip::before {
+      content: '';
+      position: absolute;
+      left: -6px;
+      top: 50%;
+      transform: translateY(-50%);
+      border: 6px solid transparent;
+      border-right-color: var(--accent);
+    }
 
-      .stepper {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        position: relative;
-        padding: 0 15px;
-      }
 
-      .stepper-line {
-        position: absolute;
-        top: 15px;
-        left: calc(16.66% + 15px);
-        right: calc(16.66% + 15px);
-        height: 2px;
-        background: var(--border-color);
-        z-index: 0;
-      }
+    /* ============================================================
+       HEADING & SUBTITLE
+       ============================================================ */
 
-      .stepper-step {
-        flex: 1;
-        text-align: center;
-        position: relative;
-        z-index: 1;
-      }
+    h2 {
+      color: var(--accent);
+      margin-bottom: 8px;
+      font-size: 1.75em;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
 
-      .step-circle {
-        width: 28px;
-        height: 28px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 600;
-        font-size: 0.9em;
-        margin: 0 auto 6px auto;
-      }
+    .subtitle {
+      color: var(--text-muted);
+      margin-bottom: 22px;
+      font-size: 0.93em;
+    }
 
-      .step-circle.active {
-        background: var(--btn-primary);
-        color: white;
-        box-shadow: 0 2px 6px rgba(33, 150, 243, 0.4);
-      }
 
-      .step-circle.inactive {
-        background: var(--card-bg);
-        border: 2px solid var(--border-color);
-        color: var(--text-secondary);
-      }
+    /* ============================================================
+       INPUT / EQUATION ROW
+       ============================================================ */
 
-      .step-label {
-        font-size: 0.8em;
-        font-weight: 600;
-        color: var(--text-primary);
-        margin-bottom: 1px;
-      }
+    .equation-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 15px 0;
+      padding: 12px 16px;
+      background: var(--surface2);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      transition: border-color .2s ease;
+    }
+    .equation-wrapper:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(25, 118, 210, .10);
+    }
 
-      .step-sublabel {
-        font-size: 0.7em;
-        color: var(--text-secondary);
-      }
+    .equation-right {
+      font-size: 1.1em;
+      font-weight: 600;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      white-space: nowrap;
+    }
 
-      .step-label-inactive {
-        font-size: 0.8em;
-        color: var(--text-secondary);
-      }
-    </style>
-  </head>
-  <body>
-    <div class="card">
-      <div class="top-bar">
-        <button id="themeToggle" class="icon-btn" onclick="toggleTheme()" title="Zmeniť tému">🌙</button>
-        <div class="btn-wrapper">
-          <button id="helpBtn" class="icon-btn" onclick="showHelp()" title="Klikni pre príklady funkcií a syntax">❓</button>
-          <div id="helpHint" class="hint-tooltip">Príklady a nápoveda</div>
+    input {
+      flex: 1;
+      padding: 4px 0;
+      border: none;
+      outline: none;
+      font-size: 1.05em;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      background: transparent;
+      color: var(--accent);
+      text-align: center;
+      caret-color: var(--accent);
+      transition: color .3s;
+    }
+    input::placeholder {
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+
+    /* ============================================================
+       BUTTONS
+       ============================================================ */
+
+    button {
+      font-family: var(--font);
+      cursor: pointer;
+      transition: all .2s ease;
+    }
+
+    /* Primary */
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      padding: 13px 28px;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 0.97em;
+      font-weight: 700;
+      width: 100%;
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+    }
+    .btn-primary:hover {
+      background: var(--accent2);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(25, 118, 210, .35);
+    }
+
+    /* History / secondary */
+    .btn-history {
+      margin-top: 10px;
+      background: transparent;
+      color: var(--accent);
+      border: 1.5px solid var(--accent);
+      padding: 11px 28px;
+      border-radius: var(--radius);
+      font-size: 0.92em;
+      font-weight: 600;
+      width: 100%;
+    }
+    .btn-history:hover {
+      background: rgba(25, 118, 210, .07);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(25, 118, 210, .20);
+    }
+
+
+    /* ============================================================
+       ERROR MESSAGE
+       ============================================================ */
+
+    .error-message {
+      background: rgba(220, 38, 38, .07);
+      border: 1px solid rgba(220, 38, 38, .30);
+      border-left: 3px solid var(--error);
+      color: var(--error);
+      padding: 10px 14px;
+      border-radius: var(--radius);
+      margin-top: 12px;
+      font-size: 0.87em;
+      display: none;
+    }
+    .error-message.active {
+      display: block;
+    }
+
+
+    /* ============================================================
+       MAIN LAYOUT (left: form, right: bisection card)
+       ============================================================ */
+
+    .main-layout {
+      display: flex;
+      gap: 36px;
+      align-items: stretch;
+      margin-bottom: 10px;
+    }
+
+    .main-left {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .main-right {
+      flex: 1;
+      display: flex;
+      align-items: flex-start;
+      margin-top: 52px;
+    }
+
+
+    /* ============================================================
+       BISECTION CARD (right panel)
+       ============================================================ */
+
+    .bisection-card {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+      color: white;
+      padding: 22px 24px;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 6px 24px rgba(25, 118, 210, .30);
+      width: 100%;
+    }
+
+    html.dark .bisection-card {
+      background: linear-gradient(135deg, #1558A0 0%, #4F46E5 100%);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, .40);
+    }
+
+    .bisection-card-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .bisection-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 14px;
+      gap: 10px;
+    }
+
+    .bisection-card-title {
+      font-size: 1.05em;
+      font-weight: 700;
+    }
+
+    .bisection-anim {
+      font-family: var(--font-mono);
+      font-size: 0.82em;
+      white-space: nowrap;
+      padding: 7px 12px;
+      background: rgba(255, 255, 255, .15);
+      border-radius: var(--radius);
+      text-align: center;
+      letter-spacing: 1px;
+      flex-shrink: 0;
+    }
+
+    .bisection-card-desc {
+      font-size: 0.88em;
+      opacity: 0.92;
+      line-height: 1.65;
+      text-align: left;
+    }
+
+
+    /* ============================================================
+       STEPPER
+       ============================================================ */
+
+    .stepper-wrapper {
+      margin-top: 24px;
+      padding: 16px 0 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .stepper-inner {
+      max-width: 440px;
+      margin: 0 auto;
+    }
+
+    .stepper {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      position: relative;
+    }
+
+    .stepper-line {
+      position: absolute;
+      top: 12px;
+      left:  calc(16.67% + 12px);
+      right: calc(16.67% + 12px);
+      height: 1px;
+      background: var(--border2);
+    }
+
+    .stepper-step {
+      flex: 1;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .step-circle {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.65em;
+      font-family: var(--font-mono);
+      margin: 0 auto 5px;
+      transition: all .3s ease;
+    }
+
+    .step-circle.active {
+      background: var(--accent);
+      color: white;
+      box-shadow: 0 0 0 3px rgba(25, 118, 210, .20);
+    }
+
+    .step-circle.inactive {
+      background: var(--surface);
+      border: 1.5px solid var(--border2);
+      color: var(--text-muted);
+    }
+
+    html.dark .step-circle.inactive {
+      background: var(--surface2);
+    }
+
+    .step-label {
+      font-size: 0.73em;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 1px;
+    }
+
+    .step-sublabel {
+      font-size: 0.62em;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+
+    .step-label-inactive {
+      font-size: 0.73em;
+      color: var(--text-muted);
+    }
+
+
+    /* ============================================================
+       HELP MODAL
+       ============================================================ */
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      inset: 0;
+      background: rgba(0, 0, 0, .50);
+      backdrop-filter: blur(4px);
+      animation: fadeIn .25s ease;
+      justify-content: center;
+      align-items: flex-start;
+      overflow-y: auto;
+      padding: 40px 20px;
+    }
+    .modal.open {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes slideDown {
+      from { transform: translateY(-16px); opacity: 0; }
+      to   { transform: translateY(0);     opacity: 1; }
+    }
+
+    .modal-content {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 28px 30px;
+      border-radius: var(--radius-lg);
+      width: 90%;
+      max-width: 580px;
+      box-shadow: var(--shadow-lg);
+      animation: slideDown .25s cubic-bezier(.34, 1.3, .64, 1);
+      transition: background .3s ease;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 14px;
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      font-size: 1.1em;
+      color: var(--text-primary);
+    }
+
+    .close-btn {
+      font-size: 1.6em;
+      cursor: pointer;
+      color: var(--text-muted);
+      line-height: 1;
+      background: none;
+      border: none;
+      padding: 0;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all .18s;
+    }
+    .close-btn:hover {
+      background: var(--surface2);
+      color: var(--text-primary);
+    }
+
+
+    /* ── Syntax sections inside modal ─────────────────────────── */
+
+    .syntax-section {
+      margin-bottom: 22px;
+    }
+
+    .syntax-section h3 {
+      color: var(--accent);
+      margin-bottom: 12px;
+      font-size: 0.92em;
+      font-weight: 700;
+    }
+
+    .syntax-section p {
+      color: var(--text-secondary);
+      font-size: 0.84em;
+      margin-top: 9px;
+    }
+
+    .syntax-table {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .syntax-row {
+      display: contents;
+    }
+
+    .syntax-label {
+      background: var(--surface2);
+      padding: 10px 12px;
+      border-radius: var(--radius);
+      font-size: 0.85em;
+      color: var(--text-secondary);
+      text-align: right;
+      font-weight: 500;
+    }
+
+    .syntax-value {
+      background: rgba(25, 118, 210, .07);
+      padding: 10px 12px;
+      border-radius: var(--radius);
+      font-family: var(--font-mono);
+      font-size: 0.83em;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+
+    /* ── Example box ───────────────────────────────────────────── */
+
+    .example-box {
+      background: rgba(25, 118, 210, .05);
+      border-left: 3px solid var(--accent2);
+      padding: 14px 16px;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      margin-top: 14px;
+    }
+
+    .example-box strong {
+      color: var(--accent2);
+      display: block;
+      margin-bottom: 10px;
+      font-size: 0.88em;
+    }
+
+    .example-list {
+      display: grid;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.85em;
+    }
+
+    .example-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: all .18s ease;
+    }
+    .example-item:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(25, 118, 210, .04);
+      transform: translateX(4px);
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       MAIN CARD
+       ============================================================ -->
+  <div class="card">
+
+    <div class="top-bar">
+      <button id="themeToggle" class="icon-btn" onclick="toggleTheme()" title="Zmeniť tému">
+        <svg id="moonIco" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+        <svg id="sunIco"  viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1"  x2="12" y2="3"/>
+          <line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22"   x2="5.64"  y2="5.64"/>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1"  y1="12" x2="3"  y2="12"/>
+          <line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22"  y1="19.78" x2="5.64"  y2="18.36"/>
+          <line x1="18.36" y1="5.64"  x2="19.78" y2="4.22"/>
+        </svg>
+      </button>
+      <div class="btn-wrapper">
+        <button id="helpBtn" class="icon-btn" onclick="showHelp()" title="Klikni pre príklady funkcií a syntax">
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        </button>
+        <div id="helpHint" class="hint-tooltip">Príklady a nápoveda</div>
+      </div>
+    </div>
+
+    <div class="main-layout">
+
+      <!-- Left: heading + input + buttons -->
+      <div class="main-left">
+        <h2>📈 Zadaj funkciu</h2>
+        <p class="subtitle">pre hľadanie koreňa metódou bisekcie</p>
+
+        <div class="equation-wrapper">
+          <input id="func" placeholder="f(x)" value="x^3 + 4*x + 2" />
+          <span class="equation-right">= 0</span>
+        </div>
+
+        <div class="error-message" id="errorMsg"></div>
+
+        <button class="btn-primary" onclick="goNext()" title="Prejsť na výber intervalu">
+          Vybrať interval →
+        </button>
+        <button
+          onclick="window.location.href='history.html'"
+          id="historyBtn"
+          class="btn-history"
+          title="Zobraziť históriu výpočtov"
+        >
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:5px">
+            <polyline points="12 8 12 12 14 14"/>
+            <path d="M3.05 11a9 9 0 1 0 .5-4.5"/>
+            <polyline points="3 3 3 9 9 9"/>
+          </svg>História výpočtov
+        </button>
+      </div>
+
+      <!-- Right: bisection info card -->
+      <div class="main-right">
+        <div class="bisection-card">
+          <div class="bisection-card-inner">
+            <div class="bisection-card-header">
+              <div class="bisection-card-title">✨ Čo program ponúka</div>
+              <div id="bisectionAnim" class="bisection-anim">[a]──────[b]</div>
+            </div>
+            <div class="bisection-card-desc">
+              Interaktívnu vizualizáciu hľadania koreňa nelineárnej rovnice metódou bisekcie.
+              Sleduj každý krok výpočtu s grafmi, ako sa počiatočný interval zmenšuje,
+              ako sa vyberá jeho stred a postupne približuje ku koreňu.
+            </div>
+          </div>
         </div>
       </div>
-      
-      <div class="main-layout">
-        <div class="main-left">
-          <h2>🧮 Zadaj funkciu</h2>
-          <p class="subtitle">pre hľadanie koreňa metódou bisekcie</p>
-          
-          <div class="equation-wrapper">
-            <input id="func" placeholder="f(x)" value="x^3 + 4*x + 2"/>
-            <span class="equation-right">= 0</span>
+
+    </div><!-- /main-layout -->
+
+    <!-- Stepper -->
+    <div class="stepper-wrapper">
+      <div class="stepper-inner">
+        <div class="stepper">
+          <div class="stepper-line"></div>
+
+          <div class="stepper-step">
+            <div class="step-circle active">1</div>
+            <div class="step-label">Zadanie funkcie</div>
+            <div class="step-sublabel">(si tu)</div>
           </div>
-          
-          <div class="error-message" id="errorMsg"></div>
-          
-          <button onclick="goNext()" title="Prejsť na výber intervalu">Vybrať interval →</button>
-          <button onclick="window.location.href='history.html'" id="historyBtn" class="btn-history" title="Zobraziť históriu výpočtov">📋 História výpočtov</button>
-        </div>
 
-        <div class="main-right">
-          <div class="bisection-card">
-            <div class="bisection-card-inner">
-              <div class="bisection-card-header">
-                <div class="bisection-card-title">✨ Čo program ponúka</div>
-                <div id="bisectionAnim" class="bisection-anim">[a]────●────[b]</div>
-              </div>
-
-              <div class="bisection-card-desc">
-                Interaktívnu vizualizáciu hľadania koreňa nelineárnej rovnice metódou bisekcie. Sleduj každý krok výpočtu s grafmi, ako sa počiatočný interval zmenšuje, ako sa vyberá jeho stred a postupne približuje ku koreňu.
-              </div>
-            </div>
+          <div class="stepper-step">
+            <div class="step-circle inactive">2</div>
+            <div class="step-label-inactive">Interval</div>
           </div>
-        </div>
-      </div>
 
-      <div class="stepper-wrapper">
-        <div class="stepper-inner">
-          <div class="stepper">
-            <div class="stepper-line"></div>
-            
-            <div class="stepper-step">
-              <div class="step-circle active">1</div>
-              <div class="step-label">Zadanie funkcie</div>
-              <div class="step-sublabel">(si tu)</div>
-            </div>
-            
-            <div class="stepper-step">
-              <div class="step-circle inactive">2</div>
-              <div class="step-label-inactive">Interval</div>
-            </div>
-            
-            <div class="stepper-step">
-              <div class="step-circle inactive">3</div>
-              <div class="step-label-inactive">Výpočet</div>
-            </div>
+          <div class="stepper-step">
+            <div class="step-circle inactive">3</div>
+            <div class="step-label-inactive">Výpočet</div>
           </div>
         </div>
       </div>
     </div>
 
-    <div id="helpModal" class="modal">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2>📝 Ako zapisovať funkcie?</h2>
-          <span class="close-btn" onclick="closeHelp()">&times;</span>
-        </div>
+  </div><!-- /card -->
 
-        <div class="syntax-section">
-          <h3>🔢 Základné operácie</h3>
-          <div class="syntax-table">
-            <div class="syntax-row">
-              <div class="syntax-label">Mocnina:</div>
-              <div class="syntax-value">x^2, x^3, x^n</div>
-            </div>
 
-            <div class="syntax-row">
-              <div class="syntax-label">Násobenie:</div>
-              <div class="syntax-value">2*x, 3*x^2</div>
-            </div>
+  <!-- ============================================================
+       HELP MODAL
+       ============================================================ -->
+  <div id="helpModal" class="modal">
+    <div class="modal-content">
 
-            <div class="syntax-row">
-              <div class="syntax-label">Delenie:</div>
-              <div class="syntax-value">x/2, 1/x</div>
-            </div>
+      <div class="modal-header">
+        <h2>📝 Ako zapisovať funkcie?</h2>
+        <button class="close-btn" onclick="closeHelp()">&times;</button>
+      </div>
 
-            <div class="syntax-row">
-              <div class="syntax-label">Zátvorky:</div>
-              <div class="syntax-value">(x+1)^2</div>
-            </div>
+      <div class="syntax-section">
+        <h3>
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:5px;margin-bottom:2px">
+            <line x1="4"  y1="9"  x2="20" y2="9"/>
+            <line x1="4"  y1="15" x2="20" y2="15"/>
+            <line x1="10" y1="3"  x2="8"  y2="21"/>
+            <line x1="16" y1="3"  x2="14" y2="21"/>
+          </svg>Základné operácie
+        </h3>
+        <div class="syntax-table">
+          <div class="syntax-row">
+            <div class="syntax-label">Mocnina:</div>
+            <div class="syntax-value">x^2, x^3, x^n</div>
           </div>
-          <p style="font-size:0.85em; margin-top:10px; color:var(--text-secondary);">
-            💡 Hviezda <code>*</code> nie je povinná - <code>2x</code> funguje rovnako ako <code>2*x</code>.
-          </p>
-        </div>
-
-        <div class="syntax-section">
-          <h3>📐 Goniometrické funkcie</h3>
-          <div class="syntax-table">
-            <div class="syntax-row">
-              <div class="syntax-label">Sínus:</div>
-              <div class="syntax-value">sin(x), sin^n(x)</div>
-            </div>
-
-            <div class="syntax-row">
-              <div class="syntax-label">Kosínus:</div>
-              <div class="syntax-value">cos(x), cos^n(x)</div>
-            </div>
-
-            <div class="syntax-row">
-              <div class="syntax-label">Tangens:</div>
-              <div class="syntax-value">tan(x), tan^n(x)</div>
-            </div>
+          <div class="syntax-row">
+            <div class="syntax-label">Násobenie:</div>
+            <div class="syntax-value">2*x, 3*x^2</div>
+          </div>
+          <div class="syntax-row">
+            <div class="syntax-label">Delenie:</div>
+            <div class="syntax-value">x/2, 1/x</div>
+          </div>
+          <div class="syntax-row">
+            <div class="syntax-label">Zátvorky:</div>
+            <div class="syntax-value">(x+1)^2</div>
           </div>
         </div>
+        <p>💡 Hviezda <code>*</code> nie je povinná — <code>2x</code> funguje rovnako ako <code>2*x</code>.</p>
+      </div>
 
-        <div class="syntax-section">
-          <h3>📊 Logaritmické a exponenciálne funkcie</h3>
-          <div class="syntax-table">
-            <div class="syntax-row">
-              <div class="syntax-label">Logaritmus:</div>
-              <div class="syntax-value">
-                log(x), log^n(x)
-              </div>
-            </div>
-
-            <div class="syntax-row">
-              <div class="syntax-label">Exponenciála:</div>
-              <div class="syntax-value">e^x, e^(n*x)</div>
-            </div>
+      <div class="syntax-section">
+        <h3>
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:5px;margin-bottom:2px">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+          </svg>Goniometrické funkcie
+        </h3>
+        <div class="syntax-table">
+          <div class="syntax-row">
+            <div class="syntax-label">Sínus:</div>
+            <div class="syntax-value">sin(x), sin^n(x)</div>
           </div>
-
-          <p style="font-size:0.85em; margin-top:10px; color:var(--text-secondary);">
-            ⚠️ <strong>Pozor:</strong> <code>log(x)</code> je prirodzený logaritmus - ln(x), nie log₁₀(x).
-          </p>
-        </div>
-
-        <div class="syntax-section">
-          <h3>🔧 Ďalšie funkcie</h3>
-          <div class="syntax-table">
-            <div class="syntax-row">
-              <div class="syntax-label">Odmocnina:</div>
-              <div class="syntax-value">sqrt(x), sqrt^n(x)</div>
-            </div>
-
-            <div class="syntax-row">
-              <div class="syntax-label">Absolútna hodnota:</div>
-              <div class="syntax-value">abs(x)</div>
-            </div>
+          <div class="syntax-row">
+            <div class="syntax-label">Kosínus:</div>
+            <div class="syntax-value">cos(x), cos^n(x)</div>
           </div>
-        </div>
-
-        <div class="example-box">
-          <strong>💡 Príklady funkcií:</strong>
-          <div class="example-list">
-            <div class="example-item" onclick="selectExample('x^3 + 4*x + 2')">x^3 + 4*x + 2</div>
-            <div class="example-item" onclick="selectExample('x^5 - 2*x^3 + x')">x^5 - 2*x^3 + x</div>
-            <div class="example-item" onclick="selectExample('sin(x) + cos(x)')">sin(x) + cos(x)</div>
-            <div class="example-item" onclick="selectExample('sin^4(x) - cos^4(x)')">sin^4(x) - cos^4(x)</div>
-            <div class="example-item" onclick="selectExample('log(x) + 2')">log(x) + 2</div>
-            <div class="example-item" onclick="selectExample('log^2(x) - x')">log^2(x) - x</div>
-            <div class="example-item" onclick="selectExample('log^3(x) + log(x)')">log^3(x) + log(x)</div>
-            <div class="example-item" onclick="selectExample('e^x - 3')">e^x - 3</div>
-            <div class="example-item" onclick="selectExample('e^(2*x) + x')">e^(2*x) + x</div>
-            <div class="example-item" onclick="selectExample('sqrt(x) - 2')">sqrt(x) - 2</div>
-            <div class="example-item" onclick="selectExample('x^3 + log(x) + 2')">x^3 + log(x) + 2</div>
+          <div class="syntax-row">
+            <div class="syntax-label">Tangens:</div>
+            <div class="syntax-value">tan(x), tan^n(x)</div>
           </div>
         </div>
       </div>
+
+      <div class="syntax-section">
+        <h3>
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:5px;margin-bottom:2px">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>Logaritmické a exponenciálne funkcie
+        </h3>
+        <div class="syntax-table">
+          <div class="syntax-row">
+            <div class="syntax-label">Logaritmus:</div>
+            <div class="syntax-value">log(x), log^n(x)</div>
+          </div>
+          <div class="syntax-row">
+            <div class="syntax-label">Exponenciála:</div>
+            <div class="syntax-value">e^x, e^(n*x)</div>
+          </div>
+        </div>
+        <p>⚠️ <strong>Pozor:</strong> <code>log(x)</code> je prirodzený logaritmus — ln(x), nie log₁₀(x).</p>
+      </div>
+
+      <div class="syntax-section">
+        <h3>
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:5px;margin-bottom:2px">
+            <polyline points="3 12 7 18 12 4 17 4 21 4"/>
+            <line x1="17" y1="4" x2="17" y2="14"/>
+          </svg>Ďalšie funkcie
+        </h3>
+        <div class="syntax-table">
+          <div class="syntax-row">
+            <div class="syntax-label">Odmocnina:</div>
+            <div class="syntax-value">sqrt(x), sqrt^n(x)</div>
+          </div>
+          <div class="syntax-row">
+            <div class="syntax-label">Absolútna hodnota:</div>
+            <div class="syntax-value">abs(x)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="example-box">
+        <strong>💡 Príklady funkcií:</strong>
+        <div class="example-list">
+          <div class="example-item" onclick="selectExample('x^3 + 4*x + 2')">x^3 + 4*x + 2</div>
+          <div class="example-item" onclick="selectExample('x^5 - 2*x^3 + x')">x^5 - 2*x^3 + x</div>
+          <div class="example-item" onclick="selectExample('sin(x) + cos(x)')">sin(x) + cos(x)</div>
+          <div class="example-item" onclick="selectExample('sin^4(x) - cos^4(x)')">sin^4(x) - cos^4(x)</div>
+          <div class="example-item" onclick="selectExample('log(x) + 2')">log(x) + 2</div>
+          <div class="example-item" onclick="selectExample('log^2(x) - x')">log^2(x) - x</div>
+          <div class="example-item" onclick="selectExample('log^3(x) + log(x)')">log^3(x) + log(x)</div>
+          <div class="example-item" onclick="selectExample('e^x - 3')">e^x - 3</div>
+          <div class="example-item" onclick="selectExample('e^(2*x) + x')">e^(2*x) + x</div>
+          <div class="example-item" onclick="selectExample('sqrt(x) - 2')">sqrt(x) - 2</div>
+          <div class="example-item" onclick="selectExample('x^3 + log(x) + 2')">x^3 + log(x) + 2</div>
+        </div>
+      </div>
+
     </div>
+  </div><!-- /helpModal -->
 
-    <script>
-      function loadTheme() {
-        try {
-          const theme = localStorage.getItem('theme') || 'light';
-          
-          if (theme === 'dark') {
-            document.body.classList.add('dark');
-            document.getElementById('themeToggle').textContent = '☀️';
-          }
-        } catch(e) {}
-      }
-      function toggleTheme() {
-        document.body.classList.toggle('dark');
-        const isDark = document.body.classList.contains('dark');
-        document.getElementById('themeToggle').textContent = isDark ? '☀️' : '🌙';
-        try {
-          localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        } catch(e) {}
-      }
-      loadTheme();
 
-      (function() {
-        try {
-          const h = JSON.parse(localStorage.getItem("bisectionHistory") || "[]");
-          const btn = document.getElementById("historyBtn");
-          
-          if (btn) {
-            if (h.length > 0) {
-              btn.textContent = "📋 História výpočtov (" + h.length + ")";
-              btn.title = "Zobraziť históriu výpočtov (" + h.length + ")";
-              btn.style.opacity = "1";
-              btn.style.cursor = "pointer";
-              btn.onclick = function() { window.location.href = 'history.html'; };
-            } else {
-              btn.textContent = "📋 História výpočtov";
-              btn.title = "História je zatiaľ prázdna";
-              btn.style.opacity = "0.4";
-              btn.style.cursor = "pointer";
-              btn.onclick = function() { window.location.href = 'history.html'; };
+  <!-- ============================================================
+       JAVASCRIPT  (original logic, only theme patched to html.dark)
+       ============================================================ -->
+  <script>
+
+    /* ── Theme ─────────────────────────────────────────────────── */
+
+    function loadTheme() {
+      try {
+        const theme = localStorage.getItem('theme') || 'light';
+        if (theme === 'dark') {
+          document.documentElement.classList.add('dark');
+          document.getElementById('moonIco').style.display = 'none';
+          document.getElementById('sunIco').style.display  = '';
+        }
+      } catch(e) {}
+    }
+
+    function toggleTheme() {
+      document.documentElement.classList.toggle('dark');
+      const isDark = document.documentElement.classList.contains('dark');
+      document.getElementById('moonIco').style.display = isDark ? 'none' : '';
+      document.getElementById('sunIco').style.display  = isDark ? ''     : 'none';
+      try {
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      } catch(e) {}
+    }
+
+    loadTheme();
+
+
+    /* ── History badge ─────────────────────────────────────────── */
+
+    (function() {
+      try {
+        const h   = JSON.parse(localStorage.getItem('bisectionHistory') || '[]');
+        const btn = document.getElementById('historyBtn');
+        if (btn) {
+          const count = h.length;
+          // Find the text node (last child) and update only the label
+          const label = count > 0
+            ? 'História výpočtov (' + count + ')'
+            : 'História výpočtov';
+          // Replace last text node, keep the SVG intact
+          const nodes = btn.childNodes;
+          for (let i = nodes.length - 1; i >= 0; i--) {
+            if (nodes[i].nodeType === Node.TEXT_NODE) {
+              nodes[i].textContent = label;
+              break;
             }
           }
-        } catch(e) {}
-      })();
+          btn.title      = count > 0
+            ? 'Zobraziť históriu výpočtov (' + count + ')'
+            : 'História je zatiaľ prázdna';
+          btn.style.opacity = count > 0 ? '1' : '0.4';
+          btn.style.cursor  = 'pointer';
+          btn.onclick = function() { window.location.href = 'history.html'; };
+        }
+      } catch(e) {}
+    })();
 
-      function convertMathToJS(expr) {
-        let converted = expr.trim();
-        
-        converted = converted.replace(/sin\^(\d+)\s*\(([^)]+)\)/g, (match, power, arg) => {
-          return `__SIN_${power}__(${arg})`;
-        });
-        
-        converted = converted.replace(/cos\^(\d+)\s*\(([^)]+)\)/g, (match, power, arg) => {
-          return `__COS_${power}__(${arg})`;
-        });
-        
-        converted = converted.replace(/tan\^(\d+)\s*\(([^)]+)\)/g, (match, power, arg) => {
-          return `__TAN_${power}__(${arg})`;
-        });
-        
-        converted = converted.replace(/log\^(\d+)\s*\(([^)]+)\)/g, (match, power, arg) => {
-          return `__LOG_${power}__(${arg})`;
-        });
-        
-        converted = converted.replace(/sqrt\^(\d+)\s*\(([^)]+)\)/g, (match, power, arg) => {
-          return `__SQRT_${power}__(${arg})`;
-        });
-        
-        converted = converted.replace(/abs\^(\d+)\s*\(([^)]+)\)/g, (match, power, arg) => {
-          return `__ABS_${power}__(${arg})`;
-        });
-        
-        converted = converted.replace(/(?<![a-zA-Z])sin\(/g, 'Math.sin(');
-        converted = converted.replace(/(?<![a-zA-Z])cos\(/g, 'Math.cos(');
-        converted = converted.replace(/(?<![a-zA-Z])tan\(/g, 'Math.tan(');
-        converted = converted.replace(/(?<![a-zA-Z])log\(/g, 'Math.log(');
-        converted = converted.replace(/(?<![a-zA-Z])sqrt\(/g, 'Math.sqrt(');
-        converted = converted.replace(/(?<![a-zA-Z])abs\(/g, 'Math.abs(');
-        
-        converted = converted.replace(/e\s*\^\s*\(([^)]+)\)/g, 'Math.exp($1)');
-        converted = converted.replace(/e\s*\^\s*([a-zA-Z0-9*+\-/]+)/g, 'Math.exp($1)');
-        
-        converted = converted.replace(/\^/g, '**');
 
-        converted = converted.replace(/__SIN_(\d+)__\(([^)]+)\)/g, '(Math.sin($2))**$1');
-        converted = converted.replace(/__COS_(\d+)__\(([^)]+)\)/g, '(Math.cos($2))**$1');
-        converted = converted.replace(/__TAN_(\d+)__\(([^)]+)\)/g, '(Math.tan($2))**$1');
-        converted = converted.replace(/__LOG_(\d+)__\(([^)]+)\)/g, '(Math.log($2))**$1');
-        converted = converted.replace(/__SQRT_(\d+)__\(([^)]+)\)/g, '(Math.sqrt($2))**$1');
-        converted = converted.replace(/__ABS_(\d+)__\(([^)]+)\)/g, '(Math.abs($2))**$1');
+    /* ── Math → JS conversion ──────────────────────────────────── */
 
-        converted = converted.replace(/(\d+)\s*([a-zA-Z])/g, '$1*$2');
-        
-        return converted;
-      }
+    function convertMathToJS(expr) {
+      let converted = expr.trim();
 
-      function validateFunction(expr) {
-        try {
-          const testFunc = new Function('x', 'return ' + expr);
+      converted = converted.replace(/sin\^(\d+)\s*\(([^)]+)\)/g,  (m, p, a) => `__SIN_${p}__(${a})`);
+      converted = converted.replace(/cos\^(\d+)\s*\(([^)]+)\)/g,  (m, p, a) => `__COS_${p}__(${a})`);
+      converted = converted.replace(/tan\^(\d+)\s*\(([^)]+)\)/g,  (m, p, a) => `__TAN_${p}__(${a})`);
+      converted = converted.replace(/log\^(\d+)\s*\(([^)]+)\)/g,  (m, p, a) => `__LOG_${p}__(${a})`);
+      converted = converted.replace(/sqrt\^(\d+)\s*\(([^)]+)\)/g, (m, p, a) => `__SQRT_${p}__(${a})`);
+      converted = converted.replace(/abs\^(\d+)\s*\(([^)]+)\)/g,  (m, p, a) => `__ABS_${p}__(${a})`);
 
-          const testValues = expr.includes('Math.log') || expr.includes('Math.sqrt') 
-            ? [1, 2, 0.5, 10] 
-            : [1, 2, 0.5, 10, -1, 0];
-          
-          for (const val of testValues) {
-            const result = testFunc(val);
+      converted = converted.replace(/(?<![a-zA-Z])sin\(/g,  'Math.sin(');
+      converted = converted.replace(/(?<![a-zA-Z])cos\(/g,  'Math.cos(');
+      converted = converted.replace(/(?<![a-zA-Z])tan\(/g,  'Math.tan(');
+      converted = converted.replace(/(?<![a-zA-Z])log\(/g,  'Math.log(');
+      converted = converted.replace(/(?<![a-zA-Z])sqrt\(/g, 'Math.sqrt(');
+      converted = converted.replace(/(?<![a-zA-Z])abs\(/g,  'Math.abs(');
 
-            if (isNaN(result) && !expr.includes('Math.log') && !expr.includes('Math.sqrt')) {
-              return { valid: false, error: 'Funkcia vracia neplatnú hodnotu (NaN)' };
-            }
+      converted = converted.replace(/e\s*\^\s*\(([^)]+)\)/g,           'Math.exp($1)');
+      converted = converted.replace(/e\s*\^\s*([a-zA-Z0-9*+\-/]+)/g,  'Math.exp($1)');
+
+      converted = converted.replace(/\^/g, '**');
+
+      converted = converted.replace(/__SIN_(\d+)__\(([^)]+)\)/g,  '(Math.sin($2))**$1');
+      converted = converted.replace(/__COS_(\d+)__\(([^)]+)\)/g,  '(Math.cos($2))**$1');
+      converted = converted.replace(/__TAN_(\d+)__\(([^)]+)\)/g,  '(Math.tan($2))**$1');
+      converted = converted.replace(/__LOG_(\d+)__\(([^)]+)\)/g,  '(Math.log($2))**$1');
+      converted = converted.replace(/__SQRT_(\d+)__\(([^)]+)\)/g, '(Math.sqrt($2))**$1');
+      converted = converted.replace(/__ABS_(\d+)__\(([^)]+)\)/g,  '(Math.abs($2))**$1');
+
+      converted = converted.replace(/(\d+)\s*([a-zA-Z])/g, '$1*$2');
+
+      return converted;
+    }
+
+
+    /* ── Validation ────────────────────────────────────────────── */
+
+    function validateFunction(expr) {
+      try {
+        const testFunc = new Function('x', 'return ' + expr);
+
+        const testValues = expr.includes('Math.log') || expr.includes('Math.sqrt')
+          ? [1, 2, 0.5, 10]
+          : [1, 2, 0.5, 10, -1, 0];
+
+        for (const val of testValues) {
+          const result = testFunc(val);
+          if (isNaN(result) && !expr.includes('Math.log') && !expr.includes('Math.sqrt')) {
+            return { valid: false, error: 'Funkcia vracia neplatnú hodnotu (NaN)' };
           }
-
-          return { valid: true, error: null };
-        } catch (e) {
-          return { valid: false, error: e.message };
         }
+
+        return { valid: true, error: null };
+      } catch (e) {
+        return { valid: false, error: e.message };
+      }
+    }
+
+
+    /* ── Live input validation ─────────────────────────────────── */
+
+    const funcInput = document.getElementById('func');
+
+    funcInput.addEventListener('input', function() {
+      const userInput = this.value.trim();
+      const errorMsg  = document.getElementById('errorMsg');
+
+      if (!userInput) {
+        errorMsg.classList.remove('active');
+        return;
       }
 
-      const funcInput = document.getElementById('func');
-      funcInput.addEventListener('input', function() {
-        const userInput = this.value.trim();
-        const errorMsg = document.getElementById('errorMsg');
-        
-        if (!userInput) {
-          errorMsg.classList.remove('active');
-          funcInput.style.borderColor = 'var(--border-color)';
-          return;
-        }
-        
-        const converted = convertMathToJS(userInput);
-        const validation = validateFunction(converted);
-        
-        if (validation.valid) {
-          errorMsg.classList.remove('active');
-          funcInput.style.borderColor = '#4caf50';
-        } else {
-          errorMsg.textContent = '⚠️ Neplatná funkcia! Klikni na ❓ pre nápovedu.';
-          errorMsg.classList.add('active');
-          funcInput.style.borderColor = '#f44336';
-        }
-      });
+      const converted   = convertMathToJS(userInput);
+      const validation  = validateFunction(converted);
 
-      function showHelp() {
-        document.getElementById('helpModal').style.display = 'block';
+      if (validation.valid) {
+        errorMsg.classList.remove('active');
+      } else {
+        errorMsg.textContent = '⚠️ Neplatná funkcia! Klikni na ❓ pre nápovedu.';
+        errorMsg.classList.add('active');
       }
+    });
 
-      function closeHelp() {
-        document.getElementById('helpModal').style.display = 'none';
-      }
 
-      function selectExample(example) {
-        closeHelp();
+    /* ── Modal ─────────────────────────────────────────────────── */
 
-        document.getElementById('func').value = example;
+    function showHelp() {
+      document.getElementById('helpModal').classList.add('open');
+    }
 
-        funcInput.dispatchEvent(new Event('input'));
+    function closeHelp() {
+      document.getElementById('helpModal').classList.remove('open');
+    }
 
-        setTimeout(() => {
-          goNext();
-        }, 300);
-      }
-
-      window.addEventListener('click', function(event) {
-        const modal = document.getElementById('helpModal');
-        
-        if (event.target == modal) {
-          modal.style.display = 'none';
-        }
-      });
-
-      function isSafeExpr(expr) {
-        return /^[\dx\s\+\-\*\/\^\(\)\.\,_a-zA-Z]+$/.test(expr) &&
-          !/\b(?:fetch|alert|eval|Function|localStorage|document|window|import|require)\b/.test(expr);
-      }
-      
-      function goNext() {
-        const userInput = document.getElementById("func").value.trim();
-        
-        if (!isSafeExpr(userInput)) {
-          alert("❌ Nedovolený vstup!");
-          return;
-        }
-        
-        const jsFunc = convertMathToJS(userInput);
-        const validation = validateFunction(jsFunc);
-        
-        if (!validation.valid) {
-          alert("❌ Neplatná funkcia!\n\n" + validation.error + "\n\nKlikni na ❓ v pravom hornom rohu pre nápovedu.");
-          return;
-        }
-        
-        localStorage.setItem("functionExpr", jsFunc);
-        localStorage.setItem("functionOriginal", userInput);
-        window.location.href = "interval.html";
-      }
-      
+    function selectExample(example) {
+      closeHelp();
+      document.getElementById('func').value = example;
       funcInput.dispatchEvent(new Event('input'));
+      setTimeout(() => { goNext(); }, 300);
+    }
 
-      funcInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') goNext();
-      });
+    window.addEventListener('click', function(event) {
+      const modal = document.getElementById('helpModal');
+      if (event.target === modal) {
+        modal.classList.remove('open');
+      }
+    });
 
-      const animStates = [
-        '[a]────●────[b]',
-        '[a]──●──[b]',
-        '[a]●[b]',
-        '[a]─●─[b]'
-      ];
-      let animIndex = 0;
-      const animEl = document.getElementById('bisectionAnim');
-      
-      setInterval(() => {
-        animIndex = (animIndex + 1) % animStates.length;
-        animEl.textContent = animStates[animIndex];
-      }, 1200);
-      
-      window.addEventListener('load', () => {
-        const hint = document.getElementById('helpHint');
-        setTimeout(() => {
-          hint.style.opacity = '1';
-          setTimeout(() => {
-            hint.style.opacity = '0';
-          }, 3000);
-        }, 500);
-      });
-    </script>
-  </body>
+
+    /* ── Navigation ────────────────────────────────────────────── */
+
+    function isSafeExpr(expr) {
+      return /^[\dx\s\+\-\*\/\^\(\)\.\,_a-zA-Z]+$/.test(expr) &&
+        !/\b(?:fetch|alert|eval|Function|localStorage|document|window|import|require)\b/.test(expr);
+    }
+
+    function goNext() {
+      const userInput = document.getElementById('func').value.trim();
+
+      if (!isSafeExpr(userInput)) {
+        alert('❌ Nedovolený vstup!');
+        return;
+      }
+
+      const jsFunc     = convertMathToJS(userInput);
+      const validation = validateFunction(jsFunc);
+
+      if (!validation.valid) {
+        alert('❌ Neplatná funkcia!\n\n' + validation.error + '\n\nKlikni na ❓ v pravom hornom rohu pre nápovedu.');
+        return;
+      }
+
+      localStorage.setItem('functionExpr',     jsFunc);
+      localStorage.setItem('functionOriginal', userInput);
+      window.location.href = 'interval.html';
+    }
+
+    funcInput.dispatchEvent(new Event('input'));
+
+    funcInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') goNext();
+    });
+
+
+    /* ── Bisection animation ───────────────────────────────────── */
+
+    const animStates = [
+      '[a]───●───[b]',
+      '[a]──●──[b]',
+      '[a]─●─[b]',
+      '[a]●[b]',
+      '[a]─●─[b]',
+      '[a]──●──[b]'
+    ];
+    let animIndex = 0;
+    const animEl = document.getElementById('bisectionAnim');
+
+    setInterval(() => {
+      animIndex = (animIndex + 1) % animStates.length;
+      animEl.textContent = animStates[animIndex];
+    }, 1200);
+
+
+    /* ── Help hint fade-in ─────────────────────────────────────── */
+
+    window.addEventListener('load', () => {
+      const hint = document.getElementById('helpHint');
+      setTimeout(() => {
+        hint.style.opacity = '1';
+        setTimeout(() => { hint.style.opacity = '0'; }, 3000);
+      }, 500);
+    });
+
+  </script>
+</body>
 </html>
