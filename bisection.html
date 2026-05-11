@@ -2,7 +2,7 @@
 <html lang="sk">
   <head>
     <meta charset="UTF-8" />
-    <title>Výpočet |Vizualizácia metódy bisekcie|</title>
+    <title>Výpočet | Vizualizácia metódy bisekcie</title>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <style>
       :root {
@@ -14,44 +14,42 @@
         --btn-bg: #1976D2;
         --btn-hover: #304fa3;
         --border: #D5D8FF;
-        --border2: #a5b5ee;
         --input-bg: #FFFFFF;
         --header-bg: #1976D2;
         --table-header: #F3F4FF;
         --table-hover: rgba(25, 118, 210, 0.08);
         --success-bg: rgba(5, 150, 105, 0.10);
         --success-text: #059669;
-        --theory-bg: #fefbed;
+        --theory-bg: #F3F4FF;
         --theory-border: #A5AAEE;
         --theory-text: #3730A3;
         --modal-bg: #FFFFFF;
-        --tooltip-bg: #3f4760;
+        --tooltip-bg: #1e2e58;
         --tooltip-text: #FFFFFF;
         --quiz-overlay: rgba(102, 126, 234, 0.45);
         --quiz-content-bg: #FFFFFF;
       }
 
       body.dark {
-        --bg: #0d181e;
-        --bg-gradient-1: #1e2640;
-        --bg-gradient-2: #161a30;
+        --bg: #0D0F1E;
+        --bg-gradient-1: #1E2040;
+        --bg-gradient-2: #161830;
         --text: #E8E8FF;
-        --card: #161e30;
-        --btn-bg: #5ba5f5;
-        --btn-hover: #81b5f8;
+        --card: #161830;
+        --btn-bg: #5BA4F5;
+        --btn-hover: #819df8;
         --border: #252858;
-        --border2: #384870;
         --input-bg: #1E2040;
-        --header-bg: #1e2e40;
-        --table-header: #1e2740;
+        --header-bg: #1E2040;
+        --table-header: #1E2040;
         --table-hover: rgba(91, 164, 245, 0.15);
         --success-bg: rgba(52, 211, 153, 0.12);
         --success-text: #34D399;
-        --theory-bg: #1e2d40;
+        --theory-bg: #1E2040;
         --theory-border: #383C70;
         --theory-text: #8890E0;
-        --modal-bg: #162230;
-        --tooltip-bg: #162035;
+        --modal-bg: #161830;
+        --tooltip-bg: #0D0F1E;
         --tooltip-text: #E8E8FF;
         --quiz-overlay: rgba(129, 140, 248, 0.40);
         --quiz-content-bg: #161830;
@@ -195,13 +193,11 @@
         width: fit-content;
         margin-top: -60px;
       }
-
       .scroll-to-latest.visible {
         opacity: 1 !important;
         pointer-events: all !important;
         display: flex !important;
       }
-
       .scroll-to-latest:hover {
         background: var(--btn-hover);
         transform: translateX(-50%) translateY(-2px);
@@ -226,6 +222,7 @@
         font-size: 0.9em;
         color: var(--text);
       }
+
       tr:hover {
         background: var(--table-hover);
         cursor: help;
@@ -333,7 +330,6 @@
         color: var(--btn-bg) !important;
         border: 2px solid var(--btn-bg) !important;
       }
-
       .btn-reset:hover {
         background: var(--btn-bg) !important;
         color: white !important;
@@ -342,7 +338,6 @@
       .btn:hover {
         background: var(--btn-hover);
       }
-
       .btn:disabled {
         background: var(--border);
         cursor: not-allowed;
@@ -395,12 +390,10 @@
         transition: all 0.4s ease-out;
         font-weight: 500;
       }
-
       .mode-btn.active {
         background: var(--btn-bg);
         color: white;
       }
-
       .mode-btn:hover {
         background: var(--btn-hover);
         color: white;
@@ -624,7 +617,7 @@
 
       #checkQuizBtn {
         display: none;
-        background: #f4ab2f;
+        background: #F59E0B;
         color: white;
         border: none;
         border-radius: 8px;
@@ -636,7 +629,7 @@
         transition: background 0.2s;
       }
       #checkQuizBtn:hover {
-        background: #ff7c1e;
+        background: #B45309;
       }
 
       .quiz-step-banner {
@@ -831,7 +824,6 @@
         background: #059669;
         color: white;
       }
-
       .result-btn.primary:hover {
         background: #047857;
         transform: translateY(-2px);
@@ -1014,32 +1006,6 @@
       .hidden {
         display: none;
       }
-
-      /* ── Scrollbar style (zladené s ostatnými stránkami projektu) ──── */
-      .right,
-      .table-container,
-      .modal-content,
-      body {
-        scrollbar-width: thin;
-        scrollbar-color: var(--border2) transparent;
-      }
-      ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-      }
-      ::-webkit-scrollbar-track {
-        background: transparent;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: var(--border2);
-        border-radius: 4px;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: var(--btn-bg);
-      }
-      ::-webkit-scrollbar-corner {
-        background: transparent;
-      }
     </style>
   </head>
 
@@ -1053,6 +1019,7 @@
           <line x1="12" y1="17" x2="12.01" y2="17"/>
         </svg>
       </button>
+
       <button id="themeToggle" class="icon-btn" onclick="toggleTheme()" title="Zmeniť tému">
         <svg id="moonIco" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
@@ -1079,12 +1046,25 @@
         </div>
 
         <div class="theory-section">
-          <h3><svg style="width:14px;height:14px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-right:5px" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Čo je metóda bisekcie?</h3>
+          <h3>
+            <svg style="width:14px;height:14px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-right:5px" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10"/>
+              <circle cx="12" cy="12" r="6"/>
+              <circle cx="12" cy="12" r="2"/>
+            </svg>
+            Čo je metóda bisekcie?
+          </h3>
+
           <p>Metóda bisekcie je numerická metóda na hľadanie koreňa (nulového bodu) spojitej funkcie. Je založená na <strong>vete o strednej hodnote</strong>.</p>
         </div>
 
         <div class="theory-section">
-          <h3><svg style="width:14px;height:14px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-right:5px" viewBox="0 0 24 24"><path d="M2 20h20L12 4z"/></svg>Princíp fungovania</h3>
+          <h3>
+            <svg style="width:14px;height:14px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-right:5px" viewBox="0 0 24 24">
+              <path d="M2 20h20L12 4z"/>
+            </svg>
+            Princíp fungovania
+          </h3>
           <p>Ak máme interval [a, b], kde <strong>f(a)</strong> a <strong>f(b)</strong> majú rôzne znamienka, potom v tomto intervale musí existovať koreň.</p>
           
           <div class="explanation-box">
@@ -1093,7 +1073,14 @@
         </div>
 
         <div class="theory-section">
-          <h3><svg style="width:14px;height:14px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-right:5px" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><polyline points="23 20 23 14 17 14"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg>Algoritmus</h3>
+          <h3>
+            <svg style="width:14px;height:14px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-right:5px" viewBox="0 0 24 24">
+              <polyline points="1 4 1 10 7 10"/>
+              <polyline points="23 20 23 14 17 14"/>
+              <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/>
+            </svg>
+            Algoritmus
+          </h3>
 
           <ol>
             <li><strong>Vypočítaj stred:</strong> c = (a + b) / 2</li>
@@ -1116,7 +1103,15 @@
         </div>
 
         <div class="theory-section">
-          <h3><svg style="width:14px;height:14px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-right:5px" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Vzorce</h3>
+          <h3>
+            <svg style="width:14px;height:14px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-right:5px" viewBox="0 0 24 24">
+              <line x1="18" y1="20" x2="18" y2="10"/>
+              <line x1="12" y1="20" x2="12" y2="4"/>
+              <line x1="6" y1="20" x2="6" y2="14"/>
+            </svg>
+            Vzorce
+          </h3>
+
           <div class="formula">c = (a + b) / 2</div>
           <div class="formula">Zastaviť ak: |b - a| ≤ 2·tolerancia</div>
           <div class="formula">f(a) · f(c) &lt; 0 → nový interval [a, c]</div>
@@ -1124,14 +1119,28 @@
         </div>
 
         <div class="theory-section">
-          <h3><svg style="width:14px;height:14px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-right:5px" viewBox="0 0 24 24"><path d="M21 6H3"/><path d="M21 12H3"/><path d="M21 18H3"/></svg>Odhad chyby</h3>
+          <h3>
+            <svg style="width:14px;height:14px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-right:5px" viewBox="0 0 24 24">
+              <path d="M21 6H3"/>
+              <path d="M21 12H3"/>
+              <path d="M21 18H3"/>
+            </svg>
+            Odhad chyby
+          </h3>
+
           <p>Po <strong>n</strong> iteráciách je chyba aproximácie koreňa ohraničená vzorcom:</p>
           <div class="formula">|cₙ − α| &lt; (b₀ − a₀) / 2ⁿ⁺¹</div>
           <p>kde <strong>α</strong> je skutočný koreň, <strong>b₀ − a₀</strong> je dĺžka počiatočného intervalu.</p>
         </div>
 
         <div class="theory-section">
-          <h3><svg style="width:14px;height:14px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-right:5px" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Rýchlosť konvergencie</h3>
+          <h3>
+            <svg style="width:14px;height:14px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-right:5px" viewBox="0 0 24 24">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
+            Rýchlosť konvergencie
+          </h3>
+
           <p>Metóda bisekcie má <strong>lineárnu konvergenciu</strong> - každý krok zmenší interval presne na polovicu:</p>
           <div class="formula">|bₙ − aₙ| = (b₀ − a₀) / 2ⁿ</div>
         </div>
@@ -1146,7 +1155,7 @@
 
         <div class="result-buttons">
           <button class="result-btn secondary" onclick="closeResultOverlay()">Zavrieť</button>
-          <button class="result-btn secondary" onclick="window.location.href='history.html'" style="background:#7c3aed;">História</button>
+          <button class="result-btn secondary" onclick="window.location.href='history.html'" style="background:#7c3aed;"><svg style="width:14px;height:14px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-right:5px" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>História</button>
           <button class="result-btn primary" onclick="resetFromResult()">Nový výpočet</button>
         </div>
       </div>
@@ -1181,7 +1190,13 @@
       <div class="layout">
         <div class="left">
           <div class="info-box" id="infoBox">
-            <strong><svg style="width:14px;height:14px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-right:5px" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Nastavenia:</strong><br>
+            <strong>
+              <svg style="width:14px;height:14px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-right:5px" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+              </svg>
+              Nastavenia:
+            </strong><br>
             Rovnica: <span id="equationDisplay"></span> = 0<br>
             Interval: [<span id="intervalA"></span>, <span id="intervalB"></span>]<br>
             <span id="methodDisplay"></span>
@@ -1191,8 +1206,12 @@
           <div class="mode-selector">
             <div class="mode-btn-wrap">
               <button class="mode-btn" onclick="setMode('auto')" id="autoBtn">
-                <svg style="width:15px;height:15px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-right:5px" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>Automatický
+                <svg style="width:15px;height:15px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-right:5px" viewBox="0 0 24 24">
+                  <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+                Automatický
               </button>
+
               <div class="mode-tooltip">
                 Hodnoty v tabuľke získaš automaticky<br>
                 postupným stlačaním tlačidla „Ďalší“.
@@ -1201,8 +1220,13 @@
 
             <div class="mode-btn-wrap">
               <button class="mode-btn active" onclick="setMode('mixed')" id="mixedBtn">
-                <svg style="width:15px;height:15px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-right:5px" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>S kvízmi
+                <svg style="width:15px;height:15px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-right:5px" viewBox="0 0 24 24">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+                S kvízmi
               </button>
+
               <div class="mode-tooltip">
                 Hodnoty v tabuľke získaš automaticky<br>
                 až po niekoľkých kontrolných výpočtoch.
@@ -1210,7 +1234,18 @@
             </div>
           </div>
 
-          <h3><svg style="width:14px;height:14px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-right:5px" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>Kroky výpočtu</h3>
+          <h3>
+            <svg style="width:14px;height:14px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-right:5px" viewBox="0 0 24 24">
+              <line x1="8" y1="6" x2="21" y2="6"/>
+              <line x1="8" y1="12" x2="21" y2="12"/>
+              <line x1="8" y1="18" x2="21" y2="18"/>
+              <line x1="3" y1="6" x2="3.01" y2="6"/>
+              <line x1="3" y1="12" x2="3.01" y2="12"/>
+              <line x1="3" y1="18" x2="3.01" y2="18"/>
+            </svg>
+            Kroky výpočtu
+          </h3>
+
           <div style="font-size: 0.85em; color: var(--text); opacity: 0.7; margin-bottom: 10px;">
             💡 Ukáž na číslo kroku pre zobrazenie detailov
           </div>
@@ -1237,12 +1272,30 @@
 
           <div class="fixed-buttons">
             <div class="btn-row">
-              <button id="checkQuizBtn" onclick="checkInlineQuiz()"><svg style="width:15px;height:15px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-right:5px" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Skontrolovať</button>
+              <button id="checkQuizBtn" onclick="checkInlineQuiz()">
+                <svg style="width:15px;height:15px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-right:5px" viewBox="0 0 24 24">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                Skontrolovať
+              </button>
             </div>
 
             <div class="btn-row">
-              <button class="btn" id="nextBtn" onclick="nextStep()" title="Vypočítaj ďalší krok metódy bisekcie"><svg style="width:15px;height:15px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-right:5px" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>Ďalší</button>
-              <button class="btn btn-reset" onclick="reset()" title="Začni výpočet odznova"><svg style="width:15px;height:15px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-right:5px" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>Reset</button>
+              <button class="btn" id="nextBtn" onclick="nextStep()" title="Vypočítaj ďalší krok metódy bisekcie">
+                <svg style="width:15px;height:15px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-right:5px" viewBox="0 0 24 24">
+                  <line x1="5" y1="12" x2="19" y2="12"/>
+                  <polyline points="12 5 19 12 12 19"/>
+                </svg>
+                Ďalší
+              </button>
+
+              <button class="btn btn-reset" onclick="reset()" title="Začni výpočet odznova">
+                <svg style="width:15px;height:15px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-right:5px" viewBox="0 0 24 24">
+                  <polyline points="23 4 23 10 17 10"/>
+                  <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                </svg>
+                Reset
+              </button>
             </div>
 
             <div class="stepper-wrapper">
@@ -1270,7 +1323,10 @@
 
         <div class="right">
           <div class="graphs-label">
-            <svg style="width:14px;height:14px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-right:5px" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Grafické znázornenie každého kroku • Červený interval sa postupne zmenšuje
+            <svg style="width:14px;height:14px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-right:5px" viewBox="0 0 24 24">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            </svg>
+            Grafické znázornenie každého kroku • Červený interval sa postupne zmenšuje
           </div>
           <div id="graphsContainer" style="display: flex; flex-direction: column; gap: 20px;"></div>
           
@@ -1288,12 +1344,11 @@
       let mode = 'mixed';
       let waitingForQuiz = false;
       let currentC, currentFc;
-      let stopMethod = 'precision'; // 'precision' || 'steps'
+      let stopMethod = 'precision'; // || steps
       let maxSteps = 10;
 
-      // subStep for auto mode: 0=show a,b only | 1=+c | 2=+signs | 3=+length (then advance)
       let autoSubStep = 0;
-      let autoCurrentStep = null; // the pending step object being revealed
+      let autoCurrentStep = null;
 
       const INLINE_QUIZ_STEPS = 3;
       let inlineQuizActive = false;
@@ -1315,8 +1370,7 @@
       const exprOriginal = localStorage.getItem("functionOriginal") || expr;
 
       function isSafeExpr(expression) {
-        return /^[\dx\s\+\-\*\/\^\(\)\.\,_a-zA-Z]+$/.test(expression) &&
-          !/\b(?:fetch|alert|eval|Function|localStorage|document|window|import|require)\b/.test(expression);
+        return /^[\dx\s\+\-\*\/\^\(\)\.\,_a-zA-Z]+$/.test(expression) && !/\b(?:fetch|alert|eval|Function|localStorage|document|window|import|require)\b/.test(expression);
       }
 
       if (!isSafeExpr(expr)) window.location.href = "menu.html";
@@ -1332,8 +1386,7 @@
       function formatSubstituted(xVal, dp) {
         const v = xVal.toFixed(dp);
 
-        return exprOriginal
-          .replace(/\bx\b/g, `(${v})`);
+        return exprOriginal .replace(/\bx\b/g, `(${v})`);
       }
 
       a = parseFloat(localStorage.getItem("a"));
@@ -1363,9 +1416,13 @@
       
       const methodDisplay = document.getElementById("methodDisplay");
       if (stopMethod === 'precision') {
-        methodDisplay.innerHTML = `<svg style="width:14px;height:14px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-right:5px" viewBox="0 0 24 24"><line x1="19" y1="5" x2="5" y2="19"/><polyline points="15 5 19 5 19 9"/><polyline points="5 15 5 19 9 19"/></svg>Presnosť: <strong>${tol}</strong>`;
+        methodDisplay.innerHTML = `<svg style="width:14px;height:14px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-right:5px" viewBox="0 0 24 24">
+          <line x1="19" y1="5" x2="5" y2="19"/><polyline points="15 5 19 5 19 9"/><polyline points="5 15 5 19 9 19"/>
+          </svg>Presnosť: <strong>${tol}</strong>`;
       } else if (stopMethod === 'steps') {
-        methodDisplay.innerHTML = `<svg style="width:14px;height:14px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-right:5px" viewBox="0 0 24 24"><path d="M3.5 18V6L11.5 18V6"/><circle cx="17.5" cy="7.5" r="2.8"/><path d="M14.5 13.5H21"/><path d="M14.5 17H21"/></svg> Počet krokov: <strong>${maxSteps}</strong>`;
+        methodDisplay.innerHTML = `<svg style="width:14px;height:14px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-right:5px" viewBox="0 0 24 24">
+          <line x1="3" y1="18" x2="3" y2="6"/><polyline points="3 6 11 18 11 6"/><circle cx="17" cy="7" r="2.5"/><line x1="14" y1="12" x2="21" y2="12"/>
+          </svg>Počet krokov: <strong>${maxSteps}</strong>`;
       }
 
       updateIntervalHeader();
@@ -1641,17 +1698,14 @@
           }
         }
 
-        const isLastFinal = (stopMethod === 'precision' && intervalLength <= 2 * tol)
-                          || (stopMethod === 'steps' && step.i === maxSteps);
+        const isLastFinal = (stopMethod === 'precision' && intervalLength <= 2 * tol) || (stopMethod === 'steps' && step.i === maxSteps);
 
         let exp = `<strong>Krok ${step.i}:</strong><br>`;
 
-        // subStep >= 1: c hodnota
         if (subStep >= 1) {
           exp += `c = (${step.a.toFixed(decimalPlaces)} + ${step.b.toFixed(decimalPlaces)}) / 2 = ${step.c.toFixed(decimalPlaces)}<br>`;
         }
 
-        // subStep >= 2: f(a), f(c), znamienka
         if (subStep >= 2) {
           exp += `<br>f(a) = ${fa.toFixed(decimalPlaces)} ${fa > 0 ? '➕' : '➖'}<br>`;
           exp += `f(c) = ${fc.toFixed(decimalPlaces)} ${fc > 0 ? '➕' : '➖'}<br>`;
@@ -1663,7 +1717,6 @@
           }
         }
 
-        // subStep >= 3: |b-a| a záver
         if (subStep >= 3) {
           exp += `<br>|b − a| = ${intervalLength.toFixed(decimalPlaces)}<br>`;
           if (isLastFinal) {
@@ -1674,6 +1727,7 @@
               const error = Math.abs(b0 - a0) / Math.pow(2, step.i + 1);
               const minRoot = step.c - error;
               const maxRoot = step.c + error;
+
               exp += `✅ Dosiahnutý zadaný počet krokov (${maxSteps})<br>`;
               exp += `Chyba: (b₀−a₀)/2ⁿ⁺¹ = ±${smartFixed(error, decimalPlaces)}<br>`;
               exp += `<em>${smartFixed(minRoot, decimalPlaces)} < α < ${smartFixed(maxRoot, decimalPlaces)}</em><br>`;
@@ -1701,28 +1755,23 @@
           return;
         }
 
-        // Quiz mode — handled separately
         if (mode === 'mixed') {
           _bisectionStepMixed();
           return;
         }
 
-        // AUTO MODE — sub-step reveal logic
         if (autoSubStep < 3) {
-          // Just reveal more of the current step
           autoSubStep++;
           updateTable();
           updateGraph();
           return;
         }
 
-        // autoSubStep === 3 → finalize current step, advance to next
         const s = autoCurrentStep;
         const fa = f(s.a);
         steps.push(s);
         if (fa * s.fc < 0) { b = s.c; } else { a = s.c; }
 
-        // Check stop condition
         let shouldStop = false;
         if (stopMethod === 'precision') {
           if (Math.abs(b - a) <= 2 * tol) shouldStop = true;
@@ -1732,19 +1781,19 @@
 
         if (shouldStop) {
           if (stopMethod === 'steps') {
-            // Для режиму кроків: поточний крок вже є фінальним, додатковий не потрібен
             autoCurrentStep = null;
             autoSubStep = 0;
             running = false;
+
             updateButtons();
             updateTable();
             updateGraph();
+
             const lastS = steps[steps.length - 1];
             setTimeout(() => {
               showResultOverlay(lastS.c, lastS.fc, lastS.a, lastS.b, steps.filter(x => x.i !== 0).length, stopMethod);
             }, 300);
           } else {
-            // Для режиму presnosti: крок вже в steps, але показуємо фінальний стан інтервалу
             const nextC = (a + b) / 2;
             const nextFc = f(nextC);
             const nextStep = { i: steps.length, a, b, c: nextC, fc: nextFc };
@@ -1752,9 +1801,11 @@
             autoCurrentStep = null;
             autoSubStep = 0;
             running = false;
+
             updateButtons();
             updateTable();
             updateGraph();
+
             setTimeout(() => {
               showResultOverlay(nextC, nextFc, a, b, steps.filter(x => x.i !== 0).length, stopMethod);
             }, 300);
@@ -1762,7 +1813,6 @@
           return;
         }
 
-        // Prepare next step at subStep 0
         const nextC = (a + b) / 2;
         const nextFc = f(nextC);
         autoCurrentStep = { i: steps.length, a, b, c: nextC, fc: nextFc };
@@ -1773,15 +1823,15 @@
       }
 
       function _bisectionStepMixed() {
-        // After INLINE_QUIZ_STEPS quizzes, use same autoSubStep logic as auto mode
         const completedQuizSteps = steps.filter(x => x.i !== 0).length;
         if (!inlineQuizActive && completedQuizSteps >= INLINE_QUIZ_STEPS - 1) {
-          // Initialize autoCurrentStep if not set yet (first entry after last quiz)
           if (!autoCurrentStep) {
             const nextC = (a + b) / 2;
             autoCurrentStep = { i: steps.length, a, b, c: nextC, fc: f(nextC) };
             autoSubStep = 0;
-            updateTable(); updateGraph();
+
+            updateTable(); 
+            updateGraph();
             return;
           }
           if (autoSubStep < 3) {
@@ -1790,9 +1840,10 @@
             updateGraph();
             return;
           }
-          // finalize pending step
+
           const s = autoCurrentStep;
           if (!s) return;
+
           const fa = f(s.a);
           steps.push(s);
           if (fa * s.fc < 0) { b = s.c; } else { a = s.c; }
@@ -1806,19 +1857,33 @@
 
           if (shouldStop) {
             if (stopMethod === 'steps') {
-              autoCurrentStep = null; autoSubStep = 0;
-              running = false; updateButtons();
-              updateTable(); updateGraph();
+              autoCurrentStep = null; 
+              autoSubStep = 0;
+              running = false; 
+
+              updateButtons();
+              updateTable(); 
+              updateGraph();
+
               const lastS = steps[steps.length - 1];
-              setTimeout(() => { showResultOverlay(lastS.c, lastS.fc, lastS.a, lastS.b, steps.filter(x => x.i !== 0).length, stopMethod); }, 300);
+              setTimeout(() => { 
+                showResultOverlay(lastS.c, lastS.fc, lastS.a, lastS.b, steps.filter(x => x.i !== 0).length, stopMethod); 
+              }, 300);
             } else {
               const nextC = (a + b) / 2;
               const nextFc = f(nextC);
               steps.push({ i: steps.length, a, b, c: nextC, fc: nextFc });
-              autoCurrentStep = null; autoSubStep = 0;
-              running = false; updateButtons();
-              updateTable(); updateGraph();
-              setTimeout(() => { showResultOverlay(nextC, nextFc, a, b, steps.filter(x => x.i !== 0).length, stopMethod); }, 300);
+              autoCurrentStep = null; 
+              autoSubStep = 0;
+              running = false; 
+
+              updateButtons();
+              updateTable(); 
+              updateGraph();
+
+              setTimeout(() => { 
+                showResultOverlay(nextC, nextFc, a, b, steps.filter(x => x.i !== 0).length, stopMethod); 
+              }, 300);
             }
             return;
           }
@@ -1826,11 +1891,11 @@
           const nextC = (a + b) / 2;
           autoCurrentStep = { i: steps.length, a, b, c: nextC, fc: f(nextC) };
           autoSubStep = 0;
-          updateTable(); updateGraph();
+          updateTable(); 
+          updateGraph();
           return;
         }
 
-        // Quiz mode for first INLINE_QUIZ_STEPS steps
         currentC = (a + b) / 2;
         currentFc = f(currentC);
         const fa = f(a);
@@ -1844,22 +1909,29 @@
 
         if (shouldStop) {
           steps.push({ i: steps.length, a, b, c: currentC, fc: currentFc });
-          running = false; updateButtons();
-          updateTable(); updateGraph();
-          setTimeout(() => { showResultOverlay(currentC, currentFc, a, b, steps.filter(s => s.i !== 0).length, stopMethod); }, 300);
+          running = false;
+
+          updateButtons();
+          updateTable(); 
+          updateGraph();
+
+          setTimeout(() => { 
+            showResultOverlay(currentC, currentFc, a, b, steps.filter(s => s.i !== 0).length, stopMethod); 
+          }, 300);
           return;
         }
 
         const nextQuizStepNumber = steps.filter(x => x.i !== 0).length;
         if (nextQuizStepNumber < INLINE_QUIZ_STEPS - 1) {
-          inlineQuizActive = true; inlineQuizField = 0;
+          inlineQuizActive = true; 
+          inlineQuizField = 0;
           inlineQuizChecked = false;
-          updateTable(); updateGraph(); updateButtons();
+
+          updateTable(); 
+          updateGraph();
+          updateButtons();
           return;
         }
-
-        // Last quiz step confirmed — next call will init autoCurrentStep
-        // (handled at top of function)
       }
 
       let explainCallback = null;
@@ -1874,7 +1946,9 @@
 
       function closeExplain() {
         document.getElementById('explainOverlay').classList.remove('active');
-        if (explainCallback) { explainCallback(); explainCallback = null; }
+        if (explainCallback) { 
+          explainCallback(); explainCallback = null; 
+        }
       }
 
       function getDecimalPlaces() {
@@ -1891,10 +1965,12 @@
       function checkInlineQuiz() {
         const decimalPlaces = getDecimalPlaces();
         const thr = Math.pow(10, -(decimalPlaces - 1));
+
         const fa = f(a);
         const fc = currentFc;
         const faPos = fa >= 0;
         const fcPos = fc >= 0;
+        
         const correctC = currentC;
         const correctSignStr = (faPos ? '+' : '-') + (fcPos ? '+' : '-');
         const correctInterval = Math.abs(b - a);
@@ -2053,7 +2129,11 @@
         const stepB = steps.length === 0 ? b0 : b;
         const fa = f(stepA);
         steps.push({ i: steps.length, a: stepA, b: stepB, c: currentC, fc: currentFc });
-        if (fa * currentFc < 0) { b = currentC; } else { a = currentC; }
+        if (fa * currentFc < 0) { 
+          b = currentC; 
+        } else { 
+          a = currentC; 
+        }
 
         inlineQuizActive = false;
         inlineQuizChecked = false;
@@ -2103,7 +2183,6 @@
         autoSubStep = 0;
         autoCurrentStep = null;
 
-        // Очищаємо контейнер графіків при скиданні
         const graphsContainer = document.getElementById('graphsContainer');
         if (graphsContainer) graphsContainer.innerHTML = '';
 
@@ -2113,7 +2192,6 @@
           inlineQuizActive = true; 
           inlineQuizField = 0;
         } else {
-          // auto mode: start at subStep 0 for step 0 (just show a0, b0)
           autoSubStep = 0;
           autoCurrentStep = { i: 0, a: a0, b: b0, c: (a0+b0)/2, fc: f((a0+b0)/2) };
         }
@@ -2156,9 +2234,10 @@
 
       function updateIntervalHeader() {
         const lbl = document.getElementById('intervalHeaderLabel');
+
         if (!lbl) return;
         lbl.innerHTML = stopMethod === 'steps'
-          ? 'odhad chyby'
+          ? '&plusmn;chyba'
           : '|b<sub>n</sub> &minus; a<sub>n</sub>|';
       }
 
@@ -2173,6 +2252,7 @@
         let decimalPlaces = 3;
         if (stopMethod === 'precision') {
           const tolStr = tol.toString();
+
           if (tolStr.includes('.')) {
             const afterDot = tolStr.split('.')[1].length;
             decimalPlaces = afterDot + 2;
@@ -2181,12 +2261,7 @@
           }
         }
 
-        // Show static row 0 only before any steps are computed
-        // In quiz mode: hidden when quiz is active on step 0 (steps empty)
-        // In auto mode: always hidden (autoCurrentStep handles step 0 display)
-        const hideStaticRow0 = (mode === 'mixed' && inlineQuizActive && steps.length === 0)
-                             || (mode === 'auto')
-                             || (steps.length > 0 && steps[0].i === 0);
+        const hideStaticRow0 = (mode === 'mixed' && inlineQuizActive && steps.length === 0) || (mode === 'auto') || (steps.length > 0 && steps[0].i === 0);
 
         if (!hideStaticRow0) {
           const c0 = (a0 + b0) / 2;
@@ -2216,41 +2291,41 @@
             <td>${c0.toFixed(decimalPlaces)}</td>
             <td>${b0.toFixed(decimalPlaces)}</td>
             <td style="font-weight:bold; color:${signColor0}">${sign0}</td>
-            <td>${len0.toFixed(decimalPlaces)} ${ind0}</td>
+            <td>${stopMethod === 'steps' ? ('±' + (Math.abs(b0 - a0) / 2).toFixed(decimalPlaces)) : (len0.toFixed(decimalPlaces) + ' ' + ind0)}</td>
           </tr>`;
         }
 
-        // AUTO MODE: render completed steps + current pending subStep row
         if (mode === 'auto') {
-          // Render all fully completed steps
           for (const s of steps) {
             const fa = f(s.a);
             const fc = s.fc;
+            
             const signProduct = `${fa > 0 ? '+' : '−'}${fc > 0 ? '+' : '−'}`;
             const intervalLength = Math.abs(s.b - s.a);
-            const isAcc = stopMethod === 'precision' ? intervalLength <= 2 * tol
-                        : (s === steps[steps.length - 1] && !autoCurrentStep && !running);
+            const isAcc = stopMethod === 'precision' ? intervalLength <= 2 * tol : (s === steps[steps.length - 1] && !autoCurrentStep && !running);
             const styleClass = isAcc && !autoCurrentStep && !running ? 'success' : '';
+            
             const indicator = stopMethod === 'precision'
               ? (isAcc ? '<span class="accuracy-indicator achieved"></span>' : '<span class="accuracy-indicator not-achieved"></span>')
               : (isAcc ? '<span class="accuracy-indicator achieved"></span>' : '');
             const exp = generateExplanation(s, s.i);
             const onclickAttr = (isAcc && !running) ? ` onclick="reopenResultOverlay()" style="cursor: pointer;"` : '';
+            
             body.innerHTML += `<tr class="step-row ${styleClass}"${onclickAttr}>
               <td onmouseenter="showTooltip(event, \`${exp.replace(/`/g, '\\`')}\`)">${s.i}</td>
               <td>${s.a.toFixed(decimalPlaces)}</td>
               <td>${s.c.toFixed(decimalPlaces)}</td>
               <td>${s.b.toFixed(decimalPlaces)}</td>
               <td style="font-weight:bold; color:${fa*fc<0?'var(--success)':'var(--danger)'};">${signProduct}</td>
-              <td>${intervalLength.toFixed(decimalPlaces)} ${indicator}</td>
+              <td>${stopMethod === 'steps' ? ('±' + (Math.abs(b0 - a0) / Math.pow(2, s.i + 1)).toFixed(decimalPlaces)) : (intervalLength.toFixed(decimalPlaces) + ' ' + (indicator || ''))}</td>
             </tr>`;
           }
 
-          // Render current pending step with progressive reveal
           if (autoCurrentStep) {
             const s = autoCurrentStep;
             const fa = f(s.a);
             const fc = s.fc;
+            
             const signProduct = `${fa > 0 ? '+' : '−'}${fc > 0 ? '+' : '−'}`;
             const intervalLength = Math.abs(s.b - s.a);
             const isAcc = stopMethod === 'precision' ? intervalLength <= 2 * tol : false;
@@ -2263,6 +2338,7 @@
             const autoErrVal = Math.abs(b0 - a0) / Math.pow(2, s.i + 1);
             const lenCellVal = stopMethod === 'steps' ? `±${autoErrVal.toFixed(decimalPlaces)}` : `${intervalLength.toFixed(decimalPlaces)} ${indicator}`;
             const lenCell   = autoSubStep >= 3 ? `<td>${lenCellVal}</td>` : `<td style="color:var(--text-secondary)">—</td>`;
+            
             body.innerHTML += `<tr class="step-row" style="background:var(--theory-bg);">
               <td onmouseenter="showTooltip(event, \`${exp.replace(/`/g, '\\`')}\`)">${s.i}</td>
               <td>${s.a.toFixed(decimalPlaces)}</td>
@@ -2273,12 +2349,12 @@
             </tr>`;
           }
           updateTableHint();
-          return; // skip the rest (quiz rows etc.)
+          return;
         }
 
         for (let idx = 0; idx < steps.length; idx++) {
           const s = steps[idx];
-          const stepNumber = s.i; // already correct: 0 for step0, 1 for step1, etc.
+          const stepNumber = s.i;
           const isLast = idx === steps.length - 1;
           
           const intervalLength = Math.abs(s.b - s.a);
@@ -2316,7 +2392,7 @@
         }
 
         if (mode === 'mixed' && inlineQuizActive) {
-          const quizStepNum = steps.length; // 0 for first quiz, 1 for second, etc.
+          const quizStepNum = steps.length;
           const qa = steps.length === 0 ? a0 : a;
           const qb = steps.length === 0 ? b0 : b;
           const fa_q = f(qa);
@@ -2328,56 +2404,70 @@
           const correctLen_q = Math.abs(qb - qa);
 
           const cCell = inlineQuizField >= 1
-            ? `<td><div class="quiz-input-cell">
-                <input class="quiz-input correct" id="inlineInput_c" type="text"
+            ? `<td>
+                <div class="quiz-input-cell">
+                  <input class="quiz-input correct" id="inlineInput_c" type="text"
                   value="${correctC_q.toFixed(decimalPlaces)}" readonly>
-                </div></td>`
-            : `<td><div class="quiz-input-cell">
-                <input class="quiz-input" id="inlineInput_c" type="text" placeholder="?" autocomplete="off"
+                </div>
+              </td>`
+            : `<td>
+                <div class="quiz-input-cell">
+                  <input class="quiz-input" id="inlineInput_c" type="text" placeholder="?" autocomplete="off"
                   onkeydown="if(event.key==='Enter') checkInlineQuiz()">
-                </div></td>`;
+                </div>
+              </td>`;
 
           const signCell = inlineQuizField === 0
-            ? `<td><div class="quiz-input-cell" style="opacity:0.25;pointer-events:none;">
-                <select class="quiz-input" disabled style="width:70px;">
+            ? `<td>
+                <div class="quiz-input-cell" style="opacity:0.25;pointer-events:none;">
+                  <select class="quiz-input" disabled style="width:70px;">
                   <option>?</option></select>
-                </div></td>`
+                </div>
+              </td>`
             : inlineQuizField === 1
-            ? `<td><div class="quiz-input-cell">
-                <select class="quiz-input" id="inlineInput_sign" style="width:70px; padding:5px 4px; cursor:pointer;">
-                  <option value="" disabled selected>?</option>
-                  <option value="--">−−</option>
-                  <option value="-+">−+</option>
-                  <option value="+-">+−</option>
-                  <option value="++">++</option>
-                </select>
-                </div></td>`
-            : `<td><div class="quiz-input-cell">
-                <select class="quiz-input correct" id="inlineInput_sign" disabled style="width:70px; padding:5px 4px;">
-                  <option value="${correctSignStr_q}" selected>${correctSignStr_q.replace(/\-/g,'−').replace(/\+/g,'+')}</option>
-                </select>
-                </div></td>`;
+            ? `<td>
+                <div class="quiz-input-cell">
+                  <select class="quiz-input" id="inlineInput_sign" style="width:70px; padding:5px 4px; cursor:pointer;">
+                    <option value="" disabled selected>?</option>
+                    <option value="--">−−</option>
+                    <option value="-+">−+</option>
+                    <option value="+-">+−</option>
+                    <option value="++">++</option>
+                  </select>
+                </div>
+              </td>`
+            : `<td>
+                <div class="quiz-input-cell">
+                  <select class="quiz-input correct" id="inlineInput_sign" disabled style="width:70px; padding:5px 4px;">
+                    <option value="${correctSignStr_q}" selected>${correctSignStr_q.replace(/\-/g,'−').replace(/\+/g,'+')}</option>
+                  </select>
+                </div>
+              </td>`;
 
           const correctError_q = Math.abs(b0 - a0) / Math.pow(2, quizStepNum + 1);
           const quizCorrectVal_q = stopMethod === 'steps' ? correctError_q : correctLen_q;
           const lenCell = inlineQuizField < 2
-            ? `<td><div class="quiz-input-cell" style="opacity:0.25;pointer-events:none;">
-                <input class="quiz-input" type="text" placeholder="?" disabled>
-                </div></td>`
+            ? `<td>
+                <div class="quiz-input-cell" style="opacity:0.25;pointer-events:none;">
+                  <input class="quiz-input" type="text" placeholder="?" disabled>
+                </div>
+              </td>`
             : inlineQuizField >= 3
-            ? `<td><div class="quiz-input-cell">
-                <input class="quiz-input correct" id="inlineInput_len" type="text"
+            ? `<td>
+                <div class="quiz-input-cell">
+                  <input class="quiz-input correct" id="inlineInput_len" type="text"
                   value="${(stopMethod === 'steps' ? '±' : '') + quizCorrectVal_q.toFixed(getDecimalPlaces())}" readonly>
-                </div></td>`
-            : `<td><div class="quiz-input-cell">
-                <input class="quiz-input" id="inlineInput_len" type="text" placeholder="?" autocomplete="off"
+                </div>
+              </td>`
+            : `<td>
+                <div class="quiz-input-cell">
+                  <input class="quiz-input" id="inlineInput_len" type="text" placeholder="?" autocomplete="off"
                   onkeydown="if(event.key==='Enter') checkInlineQuiz()">
-                </div></td>`;
-
-
+                </div>
+              </td>`;
 
           const quizStep = { i: quizStepNum, a: qa, b: qb, c: currentC, fc: currentFc };
-          // field=0: нічого | field=1: +c | field=2: +знак | field=3: +|b-a| (синхронно з кривою f(x))
+
           const quizSubStep = inlineQuizField >= 3 ? 3 : inlineQuizField;
           const quizExp = generateExplanation(quizStep, quizStepNum, quizSubStep);
           body.innerHTML += `<tr class="step-row" id="inlineQuizRow" style="background: var(--theory-bg);">
@@ -2390,17 +2480,24 @@
           </tr>`;
 
           setTimeout(() => {
-            if (inlineQuizField === 0) { const el = document.getElementById('inlineInput_c'); if(el) el.focus(); }
-            else if (inlineQuizField === 1) { const el = document.getElementById('inlineInput_sign'); if(el) el.focus(); }
-            else if (inlineQuizField === 2) { const el = document.getElementById('inlineInput_len'); if(el) el.focus(); }
+            if (inlineQuizField === 0) { 
+              const el = document.getElementById('inlineInput_c'); 
+              if(el) el.focus(); 
+            } else if (inlineQuizField === 1) { 
+              const el = document.getElementById('inlineInput_sign');
+              if(el) el.focus(); 
+            } else if (inlineQuizField === 2) { 
+              const el = document.getElementById('inlineInput_len'); 
+              if(el) el.focus(); 
+            }
           }, 50);
         }
 
-        // Mixed mode after quizzes: show pending autoCurrentStep row with substep reveal
         if (mode === 'mixed' && !inlineQuizActive && autoCurrentStep) {
           const s = autoCurrentStep;
           const fa = f(s.a);
           const fc = s.fc;
+          
           const signProduct = `${fa > 0 ? '+' : '−'}${fc > 0 ? '+' : '−'}`;
           const intervalLength = Math.abs(s.b - s.a);
           const isAcc = stopMethod === 'precision' ? intervalLength <= 2 * tol : false;
@@ -2413,6 +2510,7 @@
           const mixedErrVal = Math.abs(b0 - a0) / Math.pow(2, s.i + 1);
           const mixedLenVal = stopMethod === 'steps' ? `±${mixedErrVal.toFixed(decimalPlaces)}` : `${intervalLength.toFixed(decimalPlaces)} ${indicator}`;
           const lenCell  = autoSubStep >= 3 ? `<td>${mixedLenVal}</td>` : `<td style="color:var(--text-secondary)">—</td>`;
+          
           body.innerHTML += `<tr class="step-row" style="background:var(--theory-bg);">
             <td onmouseenter="showTooltip(event, \`${exp.replace(/`/g, '\\`')}\`)">${s.i}</td>
             <td>${s.a.toFixed(decimalPlaces)}</td>
@@ -2464,7 +2562,6 @@
         const tableHint = document.getElementById('tableHint');
         if (!tableHint) return;
 
-        // Is the calculation fully complete? (last step in steps, no pending autoCurrentStep)
         const isFinished = !running && !autoCurrentStep && steps.length > 0;
 
         const circlesHintTooltipRed = stopMethod === 'precision'
@@ -2483,18 +2580,13 @@
           tableHint.style.fontWeight = weight || '';
         }
 
-        // FINAL state (both modes): calculation done, show click hint
         if (isFinished) {
           setHint('👆 Klikni na zelený riadok pre zobrazenie výsledku', '', '');
           return;
         }
 
         if (mode === 'auto') {
-          // Show circles hint only after step 0's |b-a| column has been revealed
-          // That happens at autoSubStep >= 3 for step i=0, OR when step 0 is already in steps[]
-          const step0Done = steps.some(s => s.i === 0)
-                         || (autoCurrentStep && autoCurrentStep.i === 0 && autoSubStep >= 3)
-                         || (autoCurrentStep && autoCurrentStep.i > 0);
+          const step0Done = steps.some(s => s.i === 0) || (autoCurrentStep && autoCurrentStep.i === 0 && autoSubStep >= 3) || (autoCurrentStep && autoCurrentStep.i > 0);
           if (step0Done) {
             setHint(circlesHint, '', '');
           } else {
@@ -2502,16 +2594,12 @@
           }
 
         } else if (mode === 'mixed') {
-          // completedQuizSteps = how many non-zero-index steps are confirmed (steps 1,2 from quiz)
-          // Note: step i=0 is always the first quiz step confirmed
           const completedQuizSteps = steps.filter(x => x.i !== 0).length;
           const allQuizDone = !inlineQuizActive && completedQuizSteps >= INLINE_QUIZ_STEPS - 1;
 
           if (inlineQuizActive) {
-            // Quiz phase: show fill-in hint
             setHint('✏️ Vypĺňaj polia zľava doprava - každé potvrď tlačidlom Skontrolovať, polia sa odomykajú postupne', '#f57c00', '500');
           } else if (allQuizDone) {
-            // Post-quiz auto phase: show circles hint (persists until end)
             setHint(circlesHint, '', '');
           } else {
             setHint('', '', '');
@@ -2574,17 +2662,15 @@
 
         const savedScrollTop = rightPanel ? rightPanel.scrollTop : 0;
 
-        // In auto mode: 1 graph for step 0 (always) + one per completed step with i>0 + 1 if pendingStep exists
-        // In mixed mode: 1 for step 0 + one per completed step with i>0 + 1 if pending quiz or autoCurrentStep
         let targetGraphCount;
         if (mode === 'auto') {
           targetGraphCount = 1 + steps.filter(s => s.i !== 0).length + (autoCurrentStep ? 1 : 0);
         } else {
           targetGraphCount = 1 + steps.filter(s => s.i !== 0).length + (inlineQuizActive || autoCurrentStep ? 1 : 0);
         }
+
         const currentGraphCount = container.children.length;
         const shouldAppendOnly = currentGraphCount >= targetGraphCount - 1;
-        
         if (!shouldAppendOnly) {
           container.innerHTML = '';
         }
@@ -2627,7 +2713,6 @@
           return [cen - span/2, cen + span/2];
         }
 
-        // Helper: sample f(x) on range
         function sampleF(xMin, xMax) {
           const xs = [], ys = [];
           const st = (xMax - xMin) / 300;
@@ -2635,9 +2720,9 @@
           return { xs, ys };
         }
 
-        // Helper: render one graph div (create or reuse)
         function getOrCreateDiv(id, height) {
           let div = document.getElementById(id);
+
           if (!div || !shouldAppendOnly) {
             div = document.createElement('div');
             div.id = id;
@@ -2651,39 +2736,37 @@
           return div;
         }
 
-        // Helper: get y range for zoom — завжди фіксований, щоб масштаб не стрибав при зникненні кривої
         function getYRange(ys) {
           const valid = ys.filter(isFinite);
           if (valid.length === 0) return null;
+
           const mn = Math.min(...valid), mx = Math.max(...valid);
           const r = mx - mn;
           if (r > maxYRange) return [-maxYRange/2, maxYRange/2];
+
           const pad = r * 0.15 || 1;
           return [mn - pad, mx + pad];
         }
 
-        // Helper: build interval + a/b markers traces (always shown from subStep 0)
         function intervalTraces(sA, sB, sC, sI, subSt, showFx, xArr, yArr) {
           const faC = f(sA), fbC = f(sB), fcC = f(sC);
           const aColor = faC > 0 ? '#4caf50' : '#f44336';
           const bColor = fbC > 0 ? '#4caf50' : '#f44336';
           const cColor = fcC > 0 ? '#4caf50' : '#f44336';
           const tr = [];
-          // f(x) curve — shown only at subStep 3 (or for completed steps)
+
           if (showFx) {
             tr.push({ x: xArr, y: yArr, mode: 'lines', name: 'f(x)', line: { color: '#2196f3', width: 2 } });
           }
-          // interval line
+
           tr.push({ x: [sA, sB], y: [0, 0], mode: 'lines+markers', name: 'interval', line: { color: 'red', width: 5 }, marker: { size: 10, color: 'red' } });
-          // a marker
           tr.push({ x: [sA], y: [0], mode: 'markers+text', text: [`a${sI}`], textposition: 'top', name: `a${sI}`, marker: { size: 12, color: aColor, symbol: 'square' } });
-          // b marker
           tr.push({ x: [sB], y: [0], mode: 'markers+text', text: [`b${sI}`], textposition: 'top', name: `b${sI}`, marker: { size: 12, color: bColor, symbol: 'square' } });
-          // c marker — subStep >= 1
+
           if (subSt >= 1) {
             tr.push({ x: [sC], y: [0], mode: 'markers+text', text: [`c${sI}`], textposition: 'top', name: `c${sI}`, marker: { size: 10, color: 'orange', symbol: 'diamond', line: { color: cColor, width: 2 } } });
           }
-          // f(a) and f(c) value markers on curve — subStep >= 2
+
           if (subSt >= 2) {
             tr.push({ x: [sA], y: [faC], mode: 'markers', name: `f(a${sI})`, marker: { size: 12, color: aColor, symbol: 'circle' } });
             tr.push({ x: [sC], y: [fcC], mode: 'markers', name: `f(c${sI})`, marker: { size: 12, color: 'orange', symbol: 'circle', line: { color: cColor, width: 2 } } });
@@ -2692,21 +2775,13 @@
         }
 
         if (mode === 'auto') {
-          // --- AUTO MODE GRAPH RENDERING ---
-
-          // Determine which step is "current" (being revealed)
           const pendingStep = autoCurrentStep;
           const pendingSubSt = autoSubStep;
 
-          // Completed steps (in steps[]) — all fully shown but f(x) removed from all except last
-          // "last completed" = steps[steps.length-1], but only if pendingStep exists we hide f(x) from it too
-          const allSteps = steps; // includes step 0 if it was pushed at finish
-
-          // Graph for each completed step
+          const allSteps = steps;
           for (let i = 0; i < allSteps.length; i++) {
             const s = allSteps[i];
             const isLastCompleted = i === allSteps.length - 1;
-            // hide f(x) from all completed steps when there's a pending step being revealed
             const showFx = !running ? true : (!pendingStep && isLastCompleted);
 
             let prevA, prevB;
@@ -2723,7 +2798,6 @@
             const div = getOrCreateDiv(`graph-${s.i}`, s.i === 0 ? 500 : 450);
             const traces = intervalTraces(s.a, s.b, s.c, s.i, 3, showFx, xs, ys);
 
-            // precision lines for last completed if no pending
             if (!pendingStep && isLastCompleted && stopMethod === 'precision') {
               const mn = Math.min(...ys.filter(isFinite)), mx = Math.max(...ys.filter(isFinite));
               traces.push({ x: [s.c - tol, s.c - tol], y: [mn, mx], mode: 'lines', line: { color: 'rgba(76,175,80,0.7)', width: 2, dash: 'dash' }, name: `oblasť presnosti ±${tol}`, showlegend: true, hoverinfo: 'skip' });
@@ -2746,13 +2820,17 @@
             }, { responsive: true, displayModeBar: true, displaylogo: false });
           }
 
-          // Graph for pending step (being progressively revealed)
           if (pendingStep) {
             const s = pendingStep;
             let prevA, prevB;
-            if (s.i === 0) { prevA = a0; prevB = b0; }
-            else if (allSteps.length === 0) { prevA = a0; prevB = b0; }
-            else { prevA = allSteps[allSteps.length-1].a; prevB = allSteps[allSteps.length-1].b; }
+            if (s.i === 0) { 
+              prevA = a0; prevB = b0; 
+            } else if (allSteps.length === 0) { 
+              prevA = a0; prevB = b0; 
+            } else { 
+              prevA = allSteps[allSteps.length-1].a; 
+              prevB = allSteps[allSteps.length-1].b; 
+            }
 
             const [zXMin, zXMax] = s.i === 0
               ? [globalXMin, globalXMax]
@@ -2761,7 +2839,6 @@
             const yRng = getYRange(ys);
             const showFx = pendingSubSt >= 3;
 
-            // Використовуємо той самий id що й після фіналізації, щоб не дублювати
             const div = getOrCreateDiv(`graph-${s.i}`, s.i === 0 ? 500 : 450);
             const traces = intervalTraces(s.a, s.b, s.c, s.i, pendingSubSt, showFx, xs, ys);
 
@@ -2780,20 +2857,17 @@
             }, { responsive: true, displayModeBar: true, displaylogo: false });
           }
 
-          // scroll to latest
           if (!tableUserScrolled && container.children.length > 0) {
-            setTimeout(() => { autoScrollToLatest(); }, 100);
+            setTimeout(() => { 
+              autoScrollToLatest(); 
+            }, 100);
           }
-          return; // skip old mixed-mode graph rendering below
+          return;
         }
 
-        // --- MIXED mode graph rendering with progressive reveal ---
         const fa0 = f(a0);
         const fb0 = f(b0);
 
-        // Determine what's currently being revealed
-        // During quiz: inlineQuizField = subStep (0=only a,b | 1=+c | 2=+signs/f-dots | 3=+fx)
-        // After quizzes: autoCurrentStep + autoSubStep
         const mixedPending = inlineQuizActive
           ? { i: steps.length,
               a: steps.length === 0 ? a0 : a,
@@ -2802,7 +2876,6 @@
           : autoCurrentStep;
         const mixedSubSt = inlineQuizActive ? inlineQuizField : autoSubStep;
 
-        // Create or reuse graph-0 div
         let div0 = document.getElementById('graph-0');
         if (!div0 || !shouldAppendOnly) {
           div0 = document.createElement('div');
@@ -2815,13 +2888,13 @@
           container.appendChild(div0);
         }
 
-        // Render graph-0
         {
           const s0IsPending = mixedPending && mixedPending.i === 0;
           const s0IsCompleted = steps.some(s => s.i === 0);
           const subStGraph0 = s0IsPending ? mixedSubSt : (s0IsCompleted ? 3 : 0);
           const showFxGraph0 = !running ? true : (s0IsPending ? mixedSubSt >= 3 : (s0IsCompleted && !mixedPending));
           const traces0 = intervalTraces(a0, b0, (a0+b0)/2, 0, subStGraph0, showFxGraph0, xVGlobal, yVGlobal);
+          
           Plotly.react(div0, traces0, {
             margin: { t: 60, b: 40, l: 50, r: 20 },
             title: { text: `<b>Krok 0</b>`, font: { color: textColor } },
@@ -2832,7 +2905,6 @@
           }, { responsive: true, displayModeBar: true, displaylogo: false });
         }
 
-        // Render completed steps (i > 0) — full traces, f(x) removed from last if pending exists
         for (let i = 0; i < steps.length; i++) {
           const s = steps[i];
           if (s.i === 0) continue;
@@ -2860,7 +2932,6 @@
 
           const traces = intervalTraces(s.a, s.b, s.c, s.i, 3, showFx, xs, ys);
 
-          // Add precision/steps accuracy lines for last completed step
           if (isLastCompleted && !mixedPending) {
             if (stopMethod === 'precision') {
               const isAcc = Math.abs(s.b - s.a) <= 2 * tol;
@@ -2887,7 +2958,6 @@
           }, { responsive: true, displayModeBar: true, displaylogo: false });
         }
 
-        // Render pending step graph (i > 0)
         if (mixedPending && mixedPending.i > 0) {
           const s = mixedPending;
           const lastComp = steps.filter(x => x.i > 0);

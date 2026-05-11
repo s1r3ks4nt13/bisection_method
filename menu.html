@@ -10,51 +10,30 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
   <style>
-
-    /* ============================================================
-       DESIGN TOKENS
-       ============================================================ */
-
     :root {
-      /* Backgrounds */
       --bg:           #ECEEFF;
       --bg2:          #E2E4FD;
       --surface:      #FFFFFF;
       --surface2:     #F3F4FF;
-
-      /* Borders */
       --border:       #D5D8FF;
       --border2:      #A5AAEE;
-
-      /* Text */
       --text-primary:   #1E1B4B;
       --text-secondary: #3730A3;
       --text-muted:     #6B7280;
-
-      /* Accent colours */
       --accent:       #1976D2;
       --accent2:      #304fa3;
       --accent3:      #764BA2;
-
-      /* Semantic */
       --ok:           #059669;
       --error:        #DC2626;
-
-      /* Shadows */
       --shadow:       0 2px 12px rgba(25, 118, 210, .10),
                       0 1px  3px rgba(25, 118, 210, .06);
       --shadow-lg:    0 16px 48px rgba(25, 118, 210, .18);
-
-      /* Radius */
       --radius:       10px;
       --radius-lg:    18px;
-
-      /* Typography */
       --font:         'Plus Jakarta Sans', sans-serif;
       --font-mono:    'IBM Plex Mono', 'Courier New', monospace;
     }
 
-    /* ── Dark mode ─────────────────────────────────────────────── */
     html.dark {
       --bg:           #0D0F1E;
       --bg2:          #111328;
@@ -71,11 +50,6 @@
       --ok:           #34D399;
       --error:        #F87171;
     }
-
-
-    /* ============================================================
-       RESET & BASE
-       ============================================================ */
 
     *, *::before, *::after {
       box-sizing: border-box;
@@ -97,14 +71,16 @@
       transition: background .3s ease, color .3s ease;
     }
 
-    ::-webkit-scrollbar { width: 5px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
-
-
-    /* ============================================================
-       MAIN CARD
-       ============================================================ */
+    ::-webkit-scrollbar { 
+      width: 5px; 
+    }
+    ::-webkit-scrollbar-track { 
+      background: transparent; 
+    }
+    ::-webkit-scrollbar-thumb { 
+      background: var(--border2); 
+      border-radius: 3px; 
+    }
 
     .card {
       background: var(--surface);
@@ -117,11 +93,6 @@
       border-top: 3px solid var(--accent);
       transition: background .3s ease;
     }
-
-
-    /* ============================================================
-       TOP BAR (theme + help icons inside card)
-       ============================================================ */
 
     .top-bar {
       position: absolute;
@@ -187,11 +158,6 @@
       border-right-color: var(--accent);
     }
 
-
-    /* ============================================================
-       HEADING & SUBTITLE
-       ============================================================ */
-
     h2 {
       color: var(--accent);
       margin-bottom: 8px;
@@ -205,11 +171,6 @@
       margin-bottom: 22px;
       font-size: 0.93em;
     }
-
-
-    /* ============================================================
-       INPUT / EQUATION ROW
-       ============================================================ */
 
     .equation-wrapper {
       display: flex;
@@ -254,18 +215,12 @@
       font-weight: 400;
     }
 
-
-    /* ============================================================
-       BUTTONS
-       ============================================================ */
-
     button {
       font-family: var(--font);
       cursor: pointer;
       transition: all .2s ease;
     }
 
-    /* Primary */
     .btn-primary {
       background: var(--accent);
       color: white;
@@ -287,7 +242,6 @@
       box-shadow: 0 6px 20px rgba(25, 118, 210, .35);
     }
 
-    /* History / secondary */
     .btn-history {
       margin-top: 10px;
       background: transparent;
@@ -305,11 +259,6 @@
       box-shadow: 0 4px 12px rgba(25, 118, 210, .20);
     }
 
-
-    /* ============================================================
-       ERROR MESSAGE
-       ============================================================ */
-
     .error-message {
       background: rgba(220, 38, 38, .07);
       border: 1px solid rgba(220, 38, 38, .30);
@@ -324,11 +273,6 @@
     .error-message.active {
       display: block;
     }
-
-
-    /* ============================================================
-       MAIN LAYOUT (left: form, right: bisection card)
-       ============================================================ */
 
     .main-layout {
       display: flex;
@@ -351,11 +295,6 @@
       align-items: flex-start;
       margin-top: 52px;
     }
-
-
-    /* ============================================================
-       BISECTION CARD (right panel)
-       ============================================================ */
 
     .bisection-card {
       background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
@@ -408,11 +347,6 @@
       line-height: 1.65;
       text-align: left;
     }
-
-
-    /* ============================================================
-       STEPPER
-       ============================================================ */
 
     .stepper-wrapper {
       margin-top: 24px;
@@ -496,11 +430,6 @@
       color: var(--text-muted);
     }
 
-
-    /* ============================================================
-       HELP MODAL
-       ============================================================ */
-
     .modal {
       display: none;
       position: fixed;
@@ -575,9 +504,6 @@
       color: var(--text-primary);
     }
 
-
-    /* ── Syntax sections inside modal ─────────────────────────── */
-
     .syntax-section {
       margin-bottom: 22px;
     }
@@ -626,9 +552,6 @@
       font-weight: 600;
     }
 
-
-    /* ── Example box ───────────────────────────────────────────── */
-
     .example-box {
       background: rgba(25, 118, 210, .05);
       border-left: 3px solid var(--accent2);
@@ -670,17 +593,13 @@
   </style>
 </head>
 <body>
-
-  <!-- ============================================================
-       MAIN CARD
-       ============================================================ -->
   <div class="card">
-
     <div class="top-bar">
       <button id="themeToggle" class="icon-btn" onclick="toggleTheme()" title="Zmeniť tému">
         <svg id="moonIco" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
         </svg>
+
         <svg id="sunIco"  viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:none">
           <circle cx="12" cy="12" r="5"/>
           <line x1="12" y1="1"  x2="12" y2="3"/>
@@ -693,6 +612,7 @@
           <line x1="18.36" y1="5.64"  x2="19.78" y2="4.22"/>
         </svg>
       </button>
+
       <div class="btn-wrapper">
         <button id="helpBtn" class="icon-btn" onclick="showHelp()" title="Klikni pre príklady funkcií a syntax">
           <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -701,13 +621,12 @@
             <line x1="12" y1="17" x2="12.01" y2="17"/>
           </svg>
         </button>
+
         <div id="helpHint" class="hint-tooltip">Príklady a nápoveda</div>
       </div>
     </div>
 
     <div class="main-layout">
-
-      <!-- Left: heading + input + buttons -->
       <div class="main-left">
         <h2>📈 Zadaj funkciu</h2>
         <p class="subtitle">pre hľadanie koreňa metódou bisekcie</p>
@@ -722,12 +641,8 @@
         <button class="btn-primary" onclick="goNext()" title="Prejsť na výber intervalu">
           Zadať interval →
         </button>
-        <button
-          onclick="window.location.href='history.html'"
-          id="historyBtn"
-          class="btn-history"
-          title="Zobraziť históriu výpočtov"
-        >
+
+        <button onclick="window.location.href='history.html'" id="historyBtn" class="btn-history" title="Zobraziť históriu výpočtov">
           <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:5px">
             <polyline points="12 8 12 12 14 14"/>
             <path d="M3.05 11a9 9 0 1 0 .5-4.5"/>
@@ -736,7 +651,6 @@
         </button>
       </div>
 
-      <!-- Right: bisection info card -->
       <div class="main-right">
         <div class="bisection-card">
           <div class="bisection-card-inner">
@@ -752,10 +666,8 @@
           </div>
         </div>
       </div>
+    </div>
 
-    </div><!-- /main-layout -->
-
-    <!-- Stepper -->
     <div class="stepper-wrapper">
       <div class="stepper-inner">
         <div class="stepper">
@@ -779,16 +691,10 @@
         </div>
       </div>
     </div>
+  </div>
 
-  </div><!-- /card -->
-
-
-  <!-- ============================================================
-       HELP MODAL
-       ============================================================ -->
   <div id="helpModal" class="modal">
     <div class="modal-content">
-
       <div class="modal-header">
         <h2>📝 Ako zapisovať funkcie?</h2>
         <button class="close-btn" onclick="closeHelp()">&times;</button>
@@ -901,18 +807,10 @@
           <div class="example-item" onclick="selectExample('x^3 + log(x) + 2')">x^3 + log(x) + 2</div>
         </div>
       </div>
-
     </div>
-  </div><!-- /helpModal -->
+  </div>
 
-
-  <!-- ============================================================
-       JAVASCRIPT  (original logic, only theme patched to html.dark)
-       ============================================================ -->
   <script>
-
-    /* ── Theme ─────────────────────────────────────────────────── */
-
     function loadTheme() {
       try {
         const theme = localStorage.getItem('theme') || 'light';
@@ -923,7 +821,6 @@
         }
       } catch(e) {}
     }
-
     function toggleTheme() {
       document.documentElement.classList.toggle('dark');
       const isDark = document.documentElement.classList.contains('dark');
@@ -933,11 +830,7 @@
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
       } catch(e) {}
     }
-
     loadTheme();
-
-
-    /* ── History badge ─────────────────────────────────────────── */
 
     (function() {
       try {
@@ -945,11 +838,9 @@
         const btn = document.getElementById('historyBtn');
         if (btn) {
           const count = h.length;
-          // Find the text node (last child) and update only the label
           const label = count > 0
             ? 'História výpočtov (' + count + ')'
             : 'História výpočtov';
-          // Replace last text node, keep the SVG intact
           const nodes = btn.childNodes;
           for (let i = nodes.length - 1; i >= 0; i--) {
             if (nodes[i].nodeType === Node.TEXT_NODE) {
@@ -967,9 +858,6 @@
       } catch(e) {}
     })();
 
-
-    /* ── Math → JS conversion ──────────────────────────────────── */
-
     function convertMathToJS(expr) {
       let converted = expr.trim();
 
@@ -980,32 +868,29 @@
       converted = converted.replace(/sqrt\^(\d+)\s*\(([^)]+)\)/g, (m, p, a) => `__SQRT_${p}__(${a})`);
       converted = converted.replace(/abs\^(\d+)\s*\(([^)]+)\)/g,  (m, p, a) => `__ABS_${p}__(${a})`);
 
-      converted = converted.replace(/(?<![a-zA-Z])sin\(/g,  'Math.sin(');
-      converted = converted.replace(/(?<![a-zA-Z])cos\(/g,  'Math.cos(');
-      converted = converted.replace(/(?<![a-zA-Z])tan\(/g,  'Math.tan(');
-      converted = converted.replace(/(?<![a-zA-Z])log\(/g,  'Math.log(');
+      converted = converted.replace(/(?<![a-zA-Z])sin\(/g, 'Math.sin(');
+      converted = converted.replace(/(?<![a-zA-Z])cos\(/g, 'Math.cos(');
+      converted = converted.replace(/(?<![a-zA-Z])tan\(/g, 'Math.tan(');
+      converted = converted.replace(/(?<![a-zA-Z])log\(/g, 'Math.log(');
       converted = converted.replace(/(?<![a-zA-Z])sqrt\(/g, 'Math.sqrt(');
-      converted = converted.replace(/(?<![a-zA-Z])abs\(/g,  'Math.abs(');
+      converted = converted.replace(/(?<![a-zA-Z])abs\(/g, 'Math.abs(');
 
-      converted = converted.replace(/e\s*\^\s*\(([^)]+)\)/g,           'Math.exp($1)');
-      converted = converted.replace(/e\s*\^\s*([a-zA-Z0-9*+\-/]+)/g,  'Math.exp($1)');
+      converted = converted.replace(/e\s*\^\s*\(([^)]+)\)/g, 'Math.exp($1)');
+      converted = converted.replace(/e\s*\^\s*([a-zA-Z0-9*+\-/]+)/g, 'Math.exp($1)');
 
       converted = converted.replace(/\^/g, '**');
 
-      converted = converted.replace(/__SIN_(\d+)__\(([^)]+)\)/g,  '(Math.sin($2))**$1');
-      converted = converted.replace(/__COS_(\d+)__\(([^)]+)\)/g,  '(Math.cos($2))**$1');
-      converted = converted.replace(/__TAN_(\d+)__\(([^)]+)\)/g,  '(Math.tan($2))**$1');
-      converted = converted.replace(/__LOG_(\d+)__\(([^)]+)\)/g,  '(Math.log($2))**$1');
+      converted = converted.replace(/__SIN_(\d+)__\(([^)]+)\)/g, '(Math.sin($2))**$1');
+      converted = converted.replace(/__COS_(\d+)__\(([^)]+)\)/g, '(Math.cos($2))**$1');
+      converted = converted.replace(/__TAN_(\d+)__\(([^)]+)\)/g, '(Math.tan($2))**$1');
+      converted = converted.replace(/__LOG_(\d+)__\(([^)]+)\)/g, '(Math.log($2))**$1');
       converted = converted.replace(/__SQRT_(\d+)__\(([^)]+)\)/g, '(Math.sqrt($2))**$1');
-      converted = converted.replace(/__ABS_(\d+)__\(([^)]+)\)/g,  '(Math.abs($2))**$1');
+      converted = converted.replace(/__ABS_(\d+)__\(([^)]+)\)/g, '(Math.abs($2))**$1');
 
       converted = converted.replace(/(\d+)\s*([a-zA-Z])/g, '$1*$2');
 
       return converted;
     }
-
-
-    /* ── Validation ────────────────────────────────────────────── */
 
     function validateFunction(expr) {
       try {
@@ -1027,9 +912,6 @@
         return { valid: false, error: e.message };
       }
     }
-
-
-    /* ── Live input validation ─────────────────────────────────── */
 
     const funcInput = document.getElementById('func');
 
@@ -1053,9 +935,6 @@
       }
     });
 
-
-    /* ── Modal ─────────────────────────────────────────────────── */
-
     function showHelp() {
       document.getElementById('helpModal').classList.add('open');
     }
@@ -1078,12 +957,8 @@
       }
     });
 
-
-    /* ── Navigation ────────────────────────────────────────────── */
-
     function isSafeExpr(expr) {
-      return /^[\dx\s\+\-\*\/\^\(\)\.\,_a-zA-Z]+$/.test(expr) &&
-        !/\b(?:fetch|alert|eval|Function|localStorage|document|window|import|require)\b/.test(expr);
+      return /^[\dx\s\+\-\*\/\^\(\)\.\,_a-zA-Z]+$/.test(expr) && !/\b(?:fetch|alert|eval|Function|localStorage|document|window|import|require)\b/.test(expr);
     }
 
     function goNext() {
@@ -1113,9 +988,6 @@
       if (e.key === 'Enter') goNext();
     });
 
-
-    /* ── Bisection animation ───────────────────────────────────── */
-
     const animStates = [
       '[a]───●───[b]',
       '[a]──●──[b]',
@@ -1132,9 +1004,6 @@
       animEl.textContent = animStates[animIndex];
     }, 1200);
 
-
-    /* ── Help hint fade-in ─────────────────────────────────────── */
-
     window.addEventListener('load', () => {
       const hint = document.getElementById('helpHint');
       setTimeout(() => {
@@ -1142,7 +1011,6 @@
         setTimeout(() => { hint.style.opacity = '0'; }, 3000);
       }, 500);
     });
-
   </script>
 </body>
 </html>
