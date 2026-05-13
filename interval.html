@@ -725,6 +725,182 @@
       margin-right: 0.4em;
       flex-shrink: 0;
     }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 70px 12px 20px;
+        font-size: 15px;
+      }
+
+      .float-btn {
+        width: 36px;
+        height: 36px;
+        top: 12px;
+      }
+      .float-btn svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      #backBtn {
+        left:  12px; 
+      }
+      
+      #homeBtn { 
+        left:  56px; 
+      }
+
+      #helpBtn { 
+        right: 12px; 
+      }
+
+      #themeToggle { 
+        right: 56px; 
+      }
+
+      .container {
+        padding: 22px 18px 24px;
+        border-radius: var(--radius);
+      }
+
+      h2 {
+        font-size: 1.3em;
+      }
+
+      .function-display {
+        font-size: 0.95em;
+        padding: 11px 14px;
+        margin: 14px 0;
+        word-break: break-all;
+      }
+
+      .method-selection {
+        padding: 16px 14px;
+        margin: 14px 0;
+      }
+
+      .method-options {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .method-card {
+        min-width: 0;
+        width: 100%;
+        padding: 14px 16px;
+      }
+
+      .method-card h4 {
+        font-size: 1em;
+      }
+
+      .method-card p {
+        font-size: 0.85em;
+      }
+
+      .interval-top-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        margin: 14px 0;
+      }
+
+      .interval-hint {
+        font-size: 0.85em;
+        margin: 10px 0 14px;
+      }
+
+      .interval-inputs {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        margin: 14px 0;
+      }
+
+      .interval-input-wrapper {
+        width: 100%;
+      }
+
+      .interval-input-wrapper input {
+        width: 100%;
+        font-size: 1em;
+      }
+
+      #checkBtn {
+        width: 100%;
+        padding: 12px 20px;
+      }
+
+      .hint-box, .success-box, .error-box {
+        font-size: 0.85em;
+        padding: 12px 14px;
+      }
+
+      #chartContainer {
+        height: 320px;
+        margin: 16px 0;
+      }
+
+      .step-circle {
+        width: 22px;
+        height: 22px;
+        font-size: 0.6em;
+      }
+
+      .step-label, .step-label-inactive {
+        font-size: 0.66em;
+      }
+
+      .step-sublabel {
+        font-size: 0.56em;
+      }
+
+      .help-modal {
+        padding: 20px 12px;
+      }
+
+      .help-modal-content {
+        padding: 20px 18px;
+        width: 100%;
+      }
+
+      .help-modal-header h2 {
+        font-size: 0.98em;
+      }
+
+      .help-formula {
+        font-size: 0.88em;
+        padding: 10px 12px;
+        word-break: break-all;
+      }
+    }
+
+    @media (max-width: 380px) {
+      body {
+        padding: 64px 10px 16px;
+      }
+
+      .container {
+        padding: 18px 14px 20px;
+      }
+
+      h2 {
+        font-size: 1.15em;
+      }
+
+      .float-btn {
+        width: 34px;
+        height: 34px;
+      }
+      
+      #homeBtn { 
+        left: 52px; 
+      }
+
+      #themeToggle { 
+        right: 52px; 
+      }
+    }
   </style>
 </head>
 <body>

@@ -608,6 +608,148 @@
       background: #B91C1C; 
       transform: translateY(-1px); 
     }
+
+    @media (max-width: 900px) {
+      header {
+        padding: 0 12px;
+        height: 52px;
+      }
+
+      .header-title {
+        font-size: 0.95em;
+      }
+
+      #listPage {
+        padding: 16px 12px;
+      }
+
+      .history-card {
+        padding: 12px 14px;
+        gap: 10px;
+      }
+
+      .card-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 1em;
+      }
+
+      .card-func {
+        font-size: 0.86em;
+      }
+
+      .card-meta {
+        font-size: 0.78em;
+      }
+
+      .card-result {
+        font-size: 0.82em;
+      }
+
+      .clear-btn {
+        padding: 6px 10px;
+        font-size: 0.78em;
+      }
+
+      .detail-layout {
+        flex-direction: column;
+        height: auto;
+        gap: 12px;
+        padding: 12px;
+      }
+
+      .detail-left, .detail-right {
+        flex: none;
+        width: 100%;
+        max-height: none;
+        padding: 16px;
+      }
+
+      .detail-left {
+        overflow: visible;
+      }
+
+      .detail-right {
+        overflow-y: visible;
+      }
+
+      .detail-func-title {
+        font-size: 0.86em;
+        word-break: break-all;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+      }
+
+      .info-item .label {
+        font-size: 0.62em;
+      }
+
+      .info-item .value {
+        font-size: 0.8em;
+      }
+
+      .table-container {
+        max-height: 50vh;
+        overflow-x: auto;
+      }
+
+      table {
+        min-width: 460px;
+      }
+
+      th {
+        font-size: 0.72em;
+        padding: 7px 5px;
+      }
+
+      td {
+        font-size: 0.74em;
+        padding: 6px 5px;
+      }
+
+      .graph-wrap {
+        min-height: 280px;
+      }
+
+      .modal-box {
+        max-width: 92%;
+        padding: 22px 18px;
+      }
+
+      .modal-btns {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .btn-cancel, .btn-confirm {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .header-title {
+        font-size: 0.85em;
+      }
+
+      #listPage {
+        padding: 12px 10px;
+      }
+
+      .detail-layout {
+        padding: 10px;
+      }
+
+      .detail-left, .detail-right {
+        padding: 14px 12px;
+      }
+
+      table {
+        min-width: 420px;
+      }
+    }
   </style>
 </head>
 <body>

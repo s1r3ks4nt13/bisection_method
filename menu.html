@@ -590,6 +590,186 @@
       transform: translateX(4px);
     }
 
+    @media (max-width: 768px) {
+      body {
+        padding: 12px;
+        font-size: 15px;
+      }
+
+      .card {
+        padding: 24px 18px 22px;
+        border-radius: var(--radius);
+      }
+
+      .top-bar {
+        right: 10px;
+        top: 10px;
+        gap: 6px;
+      }
+
+      .icon-btn {
+        width: 34px;
+        height: 34px;
+      }
+
+      .hint-tooltip {
+        top: calc(100% + 8px);
+        left: auto;
+        right: 0;
+        transform: none;
+        font-size: 0.75em;
+      }
+      .hint-tooltip::before {
+        left: auto;
+        right: 12px;
+        top: -6px;
+        transform: none;
+        border: 6px solid transparent;
+        border-bottom-color: var(--accent);
+        border-right-color: transparent;
+      }
+
+      h2 {
+        font-size: 1.35em;
+        margin-top: 6px;
+      }
+
+      .subtitle {
+        font-size: 0.86em;
+        margin-bottom: 16px;
+      }
+
+      .equation-wrapper {
+        padding: 10px 12px;
+        gap: 8px;
+      }
+
+      input {
+        font-size: 1em;
+      }
+
+      .equation-right {
+        font-size: 1em;
+      }
+
+      .btn-primary {
+        padding: 12px 20px;
+        font-size: 0.95em;
+      }
+
+      .btn-history {
+        padding: 10px 20px;
+        font-size: 0.88em;
+      }
+
+      .main-layout {
+        flex-direction: column;
+        gap: 18px;
+      }
+
+      .main-right {
+        margin-top: 0;
+      }
+
+      .bisection-card {
+        padding: 16px 18px;
+      }
+
+      .bisection-card-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+
+      .bisection-card-title {
+        font-size: 0.98em;
+      }
+
+      .bisection-anim {
+        font-size: 0.75em;
+        padding: 6px 10px;
+      }
+
+      .bisection-card-desc {
+        font-size: 0.84em;
+      }
+
+      .stepper-wrapper {
+        margin-top: 18px;
+        padding-top: 12px;
+      }
+
+      .step-circle {
+        width: 22px;
+        height: 22px;
+        font-size: 0.6em;
+      }
+
+      .step-label, .step-label-inactive {
+        font-size: 0.66em;
+      }
+
+      .step-sublabel {
+        font-size: 0.56em;
+      }
+
+      .modal {
+        padding: 20px 12px;
+      }
+
+      .modal-content {
+        padding: 20px 18px;
+        width: 100%;
+      }
+
+      .modal-header h2 {
+        font-size: 1em;
+      }
+
+      .syntax-table {
+        grid-template-columns: 1fr;
+        gap: 5px;
+      }
+
+      .syntax-label {
+        text-align: left;
+        padding: 8px 10px;
+        font-size: 0.82em;
+      }
+
+      .syntax-value {
+        padding: 8px 10px;
+        font-size: 0.8em;
+      }
+
+      .example-item {
+        padding: 9px 12px;
+        font-size: 0.82em;
+      }
+      .example-item:hover {
+        transform: none;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .card {
+        padding: 20px 14px 18px;
+      }
+
+      h2 {
+        font-size: 1.2em;
+      }
+
+      .icon-btn {
+        width: 32px;
+        height: 32px;
+      }
+
+      input {
+        font-size: 0.95em;
+      }
+    }
   </style>
 </head>
 <body>

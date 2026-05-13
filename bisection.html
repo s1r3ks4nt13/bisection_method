@@ -2,8 +2,10 @@
 <html lang="sk">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Výpočet | Vizualizácia metódy bisekcie</title>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    
     <style>
       :root {
         --bg: #ECEEFF;
@@ -407,18 +409,18 @@
 
       .mode-tooltip {
         display: none;
-        position: absolute;
-        bottom: calc(100% + 10px);
-        left: 50%;
-        transform: translateX(-50%);
+        position: fixed;
         background: var(--tooltip-bg);
         color: var(--tooltip-text);
         padding: 10px 14px;
         border-radius: 8px;
         font-size: 0.82em;
         line-height: 1.5;
-        white-space: nowrap;
-        z-index: 100;
+        white-space: normal;
+        width: max-content;
+        max-width: 260px;
+        text-align: center;
+        z-index: 10000;
         box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         pointer-events: none;
       }
@@ -427,7 +429,7 @@
         content: '';
         position: absolute;
         top: 100%;
-        left: 50%;
+        left: var(--arrow-x, 50%);
         transform: translateX(-50%);
         border: 6px solid transparent;
         border-top-color: var(--tooltip-bg);
@@ -1006,6 +1008,248 @@
       .hidden {
         display: none;
       }
+
+      @media (max-width: 900px) {
+        header {
+          font-size: 1.15em;
+          padding: 14px 12px;
+        }
+
+        .icon-btn {
+          width: 34px;
+          height: 34px;
+        }
+
+        #back {
+          left: 10px;
+          top: 12px;
+          width: 34px;
+          height: 34px;
+        }
+
+        #homeBtn {
+          left: 52px;
+          top: 12px;
+          width: 34px;
+          height: 34px;
+        }
+
+        #themeToggle {
+          right: 52px;
+          top: 12px;
+        }
+
+        #helpBtn {
+          right: 10px;
+          top: 12px;
+        }
+
+        .layout {
+          flex-direction: column;
+          height: auto;
+          gap: 14px;
+          padding: 14px 12px;
+        }
+
+        .left, .right {
+          flex: none;
+          width: 100%;
+          max-height: none;
+          padding: 14px;
+        }
+
+        .left {
+          overflow: visible;
+        }
+
+        .right {
+          overflow-y: visible;
+        }
+
+        .table-container {
+          overflow-x: auto;
+          max-height: 60vh;
+        }
+
+        table {
+          font-size: 0.85em;
+          min-width: 480px;
+        }
+
+        th, td {
+          padding: 7px 5px;
+        }
+
+        .btn-row {
+          flex-wrap: wrap;
+          gap: 8px;
+          max-width: 100%;
+        }
+
+        .btn {
+          min-width: 0;
+          padding: 9px;
+          font-size: 0.92em;
+        }
+
+        .mode-selector {
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .mode-btn-wrap {
+          width: 100%;
+        }
+
+        .mode-btn {
+          padding: 11px;
+          font-size: 0.95em;
+        }
+
+        .mode-tooltip {
+          white-space: normal;
+          width: 90vw;
+          max-width: 260px;
+        }
+
+        .info-box {
+          font-size: 0.85em;
+        }
+
+        #graph {
+          height: 320px;
+        }
+
+        #graphsContainer > div {
+          min-height: 280px;
+          margin-bottom: 20px;
+        }
+
+        .modal-content {
+          margin: 5% auto;
+          padding: 20px 18px;
+          width: 92%;
+          max-height: 86vh;
+        }
+
+        .modal-header h2 {
+          font-size: 1.05em;
+        }
+
+        .formula {
+          padding: 12px;
+          font-size: 0.95em;
+          word-break: break-all;
+        }
+
+        .theory-section h3 {
+          font-size: 1em;
+        }
+
+        .tooltip {
+          width: 280px;
+          font-size: 0.8em;
+        }
+
+        .quiz-input, select.quiz-input {
+          width: 70px;
+          font-size: 0.85em;
+        }
+
+        .quiz-step-banner {
+          font-size: 0.78em;
+          padding: 7px 10px;
+        }
+
+        .result-content {
+          padding: 24px 18px;
+          width: 92%;
+          max-height: 90vh;
+          overflow-y: auto;
+        }
+
+        .result-icon {
+          font-size: 3em;
+          margin-bottom: 12px;
+        }
+
+        .result-title {
+          font-size: 1.5em;
+          margin-bottom: 14px;
+        }
+
+        .result-info {
+          padding: 14px;
+          margin: 14px 0;
+        }
+
+        .result-info-row {
+          flex-direction: column;
+          gap: 2px;
+          padding: 8px 0;
+        }
+
+        .result-buttons {
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .result-btn {
+          padding: 12px 18px;
+          font-size: 1em;
+        }
+
+        .explain-box {
+          padding: 24px 18px;
+          width: 92%;
+          max-height: 88vh;
+          overflow-y: auto;
+        }
+
+        .step-circle {
+          width: 22px;
+          height: 22px;
+          font-size: 0.6em;
+        }
+
+        .step-label {
+          font-size: 0.66em;
+        }
+
+        .scroll-to-latest {
+          padding: 10px 18px;
+          font-size: 0.85em;
+        }
+      }
+
+      @media (max-width: 380px) {
+        header {
+          font-size: 1em;
+          padding: 12px 8px;
+        }
+
+        .layout {
+          padding: 10px 8px;
+          gap: 10px;
+        }
+
+        .left, .right {
+          padding: 12px 10px;
+        }
+
+        table {
+          font-size: 0.78em;
+        }
+
+        .btn {
+          font-size: 0.85em;
+          padding: 8px;
+        }
+
+        .mode-btn {
+          font-size: 0.88em;
+        }
+      }
     </style>
   </head>
 
@@ -1155,7 +1399,7 @@
 
         <div class="result-buttons">
           <button class="result-btn secondary" onclick="closeResultOverlay()">Zavrieť</button>
-          <button class="result-btn secondary" onclick="window.location.href='history.html'" style="background:#7c3aed;"><svg style="width:14px;height:14px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-right:5px" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>História</button>
+          <button class="result-btn secondary" onclick="window.location.href='history.html'" style="background:#7c3aed;">História</button>
           <button class="result-btn primary" onclick="resetFromResult()">Nový výpočet</button>
         </div>
       </div>
@@ -1645,6 +1889,49 @@
         if (tooltip) positionTooltip(tooltip, e);
       });
 
+      document.querySelectorAll('.mode-btn-wrap').forEach(wrap => {
+        const tooltip = wrap.querySelector('.mode-tooltip');
+        if (!tooltip) return;
+
+        function positionModeTooltip() {
+          const btn = wrap.querySelector('.mode-btn');
+          if (!btn) return;
+
+          const btnRect = tooltip.getBoundingClientRect();
+
+          const wasHidden = tooltip.style.display !== 'block';
+          if (wasHidden) {
+            tooltip.style.visibility = 'hidden';
+            tooltip.style.display = 'block';
+          }
+
+          const ttRect = tooltip.getBoundingClientRect();
+          const wrapRect = btn.getBoundingClientRect();
+
+          let left = wrapRect.left + wrapRect.width / 2 - ttRect.width / 2;
+          const minLeft = 10;
+          const maxLeft = window.innerWidth - ttRect.width - 10;
+          if (left < minLeft) left = minLeft;
+          if (left > maxLeft) left = maxLeft;
+
+          const top = wrapRect.top - ttRect.height - 10;
+
+          tooltip.style.left = left + 'px';
+          tooltip.style.top  = top  + 'px';
+
+          const btnCenterX = wrapRect.left + wrapRect.width / 2;
+          const arrowOffset = btnCenterX - left;
+          tooltip.style.setProperty('--arrow-x', arrowOffset + 'px');
+
+          if (wasHidden) {
+            tooltip.style.display = '';
+            tooltip.style.visibility = '';
+          }
+        }
+
+        wrap.addEventListener('mouseenter', positionModeTooltip);
+        wrap.addEventListener('mousemove', positionModeTooltip);
+      });
       function setMode(newMode) {
         const hasProgress = steps.filter(x=>x.i!==0).length > 0
           || (mode === 'mixed' && inlineQuizActive && (inlineQuizField > 0 || steps.length > 0))
