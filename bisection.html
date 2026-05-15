@@ -2016,14 +2016,14 @@
               const maxRoot = step.c + error;
 
               exp += `✅ Dosiahnutý zadaný počet krokov (${maxSteps})<br>`;
-              exp += `Chyba: (b₀−a₀)/2ⁿ⁺¹ = ±${smartFixed(error, decimalPlaces)}<br>`;
+              exp += `Odhad chyby: (b₀−a₀)/2ⁿ⁺¹ = ±${smartFixed(error, decimalPlaces)}<br>`;
               exp += `<em>${smartFixed(minRoot, decimalPlaces)} < α < ${smartFixed(maxRoot, decimalPlaces)}</em><br>`;
               exp += `<strong>Výpočet ukončený!</strong>`;
             }
           } else {
             if (stopMethod === 'steps') {
               const error = Math.abs(b0 - a0) / Math.pow(2, stepNumber + 1);
-              exp += `Chyba: (b₀−a₀)/2ⁿ⁺¹ = ±${smartFixed(error, decimalPlaces)}`;
+              exp += `Odhad chyby: (b₀−a₀)/2ⁿ⁺¹ = ±${smartFixed(error, decimalPlaces)}`;
             } else {
               exp += `|b − a| = ${intervalLength.toFixed(decimalPlaces)}, nie je ≤ 2·${tol}`;
             }
@@ -2524,7 +2524,7 @@
 
         if (!lbl) return;
         lbl.innerHTML = stopMethod === 'steps'
-          ? '&plusmn;chyba'
+          ? 'odhad chyby'
           : '|b<sub>n</sub> &minus; a<sub>n</sub>|';
       }
 
@@ -3417,7 +3417,7 @@
               <span class="result-info-value">${smartFixed(intervalLength)}</span>
             </div>
             <div class="result-info-row">
-              <span class="result-info-label">Chyba:</span>
+              <span class="result-info-label">Odhad chyby:</span>
               <span class="result-info-value">±${smartFixed(error)}</span>
             </div>
             <div class="result-info-row">

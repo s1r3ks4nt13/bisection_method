@@ -1796,9 +1796,16 @@
             <strong>✅ Automaticky nájdený interval!</strong><br>
             a = ${a.toFixed(3)}, b = ${b.toFixed(3)}<br>
             f(${a.toFixed(3)}) = ${fx1.toFixed(3)} ${fx1 > 0 ? '➕' : '➖'}<br>
-            f(${b.toFixed(3)}) = ${fx2.toFixed(3)} ${fx2 > 0 ? '➕' : '➖'}<br><br>
-            <button onclick="continueToBisection()" style="margin:10px auto 0; display:block; background:var(--btn-primary); color:white; padding:12px 24px; border:none; border-radius:8px; cursor:pointer; font-size:1em;">Prejsť na výpočet →</button>
+            f(${b.toFixed(3)}) = ${fx2.toFixed(3)} ${fx2 > 0 ? '➕' : '➖'}
           `;
+          document.getElementById('continueBtn').classList.remove('hidden');
+          const checkBtn = document.getElementById('checkBtn');
+          if (checkBtn) {
+            checkBtn.disabled = true;
+            checkBtn.style.opacity = '0.45';
+            checkBtn.style.cursor = 'not-allowed';
+            checkBtn.title = 'Interval bol nájdený automaticky ✓';
+          }
           
           localStorage.setItem('a', a);
           localStorage.setItem('b', b);
