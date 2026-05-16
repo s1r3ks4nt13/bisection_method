@@ -1440,123 +1440,106 @@
 
     function showTwoFunctionsGraph() {
       const components = getSimplifiedComponents(expr);
-      
-      if (!components) {
-        showFullGraph();
-        return;
-      }
+      if (!components) { showFullGraph(); return; }
 
       const isDark = document.documentElement.classList.contains('dark');
       const textColor = isDark ? '#e0e0e0' : '#222';
       const gridColor = isDark ? '#404040' : '#e0e0e0';
-      const bgColor = isDark ? '#2d2d2d' : '#ffffff';
+      const bgColor   = isDark ? '#2d2d2d' : '#ffffff';
 
       let xMin = -5, xMax = 5;
-      if (expr.includes('Math.log')) {
-        xMin = -0.5;
-        xMax = 10;
+      if (expr.includes('Math.log'))  { xMin = 0.001; xMax = 10; }
+      if (expr.includes('Math.sqrt')) { xMin = 0.001; xMax = 5;  }
+      if (expr.includes('Math.exp'))  { xMin = -3;    xMax = 5;  }
+
+      const needPositiveX = expr.includes('Math.log') || expr.includes('Math.sqrt');
+      function buildXY(x0, x1, n) {
+        const xs = [], y1s = [], y2s = [];
+        for (let i = 0; i <= n; i++) {
+          const x = x0 + i * (x1 - x0) / n;
+          xs.push(x);
+          if (needPositiveX && x <= 0) { y1s.push(null); y2s.push(null); continue; }
+          const y1 = evalExpr(x, components[0]);
+          const y2 = evalExpr(x, components[1]);
+          if (isFinite(y1) && isFinite(y2)) { y1s.push(y1); y2s.push(y2); }
+          else { y1s.push(null); y2s.push(null); }
+        }
+        return { xs, y1s, y2s };
       }
 
-      const xVals = [];
-      const y1Vals = [];
-      const y2Vals = [];
+      function detectIntersections(xs, y1s, y2s) {
+        const pts = [];
+        for (let i = 1; i < xs.length - 1; i++) {
+          if (y1s[i] == null || y2s[i] == null || y1s[i-1] == null || y2s[i-1] == null) continue;
+          const d0 = y1s[i-1] - y2s[i-1];
+          const d1 = y1s[i]   - y2s[i];
 
-      for (let x = xMin; x <= xMax; x += (xMax - xMin) / 300) {
-        xVals.push(x);
+          if (d0 * d1 < 0) {
+            const xc = xs[i-1] - d0 * (xs[i] - xs[i-1]) / (d1 - d0);
+            pts.push({ x: xc, y: evalExpr(xc, components[1]) });
+            continue;
+          }
 
-        let y1, y2;
-        if (expr.includes('Math.log') && x <= 0) {
-          y1 = null;
-          y2 = null;
-        } else {
-          y1 = evalExpr(x, components[0]);
-          y2 = evalExpr(x, components[1]);
+          if (i < xs.length - 1 && y1s[i+1] != null && y2s[i+1] != null) {
+            const d2 = y1s[i+1] - y2s[i+1];
+            const a0 = Math.abs(d0), a1 = Math.abs(d1), a2 = Math.abs(d2);
+            if (a1 < Math.max(a0, a2) * 0.001 && d0 * d2 < 0) {
+              pts.push({ x: xs[i], y: (y1s[i] + y2s[i]) / 2 });
+            }
+          }
         }
-        
-        if (isFinite(y1) && isFinite(y2)) {
-          y1Vals.push(y1);
-          y2Vals.push(y2);
-        } else {
-          y1Vals.push(null);
-          y2Vals.push(null);
-        }
+        return pts;
       }
 
-      const intersections = [];
-      for (let i = 0; i < xVals.length - 1; i++) {
-        if (y1Vals[i] === null || y2Vals[i] === null) continue;
-        
-        const diff1 = y1Vals[i] - y2Vals[i];
-        const diff2 = y1Vals[i+1] - y2Vals[i+1];
-        
-        if (diff1 * diff2 < 0) {
-          const xIntersect = xVals[i] - diff1 * (xVals[i+1] - xVals[i]) / (diff2 - diff1);
-          const yIntersect = evalExpr(xIntersect, components[1]);
-          
-          intersections.push({
-            x: xIntersect,
-            y: yIntersect
-          });
-        }
+      const wide = buildXY(xMin, xMax, 400);
+      const intersections = detectIntersections(wide.xs, wide.y1s, wide.y2s);
+
+      if (intersections.length > 0) {
+        const ixs    = intersections.map(p => p.x);
+        const ixMin  = Math.min(...ixs);
+        const ixMax  = Math.max(...ixs);
+        const margin = Math.max(1.5, (ixMax - ixMin) * 1.5 + 1.0);
+        xMin = Math.max(xMin, ixMin - margin);
+        xMax = Math.min(xMax, ixMax + margin);
       }
 
-      const allYVals = [...y1Vals, ...y2Vals].filter(y => y !== null && isFinite(y));
-      let yMin = Math.min(...allYVals);
-      let yMax = Math.max(...allYVals);
+      const { xs: xVals, y1s: y1Vals, y2s: y2Vals } = buildXY(xMin, xMax, 300);
 
+      const allY = [...y1Vals, ...y2Vals].filter(y => y !== null && isFinite(y));
+      let yMin = Math.min(...allY);
+      let yMax = Math.max(...allY);
       const yRange = yMax - yMin;
       const maxRange = 50;
-      
-      if (yRange > maxRange) {
-        const hasIntersectionsOutside = intersections.some(p => Math.abs(p.y) > maxRange / 2);
-        
-        if (hasIntersectionsOutside && intersections.length > 0) {
-          const intersectionYs = intersections.map(p => p.y);
-          const intersectionMin = Math.min(...intersectionYs);
-          const intersectionMax = Math.max(...intersectionYs);
-          const padding = Math.abs(intersectionMax - intersectionMin) * 0.3 || 10;
-          
-          yMin = intersectionMin - padding;
-          yMax = intersectionMax + padding;
-        } else {
-          const centerY = 0;
 
-          yMin = centerY - maxRange / 2;
-          yMax = centerY + maxRange / 2;
+      if (yRange > maxRange) {
+        if (intersections.length > 0) {
+          const iys     = intersections.map(p => p.y);
+          const iySpan  = Math.max(...iys) - Math.min(...iys);
+          const padding = Math.max(5, iySpan * 0.3);
+          yMin = Math.min(...iys) - padding;
+          yMax = Math.max(...iys) + padding;
+        } else {
+          yMin = -25; yMax = 25;
         }
       }
-      
+
       const yPadding = (yMax - yMin) * 0.15;
 
       const trace1 = {
-        x: xVals,
-        y: y1Vals,
-        type: 'scatter',
-        mode: 'lines',
+        x: xVals, y: y1Vals, type: 'scatter', mode: 'lines',
         name: beautifyFormula(components[0]),
         line: { color: '#ef5350', width: 3 }
       };
-
       const trace2 = {
-        x: xVals,
-        y: y2Vals,
-        type: 'scatter',
-        mode: 'lines',
+        x: xVals, y: y2Vals, type: 'scatter', mode: 'lines',
         name: beautifyFormula(components[1]),
         line: { color: '#42a5f5', width: 3 }
       };
-
       const trace3 = {
         x: intersections.map(p => p.x),
         y: intersections.map(p => p.y),
-        type: 'scatter',
-        mode: 'markers',
-        name: 'Priesečník',
-        marker: {
-          size: 15,
-          color: '#ffc107',
-          line: { color: '#ff6b6b', width: 2 }
-        }
+        type: 'scatter', mode: 'markers', name: 'Priesečník',
+        marker: { size: 15, color: '#ffc107', line: { color: '#ff6b6b', width: 2 } }
       };
 
       const layout = {
@@ -1564,19 +1547,12 @@
           text: `Dve funkcie a ich priesečník<br><sub>🔴 ${beautifyFormula(components[0])}   🔵 ${beautifyFormula(components[1])}</sub>`,
           font: { color: textColor }
         },
-        xaxis: { 
-          title: 'x', 
-          gridcolor: gridColor,
-          color: textColor
-        },
-        yaxis: { 
-          title: 'f(x)', 
-          gridcolor: gridColor,
-          color: textColor,
+        xaxis: { title: 'x', gridcolor: gridColor, color: textColor },
+        yaxis: {
+          title: 'f(x)', gridcolor: gridColor, color: textColor,
           range: [yMin - yPadding, yMax + yPadding]
         },
-        plot_bgcolor: bgColor,
-        paper_bgcolor: 'transparent',
+        plot_bgcolor: bgColor, paper_bgcolor: 'transparent',
         font: { color: textColor },
         height: 400,
         margin: { t: 60, b: 40, l: 50, r: 20 },
@@ -1774,45 +1750,53 @@
     }
 
     function autoFindInterval() {
-      let searchMin = -5, searchMax = 5, step = 0.5;
-      
-      if (expr.includes('Math.log')) {
-        searchMin = 0.001;
-        searchMax = 10;
-        step = 0.1;
-      }
-      
-      for (let x = searchMin; x < searchMax; x += step) {
-        const fx1 = f(x);
-        const fx2 = f(x + step);
-        
-        if (isFinite(fx1) && isFinite(fx2) && fx1 * fx2 < 0) {
-          const a = x;
-          const b = x + step;
-          
-          hideAllMessages();
-          document.getElementById('successBox').style.display = 'block';
-          document.getElementById('successBox').innerHTML = `
-            <strong>✅ Automaticky nájdený interval!</strong><br>
-            a = ${a.toFixed(3)}, b = ${b.toFixed(3)}<br>
-            f(${a.toFixed(3)}) = ${fx1.toFixed(3)} ${fx1 > 0 ? '➕' : '➖'}<br>
-            f(${b.toFixed(3)}) = ${fx2.toFixed(3)} ${fx2 > 0 ? '➕' : '➖'}
-          `;
-          document.getElementById('continueBtn').classList.remove('hidden');
-          const checkBtn = document.getElementById('checkBtn');
-          if (checkBtn) {
-            checkBtn.disabled = true;
-            checkBtn.style.opacity = '0.45';
-            checkBtn.style.cursor = 'not-allowed';
-            checkBtn.title = 'Interval bol nájdený automaticky ✓';
+      const isLog  = expr.includes('Math.log');
+      const isSqrt = expr.includes('Math.sqrt');
+
+      const ranges = (isLog || isSqrt)
+        ? [[0.001, 10, 0.1], [0.001, 100, 1.0]]
+        : [[-5, 5, 0.5], [-20, 20, 1.0], [-100, 100, 5.0]];
+
+      for (const [searchMin, searchMax, step] of ranges) {
+        for (const offset of [0, step / 2]) {
+          const start = searchMin + offset;
+          const n = Math.round((searchMax - start) / step);
+          for (let i = 0; i < n; i++) {
+            const x   = start + i * step;
+            const fx1 = f(x);
+            const fx2 = f(x + step);
+
+            if (isFinite(fx1) && isFinite(fx2) && fx1 * fx2 < 0) {
+              const a = parseFloat(x.toFixed(6));
+              const b = parseFloat((x + step).toFixed(6));
+
+              document.getElementById('aInput').value = a;
+              document.getElementById('bInput').value = b;
+
+              hideAllMessages();
+              document.getElementById('successBox').style.display = 'block';
+              document.getElementById('successBox').innerHTML = `
+                <strong>✅ Automaticky nájdený interval!</strong><br>
+                a = ${a.toFixed(3)}, b = ${b.toFixed(3)}<br>
+                f(${a.toFixed(3)}) = ${fx1.toFixed(3)} ${fx1 > 0 ? '➕' : '➖'}<br>
+                f(${b.toFixed(3)}) = ${fx2.toFixed(3)} ${fx2 > 0 ? '➕' : '➖'}
+              `;
+              document.getElementById('continueBtn').classList.remove('hidden');
+              const checkBtn = document.getElementById('checkBtn');
+              if (checkBtn) {
+                checkBtn.disabled = true;
+                checkBtn.style.opacity = '0.45';
+                checkBtn.style.cursor = 'not-allowed';
+                checkBtn.title = 'Interval bol nájdený automaticky ✓';
+              }
+
+              localStorage.setItem('a', a);
+              localStorage.setItem('b', b);
+
+              showFullGraph();
+              return;
+            }
           }
-          
-          localStorage.setItem('a', a);
-          localStorage.setItem('b', b);
-          
-          showFullGraph();
-          
-          return;
         }
       }
       showError('❌ Nemožno nájsť interval automaticky! Skús inú funkciu.');
@@ -1895,7 +1879,7 @@
         const rest = clean.replace(pow, '');
         
         if (rest && rest !== '0' && !rest.match(/^[\+\-]?0$/)) {
-          const comp2 = rest.startsWith('+') ? '0-(' + rest.substring(1) + ')' : rest.startsWith('-') ? rest.substring(1) : '0-(' + rest + ')';
+          const comp2 = '0-(' + rest + ')';
           return [pow, comp2];
         }
       }
@@ -1906,12 +1890,12 @@
         const rest = clean.replace(pow, '');
         
         if (rest && rest !== '0' && !rest.match(/^[\+\-]?0$/)) {
-          const comp2 = rest.startsWith('+') ? '0-(' + rest.substring(1) + ')' : rest.startsWith('-') ? rest.substring(1) : '0-(' + rest + ')';
+          const comp2 = '0-(' + rest + ')';
           return [pow, comp2];
         }
       }
 
-      const funcPowRegex = /\(Math\.(log|sin|cos|tan)\([^)]*\)\)\*\*\d+/g;
+      const funcPowRegex = /\(Math\.(log|sin|cos|tan|exp)\([^)]*\)\)\*\*\d+/g;
       let powMatches = [...clean.matchAll(funcPowRegex)];
       if (powMatches.length === 0) {
         powMatches = [...clean.matchAll(/Math\.pow\([^,]+,[^)]+\)/g)];
@@ -1938,7 +1922,7 @@
         const rest = clean.substring(powMatches[0].index + pow.length);
         
         if (rest && !rest.match(/^[\+\-]?0$/)) {
-          const comp2 = rest.startsWith('+') ? '0-(' + rest.substring(1) + ')' : rest.startsWith('-') ? rest.substring(1) : '0-(' + rest + ')';
+          const comp2 = '0-(' + rest + ')';
           return [pow, comp2];
         }
       }
@@ -1955,37 +1939,21 @@
       for (const regex of simpleFuncs) {
         const match = clean.match(regex);
         if (match) {
-          const func = match[0];
+          const func      = match[0];
           const funcIndex = clean.indexOf(func);
-          const rest = clean.substring(funcIndex + func.length);
+          const prefix    = clean.substring(0, funcIndex);
+          const rest      = clean.substring(funcIndex + func.length);
+          const prefixClean = prefix.replace(/[\+\-]$/, '');
           
-          if (rest && !rest.match(/^[\+\-]?0$/) && !rest.includes('Math.pow') && !rest.includes('**')) {
-            const comp2 = rest.startsWith('+') ? '0-(' + rest.substring(1) + ')' : rest.startsWith('-') ? rest.substring(1) : '0-(' + rest + ')';
+          const other = prefixClean + rest;
+          if (other && !other.match(/^[\+\-]?0*$/)) {
+            const comp2 = '0-(' + other + ')';
             return [func, comp2];
           }
         }
       }
       
       return null;
-    }
-
-    function flipSigns(str) {
-      if (!str) return '0';
-
-      let result = str.replace(/\+/g, '###PLUS###').replace(/\-/g, '+').replace(/###PLUS###/g, '-');
-
-      if (!result.startsWith('+') && !result.startsWith('-')) {
-        result = '-' + result;
-      }
-      result = result.replace(/\+\-/g, '-').replace(/\-\+/g, '-').replace(/\-\-/g, '+').replace(/\+\+/g, '+');
-
-      if (result.startsWith('-')) {
-        result = '0' + result;
-      } else if (result.startsWith('+')) {
-        result = '0' + result;
-      }
-      
-      return result;
     }
 
     function evalExpr(x, expression) {
