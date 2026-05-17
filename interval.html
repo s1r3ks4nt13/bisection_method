@@ -1944,7 +1944,7 @@
           const prefix    = clean.substring(0, funcIndex);
           const rest      = clean.substring(funcIndex + func.length);
           const prefixClean = prefix.replace(/[\+\-]$/, '');
-          
+
           const other = prefixClean + rest;
           if (other && !other.match(/^[\+\-]?0*$/)) {
             const comp2 = '0-(' + other + ')';

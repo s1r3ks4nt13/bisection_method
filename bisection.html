@@ -1605,6 +1605,7 @@
       let savedScrollPosition = 0;
 
       let tableUserScrolled = false;
+      let tableIsAutoScrolling = false;
 
       let lastResultData = null;
       let savedToHistory = false;
@@ -1765,23 +1766,40 @@
 
         tableContainer.addEventListener('touchmove', function(e) {
           const touchY = e.touches[0].clientY;
-          const deltaY = touchY - touchStartY;
-          
-          if (deltaY > 10) {
-            tableUserScrolled = true;
-          }
+          if (touchY - touchStartY > 10) tableUserScrolled = true;
         }, { passive: true });
 
         tableContainer.addEventListener('scroll', function() {
-          const scrollHeight = tableContainer.scrollHeight;
-          const scrollTop = tableContainer.scrollTop;
-          const clientHeight = tableContainer.clientHeight;
-          const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
-          
-          if (distanceFromBottom < 30 && tableUserScrolled) {
-            tableUserScrolled = false;
-          }
+          if (tableIsAutoScrolling) return;
+          const distanceFromBottom = tableContainer.scrollHeight - tableContainer.scrollTop - tableContainer.clientHeight;
+          if (distanceFromBottom < 30) tableUserScrolled = false;
         });
+      }
+
+      function autoScrollTable() {
+        const tableContainer = document.querySelector('.table-container');
+        if (!tableContainer || tableUserScrolled) return;
+
+        const target = tableContainer.scrollHeight - tableContainer.clientHeight;
+        const start = tableContainer.scrollTop;
+        const distance = target - start;
+        if (distance < 5) return;
+
+        tableIsAutoScrolling = true;
+        const duration = 300;
+        const startTime = performance.now();
+
+        function step(now) {
+          const progress = Math.min((now - startTime) / duration, 1);
+          const ease = progress < 0.5 ? 2 * progress * progress : -1 + (4 - 2 * progress) * progress;
+          tableContainer.scrollTop = start + distance * ease;
+          if (progress < 1) {
+            requestAnimationFrame(step);
+          } else {
+            tableIsAutoScrolling = false;
+          }
+        }
+        requestAnimationFrame(step);
       }
 
       function scrollToLatestManually() {
@@ -1994,9 +2012,9 @@
         }
 
         if (subStep >= 2) {
-          exp += `<br>f(a) = ${fa.toFixed(decimalPlaces)} ${fa > 0 ? '➕' : '➖'}<br>`;
-          exp += `f(c) = ${fc.toFixed(decimalPlaces)} ${fc > 0 ? '➕' : '➖'}<br>`;
-          exp += `f(a)·f(c) = ${prod.toFixed(decimalPlaces)}<br>`;
+          exp += `<br>f(a) = ${smartFixed(fa, decimalPlaces)} ${fa > 0 ? '➕' : '➖'}<br>`;
+          exp += `f(c) = ${smartFixed(fc, decimalPlaces)} ${fc > 0 ? '➕' : '➖'}<br>`;
+          exp += `f(a)·f(c) = ${smartFixed(prod, decimalPlaces)}<br>`;
           if (prod < 0) {
             exp += `→ Rôzne znamienka → Koreň v [a, c]<br>`;
           } else {
@@ -2005,10 +2023,10 @@
         }
 
         if (subStep >= 3) {
-          exp += `<br>|b − a| = ${intervalLength.toFixed(decimalPlaces)}<br>`;
+          exp += `<br>|b − a| = ${smartFixed(intervalLength, decimalPlaces)}<br>`;
           if (isLastFinal) {
             if (stopMethod === 'precision') {
-              exp += `✅ |b - a| = ${intervalLength.toFixed(decimalPlaces)} ≤ 2·${tol}<br>`;
+              exp += `✅ |b - a| = ${smartFixed(intervalLength, decimalPlaces)} ≤ 2·${tol}<br>`;
               exp += `<strong>Presnosť dosiahnutá!</strong>`;
             } else {
               const error = Math.abs(b0 - a0) / Math.pow(2, step.i + 1);
@@ -2025,7 +2043,7 @@
               const error = Math.abs(b0 - a0) / Math.pow(2, stepNumber + 1);
               exp += `Odhad chyby: (b₀−a₀)/2ⁿ⁺¹ = ±${smartFixed(error, decimalPlaces)}`;
             } else {
-              exp += `|b − a| = ${intervalLength.toFixed(decimalPlaces)}, nie je ≤ 2·${tol}`;
+              exp += `|b − a| = ${smartFixed(intervalLength, decimalPlaces)}, nie je ≤ 2·${tol}`;
             }
           }
         }
@@ -2328,9 +2346,9 @@
             showExplain(
               'Nesprávne znamienko',
               `Musíš zistiť znamienko <strong>f(a)</strong> a znamienko <strong>f(c)</strong>:<br><br>
-               f(a) = f(${a.toFixed(decimalPlaces)}) = <strong>${fa.toFixed(decimalPlaces)}</strong>
+               f(a) = f(${a.toFixed(decimalPlaces)}) = <strong>${smartFixed(fa, decimalPlaces)}</strong>
                → znamienko <strong>${fa >= 0 ? '+' : '−'}</strong><br>
-               f(c) = f(${correctC.toFixed(decimalPlaces)}) = <strong>${fc.toFixed(decimalPlaces)}</strong>
+               f(c) = f(${correctC.toFixed(decimalPlaces)}) = <strong>${smartFixed(fc, decimalPlaces)}</strong>
                → znamienko <strong>${fc >= 0 ? '+' : '−'}</strong>`,
               `✅ Správna kombinácia: <strong>${signLabel(correctSignStr)}</strong>`,
               () => {
@@ -2357,8 +2375,8 @@
           const correctError = Math.abs(b0 - a0) / Math.pow(2, quizStepIdx + 1);
           const expectedVal = stopMethod === 'steps' ? correctError : correctInterval;
           const displayVal = stopMethod === 'steps'
-            ? `±${correctError.toFixed(decimalPlaces)}`
-            : correctInterval.toFixed(decimalPlaces);
+            ? `±${smartFixed(correctError, decimalPlaces)}`
+            : smartFixed(correctInterval, decimalPlaces);
 
           const userVal = parseFloat(inputLen.value.replace(',', '.'));
           
@@ -2395,7 +2413,7 @@
               () => {
                 const el = document.getElementById('inlineInput_len');
                 if (el) { 
-                  el.value = stopMethod === 'steps' ? correctError.toFixed(decimalPlaces) : correctInterval.toFixed(decimalPlaces);
+                  el.value = stopMethod === 'steps' ? smartFixed(correctError, decimalPlaces) : smartFixed(correctInterval, decimalPlaces);
                   el.classList.add('revealed'); 
                   el.readOnly = true; 
                 }
@@ -2566,10 +2584,10 @@
           const exp0 = `
             <b>Krok 0:</b><br>
             c = (${a0.toFixed(decimalPlaces)} + ${b0.toFixed(decimalPlaces)}) / 2 = ${c0.toFixed(decimalPlaces)}<br>
-            |b - a| = ${len0.toFixed(decimalPlaces)}<br><br>
-            f(a) = ${fa0.toFixed(decimalPlaces)} ${fa0 > 0 ? '➕' : '➖'}<br>
-            f(c) = ${fc0.toFixed(decimalPlaces)} ${fc0 > 0 ? '➕' : '➖'}<br>
-            f(a)·f(c) = ${prod0.toFixed(decimalPlaces)}<br>${prod0 < 0 ? '→ Rôzne znamienka → Koreň v [a, c]' : '→ Rovnaké znamienka → Koreň v [c, b]'}
+            |b - a| = ${smartFixed(len0, decimalPlaces)}<br><br>
+            f(a) = ${smartFixed(fa0, decimalPlaces)} ${fa0 > 0 ? '➕' : '➖'}<br>
+            f(c) = ${smartFixed(fc0, decimalPlaces)} ${fc0 > 0 ? '➕' : '➖'}<br>
+            f(a)·f(c) = ${smartFixed(prod0, decimalPlaces)}<br>${prod0 < 0 ? '→ Rôzne znamienka → Koreň v [a, c]' : '→ Rovnaké znamienka → Koreň v [c, b]'}
           `;
           
           body.innerHTML += `<tr class="step-row">
@@ -2578,7 +2596,7 @@
             <td>${c0.toFixed(decimalPlaces)}</td>
             <td>${b0.toFixed(decimalPlaces)}</td>
             <td style="font-weight:bold; color:${signColor0}">${sign0}</td>
-            <td>${stopMethod === 'steps' ? ('±' + (Math.abs(b0 - a0) / 2).toFixed(decimalPlaces)) : (len0.toFixed(decimalPlaces) + ' ' + ind0)}</td>
+            <td>${stopMethod === 'steps' ? ('±' + smartFixed(Math.abs(b0 - a0) / 2, decimalPlaces)) : (smartFixed(len0, decimalPlaces) + ' ' + ind0)}</td>
           </tr>`;
         }
 
@@ -2604,7 +2622,7 @@
               <td>${s.c.toFixed(decimalPlaces)}</td>
               <td>${s.b.toFixed(decimalPlaces)}</td>
               <td style="font-weight:bold; color:${fa*fc<0?'var(--success)':'var(--danger)'};">${signProduct}</td>
-              <td>${stopMethod === 'steps' ? ('±' + (Math.abs(b0 - a0) / Math.pow(2, s.i + 1)).toFixed(decimalPlaces)) : (intervalLength.toFixed(decimalPlaces) + ' ' + (indicator || ''))}</td>
+              <td>${stopMethod === 'steps' ? ('±' + smartFixed(Math.abs(b0 - a0) / Math.pow(2, s.i + 1), decimalPlaces)) : (smartFixed(intervalLength, decimalPlaces) + ' ' + (indicator || ''))}</td>
             </tr>`;
           }
 
@@ -2623,7 +2641,7 @@
             const cCell     = autoSubStep >= 1 ? `<td>${s.c.toFixed(decimalPlaces)}</td>` : `<td style="color:var(--text-secondary)">—</td>`;
             const signCell  = autoSubStep >= 2 ? `<td style="font-weight:bold; color:${fa*fc<0?'var(--success)':'var(--danger)'};">${signProduct}</td>` : `<td style="color:var(--text-secondary)">—</td>`;
             const autoErrVal = Math.abs(b0 - a0) / Math.pow(2, s.i + 1);
-            const lenCellVal = stopMethod === 'steps' ? `±${autoErrVal.toFixed(decimalPlaces)}` : `${intervalLength.toFixed(decimalPlaces)} ${indicator}`;
+            const lenCellVal = stopMethod === 'steps' ? `±${smartFixed(autoErrVal, decimalPlaces)}` : `${smartFixed(intervalLength, decimalPlaces)} ${indicator}`;
             const lenCell   = autoSubStep >= 3 ? `<td>${lenCellVal}</td>` : `<td style="color:var(--text-secondary)">—</td>`;
             
             body.innerHTML += `<tr class="step-row" style="background:var(--theory-bg);">
@@ -2635,6 +2653,7 @@
               ${lenCell}
             </tr>`;
           }
+          setTimeout(autoScrollTable, 120);
           updateTableHint();
           return;
         }
@@ -2674,7 +2693,7 @@
             <td>${s.c.toFixed(decimalPlaces)}</td>
             <td>${s.b.toFixed(decimalPlaces)}</td>
             <td style="font-weight: bold; color: ${fa * fc < 0 ? 'var(--success)' : 'var(--danger)'};">${signProduct}</td>
-            <td>${stopMethod === 'steps' ? ('±' + errorVal.toFixed(decimalPlaces)) : (intervalLength.toFixed(decimalPlaces) + ' ' + indicator)}</td>
+            <td>${stopMethod === 'steps' ? ('±' + smartFixed(errorVal, decimalPlaces)) : (smartFixed(intervalLength, decimalPlaces) + ' ' + indicator)}</td>
           </tr>`;
         }
 
@@ -2743,7 +2762,7 @@
             ? `<td>
                 <div class="quiz-input-cell">
                   <input class="quiz-input correct" id="inlineInput_len" type="text"
-                  value="${(stopMethod === 'steps' ? '±' : '') + quizCorrectVal_q.toFixed(getDecimalPlaces())}" readonly>
+                  value="${(stopMethod === 'steps' ? '±' : '') + smartFixed(quizCorrectVal_q, getDecimalPlaces())}" readonly>
                 </div>
               </td>`
             : `<td>
@@ -2795,7 +2814,7 @@
           const cCell    = autoSubStep >= 1 ? `<td>${s.c.toFixed(decimalPlaces)}</td>` : `<td style="color:var(--text-secondary)">—</td>`;
           const signCell = autoSubStep >= 2 ? `<td style="font-weight:bold; color:${fa*fc<0?'var(--success)':'var(--danger)'};">${signProduct}</td>` : `<td style="color:var(--text-secondary)">—</td>`;
           const mixedErrVal = Math.abs(b0 - a0) / Math.pow(2, s.i + 1);
-          const mixedLenVal = stopMethod === 'steps' ? `±${mixedErrVal.toFixed(decimalPlaces)}` : `${intervalLength.toFixed(decimalPlaces)} ${indicator}`;
+          const mixedLenVal = stopMethod === 'steps' ? `±${smartFixed(mixedErrVal, decimalPlaces)}` : `${smartFixed(intervalLength, decimalPlaces)} ${indicator}`;
           const lenCell  = autoSubStep >= 3 ? `<td>${mixedLenVal}</td>` : `<td style="color:var(--text-secondary)">—</td>`;
           
           body.innerHTML += `<tr class="step-row" style="background:var(--theory-bg);">
@@ -2808,39 +2827,8 @@
           </tr>`;
         }
 
-        if (!tableUserScrolled && body.children.length > 0) {
-          const tableContainer = document.querySelector('.table-container');
-
-          if (tableContainer) {
-            setTimeout(() => {
-              const lastRow = body.lastElementChild;
-              if (lastRow) {
-                const targetScrollTop = lastRow.offsetTop - tableContainer.clientHeight + lastRow.clientHeight + 10;
-                const startScrollTop = tableContainer.scrollTop;
-                const distance = Math.max(0, targetScrollTop - startScrollTop);
-                
-                if (distance > 10) {
-                  const duration = 300;
-                  const startTime = performance.now();
-                  
-                  function animateTableScroll(currentTime) {
-                    const elapsed = currentTime - startTime;
-                    const progress = Math.min(elapsed / duration, 1);
-                    const easeProgress = progress < 0.5 ? 2 * progress * progress : -1 + (4 - 2 * progress) * progress;
-                    
-                    tableContainer.scrollTop = startScrollTop + (distance * easeProgress);
-                    
-                    if (progress < 1) {
-                      requestAnimationFrame(animateTableScroll);
-                    }
-                  }
-                  
-                  requestAnimationFrame(animateTableScroll);
-                }
-              }
-            }, 100);
-          }
-        }
+        // Авто-прокрут таблиці до останнього рядка
+        setTimeout(autoScrollTable, 120);
 
         updateTableHint();
       }
@@ -3144,7 +3132,7 @@
             }, { responsive: true, displayModeBar: true, displaylogo: false });
           }
 
-          if (!tableUserScrolled && container.children.length > 0) {
+          if (!userScrolled && container.children.length > 0) {
             setTimeout(() => { 
               autoScrollToLatest(); 
             }, 100);
@@ -3228,8 +3216,8 @@
               }
             } else if (stopMethod === 'steps' && s.i === maxSteps) {
               const error = Math.abs(b0 - a0) / Math.pow(2, s.i + 1);
-              traces.push({ x: [s.c - error, s.c - error], y: [mn, mx], mode: 'lines', line: { color: 'rgba(76,175,80,0.7)', width: 2, dash: 'dash' }, name: `oblasť chyby ±${error.toFixed(decimalPlaces)}`, legendgroup: 'error', showlegend: true, hoverinfo: 'name' });
-              traces.push({ x: [s.c + error, s.c + error], y: [mn, mx], mode: 'lines', line: { color: 'rgba(76,175,80,0.7)', width: 2, dash: 'dash' }, name: `oblasť chyby ±${error.toFixed(decimalPlaces)}`, legendgroup: 'error', showlegend: false, hoverinfo: 'name' });
+              traces.push({ x: [s.c - error, s.c - error], y: [mn, mx], mode: 'lines', line: { color: 'rgba(76,175,80,0.7)', width: 2, dash: 'dash' }, name: `oblasť chyby ±${smartFixed(error, decimalPlaces)}`, legendgroup: 'error', showlegend: true, hoverinfo: 'name' });
+              traces.push({ x: [s.c + error, s.c + error], y: [mn, mx], mode: 'lines', line: { color: 'rgba(76,175,80,0.7)', width: 2, dash: 'dash' }, name: `oblasť chyby ±${smartFixed(error, decimalPlaces)}`, legendgroup: 'error', showlegend: false, hoverinfo: 'name' });
             }
           }
 
@@ -3335,12 +3323,11 @@
       }
 
       function smartFixed(value, minD = 3, maxD = 10) {
-        for (let d = minD; d <= maxD; d++) {
-          const str = Math.abs(value).toFixed(d);
-          if (str.replace('0.', '').replace(/0+$/, '') !== '') return value.toFixed(d);
-        }
-
-        return value.toFixed(maxD);
+        if (value === 0 || Math.abs(value) < Number.EPSILON) return (0).toFixed(minD);
+        // Знаходимо мінімальну кількість знаків щоб показати хоча б одну значущу цифру
+        const needed = Math.ceil(-Math.log10(Math.abs(value)));
+        const d = Math.min(Math.max(minD, needed), maxD);
+        return value.toFixed(d);
       }
 
       function showResultOverlay(root, fValue, aVal, bVal, iterations, method) {
@@ -3378,7 +3365,7 @@
             </div>
             <div class="result-info-row">
               <span class="result-info-label">f(c):</span>
-              <span class="result-info-value">${fValue.toFixed(decimalPlaces)}</span>
+              <span class="result-info-value">${smartFixed(fValue, decimalPlaces)}</span>
             </div>
             <div class="result-info-row">
               <span class="result-info-label">Interval:</span>
@@ -3386,7 +3373,7 @@
             </div>
             <div class="result-info-row">
               <span class="result-info-label">|b - a|:</span>
-              <span class="result-info-value">${intervalLength.toFixed(decimalPlaces)} ≤ 2·${tol} = ${(2*tol).toFixed(decimalPlaces)}</span>
+              <span class="result-info-value">${smartFixed(intervalLength, decimalPlaces)} ≤ 2·${tol} = ${smartFixed(2*tol, decimalPlaces)}</span>
             </div>
             <div class="result-info-row">
               <span class="result-info-label">Iterácií:</span>
